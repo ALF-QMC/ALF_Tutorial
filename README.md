@@ -32,3 +32,8 @@ for your search.
 ### MacOS
 
 ### Windows
+
+## Editors
+For the coding parts of the exercises we recommend to use a text editor. 
+Linux usually have one installed like kwrite, kate or gedit(emacs and VI work
+great, too). For the windows users we recommend Notepad++.
