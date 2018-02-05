@@ -10,7 +10,7 @@ Fortran03 compatible Compiler.
 ### Linux
 In the following we give hints on how to install relevant packages.
 
-#### Debian/Ubuntu
+#### Debian/Ubuntu/Linux Mint
 - sudo apt-get install gfortran liblapack-dev make
 
 #### Red Hat/Fedora/CentOS
