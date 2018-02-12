@@ -30,6 +30,9 @@ relevant packages. The package names from linux should give good starting points
 for your search.
 
 ### MacOS
+gfortran for MacOS can be found at https://gcc.gnu.org/wiki/GFortranBinaries#MacOS.
+Detailed information on how to install the package  can be found at: https://gcc.gnu.org/wiki/GFortranBinariesMacOS.
+You will need to have Xcode as well as the  Apple developer tools installed. 
 
 ### Windows
 The easiest way to compile Fortran code in Windows is trough Cygwin, which 
