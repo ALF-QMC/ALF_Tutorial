@@ -21,7 +21,7 @@ In the following we give hints on how to install relevant packages.
 
 #### Arch Linux
 - pacman -S make gcc-fortran lapack
-ToDo:
+
 
 ### Other Unixes
 gfortran and the lapack implementation from netlib.org should be available for
