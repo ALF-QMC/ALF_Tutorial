@@ -55,6 +55,10 @@ will also find the home directory of the Unix environment.
 - To add, remove or update installed packages, rerun the installer setup and 
 chose "Install from Internet".
 
+## Building
+After you have obtained the source code and have set up the build environment
+you need to build the source files. Executing make in the root directory of ALF
+does the Job.
 
 ## Editors
 For the coding parts of the exercises we recommend to use a text editor. 
