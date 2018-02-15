@@ -1,0 +1,50 @@
+ =====================================
+ Model is      : Hubbard_Mz                                                      
+ Lattice is    : Square                                                          
+ L1, L2        :           14           1
+ # of orbitals :           14
+ Beta          :    10.000000000000000     
+ dtau,Ltrot    :   0.10000000000000001              100
+ N_SUN         :            1
+ N_FL          :            2
+ t_x            :    1.0000000000000000     
+ t_y            :    1.0000000000000000E-004
+ Ham_U         :    4.0000000000000000     
+ Ham_chem      :    0.0000000000000000     
+ Sweeps             :          100
+ Measure Int.       :            1         100
+ Stabilization,Wrap :           10
+ Nstm               :           10
+ Ltau               :            1
+ Bin                :           10
+ No CPU-time limitation 
+  Precision Green  Mean, Max :    3.7693880995138416E-012   1.6637055602619633E-007
+  Precision Phase, Max       :    0.0000000000000000     
+  Precision tau    Mean, Max :    8.3341637883569004E-013   6.0615665375962635E-008
+  Acceptance                 :   0.41961928571428569     
+  CPU Time                   :    33.411119999999997     
+ =====================================
+ Model is      : Hubbard_Mz                                                      
+ Lattice is    : Square                                                          
+ L1, L2        :           14           1
+ # of orbitals :           14
+ Beta          :    10.000000000000000     
+ dtau,Ltrot    :   0.10000000000000001              100
+ N_SUN         :            1
+ N_FL          :            2
+ t_x            :    1.0000000000000000     
+ t_y            :    1.0000000000000000E-004
+ Ham_U         :    4.0000000000000000     
+ Ham_chem      :    0.0000000000000000     
+ Sweeps             :          100
+ Measure Int.       :            1         100
+ Stabilization,Wrap :           10
+ Nstm               :           10
+ Ltau               :            1
+ Bin                :           10
+ No CPU-time limitation 
+  Precision Green  Mean, Max :    3.7638219600116032E-012   1.3199522094775595E-007
+  Precision Phase, Max       :    0.0000000000000000     
+  Precision tau    Mean, Max :    8.9641261762286969E-013   9.9889395643870671E-008
+  Acceptance                 :   0.41977071428571427     
+  CPU Time                   :    50.640687999999997     

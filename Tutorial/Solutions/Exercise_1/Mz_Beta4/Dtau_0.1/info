@@ -1,0 +1,99 @@
+ =====================================
+ Model is      : Hubbard_Mz                                                      
+ Lattice is    : Square                                                          
+ # of orbitals :            4
+ Beta          :    2.0000000000000000     
+ dtau,Ltrot    :   0.10000000000000001               20
+ N_SUN         :            1
+ N_FL          :            2
+ t             :    1.0000000000000000     
+ Ham_U         :    4.0000000000000000     
+ Ham_chem      :    0.0000000000000000     
+ No initial configuration, Seed_in      790789
+ Sweeps             :         1000
+ Measure Int.       :            1         100
+ Stabilization,Wrap :           10
+ Nstm               :            2
+ Ltau               :            1
+ This executable represents commit 20e57d0 of branch master.
+ Prog will stop after hours:    0.1000
+  Precision Green  Mean, Max :    5.9097871710082990E-012   7.2628288442372346E-007
+  Precision Phase, Max       :    0.0000000000000000     
+  Precision tau    Mean, Max :    1.4173596992760873E-012   2.4770638815119206E-007
+  Acceptance                 :   0.41462306857638886     
+  CPU Time                   :    358.84521899999999     
+  Effective number of bins   :          288
+ =====================================
+ Model is      : Hubbard_Mz                                                      
+ Lattice is    : Square                                                          
+ # of orbitals :            4
+ Beta          :    4.0000000000000000     
+ dtau,Ltrot    :   0.10000000000000001               40
+ N_SUN         :            1
+ N_FL          :            2
+ t             :    1.0000000000000000     
+ Ham_U         :    4.0000000000000000     
+ Ham_chem      :    0.0000000000000000     
+ No initial configuration, Seed_in      790789
+ Sweeps             :         1000
+ Measure Int.       :            1         100
+ Stabilization,Wrap :           10
+ Nstm               :            4
+ Ltau               :            1
+ This executable represents commit 20e57d0 of branch master.
+ Prog will stop after hours:    0.1000
+  Precision Green  Mean, Max :    5.8973589853357914E-012   1.3759520561262839E-006
+  Precision Phase, Max       :    0.0000000000000000     
+  Precision tau    Mean, Max :    1.2079666634439753E-012   7.2363839548339470E-007
+  Acceptance                 :   0.41178826593137252     
+  CPU Time                   :    357.19277000000000     
+  Effective number of bins   :          102
+ =====================================
+ Model is      : Hubbard_Mz                                                      
+ Lattice is    : Square                                                          
+ # of orbitals :            4
+ Beta          :    4.0000000000000000     
+ dtau,Ltrot    :   0.10000000000000001               40
+ N_SUN         :            1
+ N_FL          :            2
+ t             :    1.0000000000000000     
+ Ham_U         :    4.0000000000000000     
+ Ham_chem      :    0.0000000000000000     
+ No initial configuration, Seed_in      790789
+ Sweeps             :         1000
+ Measure Int.       :            1         100
+ Stabilization,Wrap :           10
+ Nstm               :            4
+ Ltau               :            1
+ This executable represents commit 20e57d0 of branch master.
+ Prog will stop after hours:    0.1000
+  Precision Green  Mean, Max :    5.9167821744353557E-012   1.3759520561262839E-006
+  Precision Phase, Max       :    0.0000000000000000     
+  Precision tau    Mean, Max :    1.2100706790002562E-012   7.2363839548339470E-007
+  Acceptance                 :   0.41177184495192309     
+  CPU Time                   :    356.90905400000003     
+  Effective number of bins   :          104
+ =====================================
+ Model is      : Hubbard_Mz                                                      
+ Lattice is    : Square                                                          
+ # of orbitals :            4
+ Beta          :    4.0000000000000000     
+ dtau,Ltrot    :   0.10000000000000001               40
+ N_SUN         :            1
+ N_FL          :            2
+ t             :    1.0000000000000000     
+ Ham_U         :    4.0000000000000000     
+ Ham_chem      :    0.0000000000000000     
+ Sweeps             :         1000
+ Measure Int.       :            1         100
+ Stabilization,Wrap :           10
+ Nstm               :            4
+ Ltau               :            1
+ This executable represents commit 20e57d0 of branch master.
+ Prog will stop after hours:    0.1000
+  Precision Green  Mean, Max :    5.9019887864936654E-012   3.2746213664280877E-007
+  Precision Phase, Max       :    0.0000000000000000     
+  Precision tau    Mean, Max :    1.1641279137012969E-012   1.3312121072139860E-007
+  Acceptance                 :   0.41169914772727273     
+  CPU Time                   :    356.46159599999999     
+  Effective number of bins   :           99
