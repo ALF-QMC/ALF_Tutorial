@@ -5,7 +5,7 @@ projects.
 ## Installation.
 ALF is pretty self-contained, you only need a LAPACK and a BLAS implementation
 as external libraries. For compiling the source code you need make and a
-Fortran03 compatible Compiler.
+Fortran 2003 compatible Compiler.
 
 ### Linux
 In the following we give hints on how to install relevant packages.
@@ -20,7 +20,6 @@ In the following we give hints on how to install relevant packages.
 - sudo zypper install gcc-gfortran make lapack-devel
 
 ToDo:
-Linux Mint: Ubuntu based
 Arch Linux. Has a couple of derivatives. We will assume they are equal...
 
 ### Other Unixes
