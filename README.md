@@ -19,8 +19,9 @@ In the following we give hints on how to install relevant packages.
 #### OpenSuSE / SLES
 - sudo zypper install gcc-gfortran make lapack-devel
 
+#### Arch Linux
+- pacman -S make gcc-fortran lapack
 ToDo:
-Arch Linux. Has a couple of derivatives. We will assume they are equal...
 
 ### Other Unixes
 gfortran and the lapack implementation from netlib.org should be available for
