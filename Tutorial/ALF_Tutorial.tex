@@ -108,6 +108,9 @@
 %---------------------------------------------------------------------------------------------------------
 \maketitle
 
+\section*{Download the code}
+To download the code, type    \texttt{ git clone https://alf.physik.uni\-wuerzburg.de/ALF/ALF.git }  in a shell.    \\
+To download the tutorial including solutions type: \\  \texttt{git clone https://alf.physik.uni-wuerzburg.de/ALF/ALF-Tutorial.git}   in a shell.
 
 \section*{Exercise 1)   Testing against ED}
 Run the code with the Mz choice of Hubbard Stratonovitch  transformation on a four site ring, at $U/t=4$  and inverse temperature $ \beta t = 2 $.  For this set of parameters, the exact  internal energy reads:   
@@ -197,7 +200,7 @@ Here we will modify the code  so as to allow  for different hopping matrix eleme
 \item Add an extra variable, \texttt{Ham\_Ty}, in the parameter file in the \texttt{VAR\_Hubbard}  name space
 \item Declare the variable \texttt{Ham\_Ty} in the \texttt{Hamiltonian\_Examples.f90 }.
 \item Read in this  variable in \texttt{Ham\_set} subroutine of the  \texttt{Hamiltonian\_Examples.f90 }  file.
-\item  Modify the hopping matrix  in the subroutine \texttt{Ham\_Latt}  in the \texttt{Hamiltonian\_Examples.f90 }  file.   
+\item  Modify the hopping matrix  in the subroutine \texttt{Ham\_Hop}  in the \texttt{Hamiltonian\_Examples.f90 }  file.   
 \lstset{style=fortran}
 \begin{lstlisting} 
 DO I = 1, Latt%N
