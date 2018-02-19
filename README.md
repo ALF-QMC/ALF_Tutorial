@@ -43,18 +43,25 @@ installer and a local repository with all the additional software needed for
 ALF. 
 
 Steps for installing Cygwin:
-- Unizip the archive
+- Download zip from https://www.dropbox.com/s/ap8vl85gn9nfbo7/cygwin_ALF.zip?dl=0
+and unzip
 - Execute "setup-x86_64.exe". If administrator rights are missing, execute it 
 from the command line as "setup-x86.exe --no-admin".
-- In the setup choose "Install from local directory".
-- Choose root directory, where cygwin will be installed. In this directory you 
-will also find the home directory of the Unix environment.
-- Choose the diretory "cygwin_ALF" as local package Directory.
+- In the setup choose "Install from local directory" instead of "Install from Internet".
+- Choose root directory, where cygwin will be installed. You should memorize this diretory.
+- Choose the diretory "cygwin\_ALF" (The one which also contains "setup-x86_64.exe") 
+as local package Directory.
 - At the "Select Packages" screen, in "Categories" view, at the line marked 
 "All", click on the word "default" so that it changes to "install".
 - Finish installation
-- To add, remove or update installed packages, rerun the installer setup and 
-chose "Install from Internet".
+- Optional: To add, remove or update installed packages, rerun the installer 
+setup and chose "Install from Internet".
+- You can now use the installed Cygwin packages by starting the Cygwin terminal.
+It is a UNIX terminal which, by default, starts in the home diretory 
+"/home/<username>" of the UNIX-system emulated by Cygwin, where "/" is the root 
+directory of Cygwin. For example, if you have installed Cygwin in 
+"C:\cygwin64\", then the home Directory of Cygwin ca be found at 
+"C:\cygwin64\home\<username>", in the Windows system.
 
 ## Building
 After you have obtained the source code and have set up the build environment
