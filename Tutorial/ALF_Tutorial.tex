@@ -108,6 +108,9 @@
 %---------------------------------------------------------------------------------------------------------
 \maketitle
 
+\section*{Downloading the code and tutorial}
+To download the code, type    \texttt{ git clone https://alf.physik.uni\-wuerzburg.de/ALF/ALF.git }  in a shell.    \\
+To download the tutorial including solutions type: \\  \texttt{git clone https://alf.physik.uni-wuerzburg.de/ALF/ALF-Tutorial.git}  again  in a shell.
 
 \section*{Exercise 1)   Testing against ED}
 Run the code with the Mz choice of Hubbard Stratonovitch  transformation on a four site ring, at $U/t=4$  and inverse temperature $ \beta t = 2 $.  For this set of parameters, the exact  internal energy reads:   
@@ -197,7 +200,7 @@ Here we will modify the code  so as to allow  for different hopping matrix eleme
 \item Add an extra variable, \texttt{Ham\_Ty}, in the parameter file in the \texttt{VAR\_Hubbard}  name space
 \item Declare the variable \texttt{Ham\_Ty} in the \texttt{Hamiltonian\_Examples.f90 }.
 \item Read in this  variable in \texttt{Ham\_set} subroutine of the  \texttt{Hamiltonian\_Examples.f90 }  file.
-\item  Modify the hopping matrix  in the subroutine \texttt{Ham\_Latt}  in the \texttt{Hamiltonian\_Examples.f90 }  file.   
+\item  Modify the hopping matrix  in the subroutine \texttt{Ham\_Hop}  in the \texttt{Hamiltonian\_Examples.f90 }  file.   
 \lstset{style=fortran}
 \begin{lstlisting} 
 DO I = 1, Latt%N
@@ -216,7 +219,7 @@ ENDDO
 \end{lstlisting} 
 
 \end{itemize}
-In the directory  \texttt{Exercise\_2/solutions} we have  duplicated the ALF and commented  the changes that have to be carried out to the file 
+In the directory \texttt{Solutions/Exercise\_2} we have  duplicated the ALF and commented  the changes that have to be carried out to the file 
 \texttt{Hamiltonian\_Examples.f90 }    in the \texttt{Prog}  directory. 
 
 
@@ -312,7 +315,7 @@ The above form is  readily included in the ALF since  the interaction is written
 	 H =  -t \sum_{i} \left( c^{\dagger}_{i}  c^{\phantom\dagger}_{i+a}      + c^{\dagger}_{i+a}  c^{\phantom\dagger}_{i} \right) 
 	       + V  \sum_{i}  \left( n_{i} - 1/2 \right)  \left( n_{i+a} - 1/2 \right)  
 \end{equation}
-In the directory  \texttt{Exercise\_3/solutions} we have  duplicated the ALF and commented  the changes that have to be carried out to the file 
+In the directory  \texttt{Solutions/Exercise\_3} we have  duplicated the ALF and commented  the changes that have to be carried out to the file 
 \texttt{Hamiltonian\_Examples.f90 }  in the \texttt{Prog}  directory so as to include the t$\_$V model. 
 Here are the steps to be carried out. 
 \begin{itemize}
