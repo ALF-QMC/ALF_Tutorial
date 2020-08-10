@@ -1,5 +1,5 @@
 # ALF Tutorial
-This is a tutorial for using ALF intended to get you started with your first 
+This is a tutorial for using ALF intended to get you started from zero up to your own first 
 projects.
 
 ## Installation.

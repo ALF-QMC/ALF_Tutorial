@@ -1,0 +1,381 @@
+% Copyright (c) 2016 The ALF project.
+% This is the ALF project documentation.
+% The ALF project documentation by the ALF contributors is licensed
+% under a Creative Commons Attribution-ShareAlike 4.0 International License.
+% For the licensing details of the documentation see license.CCBYSA.
+
+
+\documentclass[10pt,Arial]{scrartcl}
+\usepackage{graphicx}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{bbm}            
+\usepackage[fleqn]{amsmath} 
+\usepackage{amssymb}
+\usepackage{wasysym}
+\usepackage{color}
+\usepackage{soul}
+\usepackage{xspace}
+\usepackage{bm}
+\usepackage{subfigure}
+\usepackage{tcolorbox}
+\usepackage{dsfont}
+\usepackage{footnote}
+\usepackage{alltt}
+\usepackage{xcolor}
+\usepackage{lmodern}
+\usepackage{listings}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{hyperref} 
+\usepackage{float} 
+
+\usepackage[framemethod=default]{mdframed}
+\usepackage{showexpl}
+
+\makeatletter
+\renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
+            {-2.5ex\@plus -1ex \@minus -.25ex}%
+            {1.25ex \@plus .25ex}%
+            {\normalfont\normalsize\bfseries}}
+\makeatother
+\setcounter{secnumdepth}{4} 
+\setcounter{tocdepth}{4}
+\definecolor{light-gray}{gray}{0.95}
+
+\lstdefinestyle{fortran}{
+  language=Fortran,
+  basicstyle=\ttfamily,
+  keywordstyle=\color{red},
+  commentstyle=\color{blue},
+  morecomment=[l]{!\ }% Comment only with space after !
+  breakatwhitespace=false,
+  keepspaces=true,
+  showstringspaces=false,
+  columns=flexible,
+  backgroundcolor=\color{light-gray},
+  frame=single
+}
+
+\lstdefinestyle{fortran_pseudo_code}{
+  language=Fortran,
+  basicstyle=\ttfamily,
+  keywordstyle=\color{red},
+  commentstyle=\normalfont\color{black},
+  morecomment=[l]{!\ }% Comment only with space after !
+  breakatwhitespace=false,
+  keepspaces=true,
+  showstringspaces=false,
+  columns=flexible,
+  backgroundcolor=\color{white},
+  frame=single,
+  escapeinside={\!*}{*)},
+}
+
+\lstdefinestyle{bash}{
+  language=bash,
+  basicstyle=\ttfamily,
+  keywordstyle=\color{red},
+  commentstyle=\color{blue},
+  morecomment=[l]{\#\ }% Comment only with space after #
+  breakatwhitespace=false,
+  keepspaces=true,
+  showstringspaces=false,
+  columns=flexible
+}
+
+\def\Tr{\mathop{\mathrm{Tr}}}
+\def\Trf{\mathop{\mathrm{Tr}_{\mathrm{F}}}}
+\makesavenoteenv{tabular}
+\makesavenoteenv{table}
+
+% % only for the scrartcl class:
+\setkomafont{author}{\large}
+\setkomafont{date}{\large}
+% \RedeclareSectionCommand[style=section,indent=0pt]{part}
+% \renewcommand*\partformat{\thepart\autodot\enskip}
+
+\newcommand{\mycomment}[1]{{\color{red} #1}}
+\newcommand{\FAcomment}[1]{{\color{red} #1}}
+
+\makeindex
+\begin{document}
+%---------------------------------------------------------------------------------------------------------
+\title{ ALF Tutorial }
+
+\subtitle{The \emph{ALF} (\emph{A}lgorithms for \emph{L}attice \emph{F}ermions) project release 2.0 tutorial}
+\author{Florian Goth,  Johannes S. Hofmann,  Jonas Schwab,\\  Jefferson S. E. Portela,  Fakher F. Assaad }
+%---------------------------------------------------------------------------------------------------------
+\maketitle
+
+
+\section*{Introduction}
+
+
+\section*{Downloading the code and tutorial}
+To download the code, type    \texttt{ git clone  git@git.physik.uni-wuerzburg.de:ALF/ALF\_code.git}  in a shell.    \\
+To download the tutorial including solutions type: \\  \texttt{git clone git@git.physik.uni-wuerzburg.de:ALF/ALF\_Tutorial.git}  again  in a shell.
+
+\section*{Exercise 1)   Testing against ED}
+Run the code with the Mz choice of Hubbard Stratonovitch  transformation on a four site ring, at $U/t=4$  and inverse temperature $ \beta t = 2 $.  For this set of parameters, the exact  internal energy reads:   
+\begin{equation}
+ \langle -t \sum_{\langle i,j\rangle, \sigma} c_{i,\sigma}^{\dagger} c_{j,\sigma}^{\phantom\dagger}   +  U  \sum_{i=1}^{N} n_{i,\uparrow}n_{j,\downarrow}  \rangle  =   -1.47261997 t 
+ \end{equation}
+ 
+ To reproduce this result you will have to carry out a systematic $\Delta \tau  t $ extrapolation keeping    $\Delta \tau t  L_{\text Trotter} = 2$  constant.   
+ Recall that  the formulation of the auxiliary field QMC approach is based on the Trotter  decomposition 
+ \begin{equation}
+ 	 e^{-\Delta \tau \left( A + B \right ) }   = e^{-\Delta \tau  A } e^{-\Delta \tau  B  }   + {\cal O}  \left( \Delta \tau^2 \right)
+ \end{equation}
+ The overall error produced by this  approximation is of the order $\Delta \tau^2  $.   
+
+
+\noindent
+All the files you will need to  run the code can be found in the directory \texttt{Exercise\_1/Start}.      Beware to define one directory per run so as to avoid conflicts between different parameter sets.   Such conflicts will lead to crashes. 
+Here is the parameter file you should use
+\lstset{style=fortran}
+\begin{lstlisting} 
+!===============================================================================
+!  Variables for the Hubb program
+!-------------------------------------------------------------------------------
+&VAR_lattice
+L1 = 4                    ! Length in direction a_1
+L2 = 1                    ! Length in direction a_2
+Lattice_type = "Square"	  ! a_1 = (1,0),  a_2=(0,1),  Norb=1, N_coord=2
+!Lattice_type ="Honeycomb"! a_1 = (1,0),  a_2 =(1/2,sqrt(3)/2), Norb=2, N_coord=3
+!Model = "Hubbard_SU2"    ! Sets Nf=1, N_sun=2. HS field couples to the density
+Model = "Hubbard_Mz"      ! Sets Nf=2, N_sun=1. HS field couples to the 
+                          ! z-component of magnetization.  
+!Model="Hubbard_SU2_Ising"! Sets Nf_1, N_sun=2 and runs only for the square lattice
+                          ! Hubbard model  coupled to transverse Ising field
+/
+&VAR_Hubbard              ! Variables for the Hubbard model
+ham_T   = 1.D0            ! Hopping parameter
+ham_chem= 0.D0            ! chemical potential
+ham_U   = 4.D0            ! Hubbard interaction
+Beta    = 2.D0            ! inverse temperature
+dtau    = 0.1D0           ! Thereby Ltrot=Beta/dtau
+/
+
+&VAR_QMC                  ! Variables for the QMC run
+Nwrap   = 10              ! Stabilization. Green functions will be computed from 
+                          ! scratch after each time interval  Nwrap*Dtau
+NSweep  = 1000            ! Number of sweeps
+NBin    = 10              ! Number of bins
+Ltau    = 1               ! 1 for calculation of time displaced Green functions;
+                          ! 0 otherwise
+LOBS_ST = 1               ! Start measurements at time slice LOBS_ST
+LOBS_EN = 100             ! End   measurements at time slice LOBS_EN
+CPU_MAX = 0.1             ! Code will stop after CPU_MAX hours. 
+                          ! If not specified, code will stop after Nbin bins.
+/                          
+&VAR_errors               ! Variables for analysis programs
+n_skip  = 2               ! Number of bins that will be skipped. 
+N_rebin = 1               ! Rebinning  
+N_Cov   = 0               ! If set to 1 covariance will be computed
+                          ! for unequal time correlation functions.                   
+/            
+\end{lstlisting}
+
+
+\noindent
+
+
+After running the program,  \texttt{\$DIR/Prog/Examples.out}, run the analysis programs, \texttt{ bash analysis.sh}.  Note that you have to set the environment variable   \texttt{\$DIR}  to  the directory where the package is located. This can be done by running \texttt{. ./sentenv.sh}  in the home directory of the ALF. You will find the internal energy in the file \texttt{Ener\_scalJ}.   This file contains two  entries: \texttt{OBS: 1}  corresponds to the energy and 
+\texttt{OBS: 2}   to the average sign.
+If you want to  improve the quality of the data, you can rerun the code. Before doing this be sure to move the \texttt{confout\_*}  files to the \texttt{confin\_*}   files. The bash script \texttt{out\_to\_in.sh}  will do this for you. 
+Here is the result you should obtain when choosing $ \Delta \tau t = 0.05, 0.1, 0.125$.
+
+
+\begin{figure}[h]
+        \begin{center}
+                \includegraphics[scale=.8]{Figures/Ener_B2.pdf}
+        \end{center}
+        \caption{ $\Delta \tau t $ extrapolation for the 4-site Hubbard ring. }
+\end{figure}
+
+\newpage
+\section*{Exercise 2)   Dimensional crosover. }
+
+\subsection*{a) Modifying the hopping}
+Here we will modify the code  so as to allow  for different hopping matrix elements along the x and y directions of a square lattice.  To do so, one merely has to  do the following 
+\begin{itemize}
+
+\item Add an extra variable, \texttt{Ham\_Ty}, in the parameter file in the \texttt{VAR\_Hubbard}  name space
+\item Declare the variable \texttt{Ham\_Ty} in the \texttt{Hamiltonian\_Examples.f90 }.
+\item Read in this  variable in \texttt{Ham\_set} subroutine of the  \texttt{Hamiltonian\_Examples.f90 }  file.
+\item  Modify the hopping matrix  in the subroutine \texttt{Ham\_Hop}  in the \texttt{Hamiltonian\_Examples.f90 }  file.   
+\lstset{style=fortran}
+\begin{lstlisting} 
+DO I = 1, Latt%N
+    I1 = Latt%nnlist(I,1,0)
+    I2 = Latt%nnlist(I,0,1)
+    Op_T(nc,n)%O(I,I1) = cmplx(-Ham_T,    0.d0, kind(0.D0))
+    Op_T(nc,n)%O(I1,I) = cmplx(-Ham_T,    0.d0, kind(0.D0))
+!!!!!! Modifications for Exercise 2 (a)
+     !Op_T(nc,n)%O(I,I2) = cmplx(-Ham_T,    0.d0, kind(0.D0))
+     !Op_T(nc,n)%O(I2,I) = cmplx(-Ham_T,    0.d0, kind(0.D0))
+     Op_T(nc,n)%O(I,I2) = cmplx(-Ham_Ty,    0.d0, kind(0.D0))
+     Op_T(nc,n)%O(I2,I) = cmplx(-Ham_Ty,    0.d0, kind(0.D0))
+!!!!!!
+      Op_T(nc,n)%O(I ,I) = cmplx(-Ham_chem, 0.d0, kind(0.D0))
+ENDDO
+\end{lstlisting} 
+
+\end{itemize}
+In the directory \texttt{Solutions/Exercise\_2} we have  duplicated the ALF and commented  the changes that have to be carried out to the file 
+\texttt{Hamiltonian\_Examples.f90 }    in the \texttt{Prog}  directory. 
+
+
+\noindent
+As an application of this code, one can consider a ladder  system, defined by the parameter file: 
+\lstset{style=fortran}
+\begin{lstlisting} 
+!===============================================================================
+!  Variables for the Hubb program
+!-------------------------------------------------------------------------------
+
+&VAR_lattice
+L1    = 14
+L2    = 2
+Lattice_type = "Square"
+Model = "Hubbard_Mz"  ! Hubbard_SU2, Hubbard_Mz
+/
+
+&VAR_Hubbard
+ham_T   = 1.0D0
+!!!!!! Modifications for Exercise 2
+ham_Ty  = 2.0D0
+!!!!!!
+ham_chem= 0.0D0
+ham_U   = 4.0
+Beta    = 10.0
+dtau    = 0.1
+/
+
+&VAR_QMC
+Nwrap   = 10
+NSweep  = 100
+NBin    = 10
+Ltau    = 1
+LOBS_ST = 1
+LOBS_EN = 100
+CPU_MAX = 0.1
+/
+
+
+
+&VAR_errors
+n_skip  = 2
+N_rebin = 1
+N_Cov = 0
+/
+! slash terminates namelist statement - DO NOT REMOVE
+\end{lstlisting} 
+
+\noindent
+When running the code for the above ladder system  and analyzing the spin correlation functions, \texttt{SpinZ\_eqJR}  and \texttt{SpinXY\_eqJR}  one will notice that  it is hard restore the SU(2) spin symmetry and that very long runs are required to  obtain the desired equality
+\begin{equation}
+	\langle S^{z}_{i} S^{z}_{j}  \rangle  = \langle S^{y}_{i} S^{y}_{j}  \rangle  = \langle S^{x}_{i} S^{x}_{j}  \rangle. 
+\end{equation}
+The structure of the output files \texttt{SpinZ\_eqJR}  and \texttt{SpinXY\_eqJR}  is described in the doucmentation. 
+For the Mz Hubbard-Stratonovitch transformation it  is hence better to consider the improved estimator 
+\begin{equation}
+	\langle \vec{S}_{i}  \cdot \vec{S}_{j}  \rangle
+\end{equation}
+ to compute the spin-spin correlations. 
+
+\subsection*{ (b) Adding a new observable}
+Here the aim is to include  the new observable equal time observable  $\langle \vec{S}_{i}  \cdot \vec{S}_{j}  \rangle$ in the  \texttt{Hubbard\_Mz} code. 
+To achieve this, you will have to carry  out the following steps. 
+\begin{itemize}
+\item In the  subroutine \texttt{Alloc\_obs}  in the \texttt{Hamiltonian\_example.f90}  file you will have to add  a new equal time observable with a call to 
+\texttt{Call Obser\_Latt\_make(Obs\_eq(I),Ns,Nt,No,Filename)}  with \texttt{Ns = Latt\%N;  No = Norb;  Filename ="SpinT", Nt=1, I=5}
+\item  In the subroutine \texttt{Obser}  you will have to add the Wick decomposition of this observable.  
+\end{itemize}
+In the program \texttt{Hamiltonian\_Examples.f90 }  to be found in the directory  \texttt{Solutions/Exercise\_2/Prog/}   we have commented the changes that have to be carried out to add this   observable.  The new variable takes the name SpinT and the results you should obtain are summarized in  Fig.~\ref{Ladder.fig}.
+
+\begin{figure}[h]
+        \begin{center}
+                \includegraphics[scale=.8]{Figures/Ladder.pdf}
+        \end{center}
+        \caption{ \label{Ladder.fig} Spin correlation functions along one leg for the Hubbard ladder.   As $t_y$ grows the spin gap becomes large enough so as to detect the  exponential decal of the spin correlation function on this small lattice size. The underlying physics of odd-even  ladder systems is introduced in the article: Elbio Dagotto and T. M. Rice, Surprises on the way from one- to two-dimensional quantum magnets: The ladder materials, Science 271 (1996), no. 5249, 618?623. }
+\end{figure}
+
+\subsection*{ (c) The SU(2) Hubbard Stratonovitch transformation} 
+The SU(2)  Hubbard Stratonovitch decomposition, conserves  spin rotational symmetry. Run the ladder code with the SU(2) flag in the parameter file switched on (i.e. \texttt{Model = Hubbard\_SU2}) and compare results.  
+
+\newpage 
+\section*{ Exercise 3)  Defining a new model: The one-dimensional t-V model. }
+
+\subsection*{(a)}
+In this section, one  we will show  what modifications have to be carried out for computing the physics of the  one dimensional t-V model of spinless fermions.  
+\begin{equation}
+	 H =  -t \sum_{i} \left( c^{\dagger}_{i}  c^{\phantom\dagger}_{i+a}      + c^{\dagger}_{i+a}  c^{\phantom\dagger}_{i} \right) 
+	      - \frac{V}{2} \sum_{i}  \left( c^{\dagger}_{i}  c^{\phantom\dagger}_{i+a}      + c^{\dagger}_{i+a}  c^{\phantom\dagger}_{i} \right)^2 
+\end{equation}
+The above form is  readily included in the ALF since  the interaction is written in terms of a perfect square. Expanding the square  yields (up to a constant)  the desired model: 
+\begin{equation}
+	 H =  -t \sum_{i} \left( c^{\dagger}_{i}  c^{\phantom\dagger}_{i+a}      + c^{\dagger}_{i+a}  c^{\phantom\dagger}_{i} \right) 
+	       + V  \sum_{i}  \left( n_{i} - 1/2 \right)  \left( n_{i+a} - 1/2 \right)  
+\end{equation}
+In the directory  \texttt{Solutions/Exercise\_3} we have  duplicated the ALF and commented  the changes that have to be carried out to the file 
+\texttt{Hamiltonian\_Examples.f90 }  in the \texttt{Prog}  directory so as to include the t$\_$V model. 
+Here are the steps to be carried out. 
+\begin{itemize}
+\item  Add   the $t-V$  name space in the parameter file so as to read in the appropriate  variables.
+\item  Declare new variables  in the \texttt{Hamiltonian\_Examples.f90 }   file. 
+\item  In the  \texttt{Ham\_set} subroutine of the   file \texttt{Hamiltonian\_Examples.f90} set and read in the parameters for the new model, 
+\texttt{t\_V}.  For  this model \texttt{NF=1} and \texttt{N\_SUN=1} since we are working with spinless fermions
+\item  In the \texttt{Ham\_V}  subroutine you will have to add the new interaction.  
+For a given bond at a given time-slice, we need to decouple the interaction: 
+\begin{equation}
+e^{\Delta \tau \frac{V}{2} \left( c^{\dagger}_{i}  c^{\phantom\dagger}_{i+a}      + c^{\dagger}_{i+a}  c^{\phantom\dagger}_{i} \right)^2} = 
+\sum_{l= \pm1, \pm 2} \gamma_l e^{ \sqrt{\Delta \tau \frac{V}{2}}  \eta_l   \left( c^{\dagger}_{i}  c^{\phantom\dagger}_{i+a}      + c^{\dagger}_{i+a}  c^{\phantom\dagger}_{i} \right) } =  \sum_{l= \pm1, \pm 2} \gamma_l e^{ g  \eta_l   \left( c^{\dagger}_{i},  c^{\dagger}_{i+a}  \right)  O 
+    \left(c^{\phantom\dagger}_{i},  c^{\phantom\dagger}_{i+a} \right)^{T} }
+\end{equation}
+ Here is  how this translates in the code. 
+\lstset{style=fortran}
+\begin{lstlisting}
+  
+ Allocate(Op_V(Latt%N,N_FL))
+ do nf = 1,N_FL
+    do i  =  1, N_coord*Ndim
+       call Op_make(Op_V(i,nf),2)
+    enddo
+ enddo
+ Do nc = 1, Latt%N  ! Runs over bonds = # of lattice sites in one-dimension. 
+    I1 = nc
+    I2 = Latt%nnlist(I1,1,0)  
+    Op_V(nc,1)%P(1) = I1
+    Op_V(nc,1)%P(2) = I2
+    Op_V(nc,1)%O(1,2) = cmplx(1.d0 ,0.d0, kind(0.D0)) 
+    Op_V(nc,1)%O(2,1) = cmplx(1.d0 ,0.d0, kind(0.D0)) 
+    Op_V(nc,1)%g      = SQRT(CMPLX( DTAU*Ham_Vint/2.d0, 0.D0, kind(0.D0)))  
+    Op_V(nc,1)%alpha  = cmplx(0d0,0.d0, kind(0.D0)) 
+    Op_V(nc,1)%type =2
+    Call Op_set( Op_V(nc,1) )
+ enddo
+\end{lstlisting}
+\item  Finally you will have to update the  \texttt{Obser} and  \texttt{ObserT} routines for  the calculation of the equal and time  displaced correlations.  For the \texttt{t\_V}  model you can essentially use the same observables as for the \texttt{Hubbard\_SU(2)}  model.  
+\end{itemize}
+
+You can now run the code for  various values of $V/t$. A Jordan-Wigner transformation  will map the  \texttt{t\_V}  model onto the XXZ  chain:
+\begin{equation}
+	H = J_{xx} \sum_{i}   S^{x}_i S^{x}_{i+a} +   S^{y}_i S^{y}_{i+a}  + J_{zz}  \sum_{i}S^{z}_i S^{z}_{i +a}  
+\end{equation}
+with $J_{zz} = V $ and $J_{xx}  = 2t$. Hence when $V/t = 2$ we reproduce the Heisenberg model.   For $V/t > 2$  the model is in the Ising  regime with long-range charge density wave order and is an insulator. In the regime  $ -2 < V/t < 2$   the model  is metallic and corresponds to a Luttinger liquid. Finally, at $ V/t < - 2$   phase separation between hole rich and electron rich phases occur.   Fig.~\ref{tV.fig}  shows typical results. 
+\begin{figure}[h]
+        \begin{center}
+                \includegraphics[scale=.8]{Figures/tV.pdf}
+        \end{center}
+        \caption{ \label{tV.fig}  Density-Density correlation functions  of the t-V model. In the Luttinger liquid phase,  $-2 < V/t < 2$   it is known   that the density -density correlations  decay as 
+    $    \langle n(r) n(0)\rangle   \propto \cos(\pi r) r^{-\left(1+K_\rho \right) }   $  with $\left(1+K_\rho \right)^{-1}= \frac{1}{2} + \frac{1}{\pi}  \arcsin \left( \frac{V}{2 | t | }\right)  $
+   (A. Luther and I. Peschel, Calculation of critical exponents in two dimensions from quantum field theory in one dimension, Phys. Rev. B 12 (1975), 3908.)  The interested reader can try to reproduce this result. }
+\end{figure}
+
+
+\subsection*{(b)}  How would you use the code to carry out simulations at $V/t < 0 $?
+
+
+\end{document}
