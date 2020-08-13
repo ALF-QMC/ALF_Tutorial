@@ -1,4 +1,4 @@
-% Copyright (c) 2016 The ALF project.
+% Copyright (c) 2016-2020 The ALF project.
 % This is the ALF project documentation.
 % The ALF project documentation by the ALF contributors is licensed
 % under a Creative Commons Attribution-ShareAlike 4.0 International License.
@@ -110,7 +110,9 @@
 
 
 \section*{Introduction}
+The ALF package provides a general code for auxiliary-field Quantum Monte Carlo simulations and default analysis. In this tutorial we show how users from beginners to specialists can profit from ALF.
 
+In the first part of the tutorial we make use of ALF's python interface
 
 \section*{Downloading the code and tutorial}
 To download the code, type    \texttt{ git clone  git@git.physik.uni-wuerzburg.de:ALF/ALF\_code.git}  in a shell.    \\
@@ -122,7 +124,7 @@ Run the code with the Mz choice of Hubbard Stratonovitch  transformation on a fo
  \langle -t \sum_{\langle i,j\rangle, \sigma} c_{i,\sigma}^{\dagger} c_{j,\sigma}^{\phantom\dagger}   +  U  \sum_{i=1}^{N} n_{i,\uparrow}n_{j,\downarrow}  \rangle  =   -1.47261997 t 
  \end{equation}
  
- To reproduce this result you will have to carry out a systematic $\Delta \tau  t $ extrapolation keeping    $\Delta \tau t  L_{\text Trotter} = 2$  constant.   
+ To reproduce this result you will have to carry out a systematic $\Delta \tau  t $ extrapolation keeping    $\Delta \tau t  L_\text{Trotter} = 2$  constant.   
  Recall that  the formulation of the auxiliary field QMC approach is based on the Trotter  decomposition 
  \begin{equation}
  	 e^{-\Delta \tau \left( A + B \right ) }   = e^{-\Delta \tau  A } e^{-\Delta \tau  B  }   + {\cal O}  \left( \Delta \tau^2 \right)
