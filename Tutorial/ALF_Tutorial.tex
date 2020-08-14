@@ -4,7 +4,6 @@
 % under a Creative Commons Attribution-ShareAlike 4.0 International License.
 % For the licensing details of the documentation see license.CCBYSA.
 
-
 \documentclass[10pt,modern]{scrartcl}
 \usepackage{graphicx}
 \usepackage[margin=2.5cm]{geometry}
@@ -101,26 +100,31 @@
 \newcommand{\mycomment}[1]{{\color{red} #1}}
 \newcommand{\FAcomment}[1]{{\color{red} #1}}
 
+%%% tweaking the form of Part
+\titleclass{\part}{straight}                % "straght": no new page; "top" is another option
+\titleformat{\part}[block]                  % "block": no new line between "Part #."  and "<part_titel>"
+{\sffamily\huge\bfseries}{\partname~\thepart.}{0.5em}{}
+\titlespacing*{\part} {0pt}{20pt}{20pt}     % {}{vertical spacing before}{vertical spacing after}
 
+%%% define section-like "exercise"
 \titleclass{\exercise}{straight}[\subsection]
 \newcounter{exercise}
 \titleformat{\exercise}
 %{\sffamily\Large\bfseries}{}{0em}{Exercise \Roman{part}.\theexercise~--~}
 {\sffamily\Large\bfseries}{}{0em}{Exercise \theexercise~--~}
 \titlespacing*{\exercise}{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
-%\numberwithin{exercise}{part}  % apends part counter to the exercise number; depends on the amsmath package
+%\numberwithin{exercise}{part}  % reset exercise number and apend Part counter to it; depends on the amsmath package
+%%%
 
-
+%%% define subsection-like "exerciseitem"
 \titleclass{\exerciseitem}{straight}[\subsection]
 \newcounter{exerciseitem}
 \titleformat{\exerciseitem}
 %{\sffamily\large\bfseries}{}{0em}{\Roman{part}.\theexercise.\alph{exerciseitem})~}
-{\sffamily\large\bfseries}{}{0em}{\theexercise.\alph{exerciseitem})~}
+{\sffamily\large\bfseries}{}{0em}{ \theexercise{\hspace{.2ex}}\alph{exerciseitem})~}
 \titlespacing*{\exerciseitem}{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
 \numberwithin{exerciseitem}{exercise} % reset counter ; depends on the amsmath package
-
-
-%\renewcommand{\thesubsubsection}{\Roman{part}.\theexercise.\alph{subsection}}
+%%%
 
 
 \makeindex
@@ -134,13 +138,18 @@
 \maketitle
 
 
-\section*{Introduction}
-The ALF package provides a general code for auxiliary-field Quantum Monte Carlo simulations and default analysis. In this tutorial we show how users from beginners to specialists can profit from ALF.
+%\section*{Introduction}
 
-The first part of the tutorial is based on ALF's python interface -- \texttt{pyALF} -- which greatly simplifies using the code, making it ideal for
+The ALF package provides a general code for auxiliary-field Quantum Monte Carlo simulations and default analysis. In this tutorial we show how users from beginners to specialists can profit from ALF. This document is divided in two parts:
+\begin{enumerate}
+\item The first, introductory part of the tutorial is based on ALF's python interface -- \texttt{pyALF} -- which greatly simplifies using the code, making it ideal for \emph{getting started} with QMC and ALF, obtaining \emph{benchmark} results for established models, or just \emph{quickly} running a simulation.
+\item The second part guides the user on how to modify the package's Fortran source code and presents the resources implemented to facilitate this task. This part is aimed at more advanced users who want to simulate their own systems.
+\end{enumerate}
 
-\part{Just running it}
+%%%%%%%%%%%%%%%%%%%%
+\part{Just run it}
 
+\red{[To be updated.]}
 
 \exercise{Testing against ED}
 Run the code with the Mz choice of Hubbard Stratonovitch  transformation on a four site ring, at $U/t=4$  and inverse temperature $ \beta t = 2 $.  For this set of parameters, the exact  internal energy reads:   
@@ -220,10 +229,14 @@ Here is the result you should obtain when choosing $ \Delta \tau t = 0.05, 0.1, 
         \caption{ $\Delta \tau t $ extrapolation for the 4-site Hubbard ring. }
 \end{figure}
 
-\newpage
+%\newpage
 
+%%%%%%%%%%%%%%%%%%%%
 \part{Getting your hands dirty - changing the code}
-\setcounter{exercise}{1}
+%\setcounter{exercise}{0}
+
+
+A lot already comes implemented in ALF, but unavoidably, as one proceeds in their own investigations, a new model has to be implemented or a new observable defined -- and for that one has to grapple with the package's Fortran source code. However, in ALF this is made easy by means of predefined structures, templates, and the examples below.
 
 \section*{Downloading the code and tutorial}
 To download the code, type    \texttt{ git clone  git@git.physik.uni-wuerzburg.de:ALF/ALF\_code.git}  in a shell.    \\
@@ -340,7 +353,7 @@ In the program \texttt{Hamiltonian\_Examples.f90 }  to be found in the directory
 The SU(2)  Hubbard-Stratonovich decomposition, conserves  spin rotational symmetry. Run the ladder code with the SU(2) flag in the parameter file switched on (i.e. \texttt{Model = Hubbard\_SU2}) and compare results.  
 
 \newpage 
-\exercise{Defining a new model: The one-dimensional t-V model.}
+\exercise{Defining a new model: The one-dimensional t-V model}
 
 \red{[To be updated.]}
 
