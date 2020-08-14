@@ -5,9 +5,10 @@
 % For the licensing details of the documentation see license.CCBYSA.
 
 
-\documentclass[10pt,Arial]{scrartcl}
+\documentclass[10pt,modern]{scrartcl}
 \usepackage{graphicx}
 \usepackage[margin=2.5cm]{geometry}
+\usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{bbm}            
 \usepackage[fleqn]{amsmath} 
@@ -29,6 +30,7 @@
 \usepackage{booktabs}
 \usepackage{hyperref} 
 \usepackage{float} 
+\usepackage{titlesec}
 
 \usepackage[framemethod=default]{mdframed}
 \usepackage{showexpl}
@@ -95,8 +97,31 @@
 % \RedeclareSectionCommand[style=section,indent=0pt]{part}
 % \renewcommand*\partformat{\thepart\autodot\enskip}
 
+\newcommand{\red}[1]{{\color{red} #1}}
 \newcommand{\mycomment}[1]{{\color{red} #1}}
 \newcommand{\FAcomment}[1]{{\color{red} #1}}
+
+
+\titleclass{\exercise}{straight}[\subsection]
+\newcounter{exercise}
+\titleformat{\exercise}
+%{\sffamily\Large\bfseries}{}{0em}{Exercise \Roman{part}.\theexercise~--~}
+{\sffamily\Large\bfseries}{}{0em}{Exercise \theexercise~--~}
+\titlespacing*{\exercise}{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+%\numberwithin{exercise}{part}  % apends part counter to the exercise number; depends on the amsmath package
+
+
+\titleclass{\exerciseitem}{straight}[\subsection]
+\newcounter{exerciseitem}
+\titleformat{\exerciseitem}
+%{\sffamily\large\bfseries}{}{0em}{\Roman{part}.\theexercise.\alph{exerciseitem})~}
+{\sffamily\large\bfseries}{}{0em}{\theexercise.\alph{exerciseitem})~}
+\titlespacing*{\exerciseitem}{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+\numberwithin{exerciseitem}{exercise} % reset counter ; depends on the amsmath package
+
+
+%\renewcommand{\thesubsubsection}{\Roman{part}.\theexercise.\alph{subsection}}
+
 
 \makeindex
 \begin{document}
@@ -112,13 +137,12 @@
 \section*{Introduction}
 The ALF package provides a general code for auxiliary-field Quantum Monte Carlo simulations and default analysis. In this tutorial we show how users from beginners to specialists can profit from ALF.
 
-In the first part of the tutorial we make use of ALF's python interface
+The first part of the tutorial is based on ALF's python interface -- \texttt{pyALF} -- which greatly simplifies using the code, making it ideal for
 
-\section*{Downloading the code and tutorial}
-To download the code, type    \texttt{ git clone  git@git.physik.uni-wuerzburg.de:ALF/ALF\_code.git}  in a shell.    \\
-To download the tutorial including solutions type: \\  \texttt{git clone git@git.physik.uni-wuerzburg.de:ALF/ALF\_Tutorial.git}  again  in a shell.
+\part{Just running it}
 
-\section*{Exercise 1)   Testing against ED}
+
+\exercise{Testing against ED}
 Run the code with the Mz choice of Hubbard Stratonovitch  transformation on a four site ring, at $U/t=4$  and inverse temperature $ \beta t = 2 $.  For this set of parameters, the exact  internal energy reads:   
 \begin{equation}
  \langle -t \sum_{\langle i,j\rangle, \sigma} c_{i,\sigma}^{\dagger} c_{j,\sigma}^{\phantom\dagger}   +  U  \sum_{i=1}^{N} n_{i,\uparrow}n_{j,\downarrow}  \rangle  =   -1.47261997 t 
@@ -197,9 +221,19 @@ Here is the result you should obtain when choosing $ \Delta \tau t = 0.05, 0.1, 
 \end{figure}
 
 \newpage
-\section*{Exercise 2)   Dimensional crosover. }
 
-\subsection*{a) Modifying the hopping}
+\part{Getting your hands dirty - changing the code}
+\setcounter{exercise}{1}
+
+\section*{Downloading the code and tutorial}
+To download the code, type    \texttt{ git clone  git@git.physik.uni-wuerzburg.de:ALF/ALF\_code.git}  in a shell.    \\
+To download the tutorial including solutions type: \\  \texttt{git clone git@git.physik.uni-wuerzburg.de:ALF/ALF\_Tutorial.git}  again  in a shell.
+
+\exercise{Dimensional crossover}
+
+\red{[To be updated.]}
+
+\exerciseitem{Modifying the hopping}
 Here we will modify the code  so as to allow  for different hopping matrix elements along the x and y directions of a square lattice.  To do so, one merely has to  do the following 
 \begin{itemize}
 
@@ -265,8 +299,6 @@ LOBS_EN = 100
 CPU_MAX = 0.1
 /
 
-
-
 &VAR_errors
 n_skip  = 2
 N_rebin = 1
@@ -287,7 +319,7 @@ For the Mz Hubbard-Stratonovitch transformation it  is hence better to consider 
 \end{equation}
  to compute the spin-spin correlations. 
 
-\subsection*{ (b) Adding a new observable}
+\exerciseitem{Adding a new observable}
 Here the aim is to include  the new observable equal time observable  $\langle \vec{S}_{i}  \cdot \vec{S}_{j}  \rangle$ in the  \texttt{Hubbard\_Mz} code. 
 To achieve this, you will have to carry  out the following steps. 
 \begin{itemize}
@@ -304,13 +336,16 @@ In the program \texttt{Hamiltonian\_Examples.f90 }  to be found in the directory
         \caption{ \label{Ladder.fig} Spin correlation functions along one leg for the Hubbard ladder.   As $t_y$ grows the spin gap becomes large enough so as to detect the  exponential decal of the spin correlation function on this small lattice size. The underlying physics of odd-even  ladder systems is introduced in the article: Elbio Dagotto and T. M. Rice, Surprises on the way from one- to two-dimensional quantum magnets: The ladder materials, Science 271 (1996), no. 5249, 618?623. }
 \end{figure}
 
-\subsection*{ (c) The SU(2) Hubbard Stratonovitch transformation} 
-The SU(2)  Hubbard Stratonovitch decomposition, conserves  spin rotational symmetry. Run the ladder code with the SU(2) flag in the parameter file switched on (i.e. \texttt{Model = Hubbard\_SU2}) and compare results.  
+\exerciseitem{The SU(2) Hubbard-Stratonovich transformation} 
+The SU(2)  Hubbard-Stratonovich decomposition, conserves  spin rotational symmetry. Run the ladder code with the SU(2) flag in the parameter file switched on (i.e. \texttt{Model = Hubbard\_SU2}) and compare results.  
 
 \newpage 
-\section*{ Exercise 3)  Defining a new model: The one-dimensional t-V model. }
+\exercise{Defining a new model: The one-dimensional t-V model.}
 
-\subsection*{(a)}
+\red{[To be updated.]}
+
+\exerciseitem{Define new model}
+
 In this section, one  we will show  what modifications have to be carried out for computing the physics of the  one dimensional t-V model of spinless fermions.  
 \begin{equation}
 	 H =  -t \sum_{i} \left( c^{\dagger}_{i}  c^{\phantom\dagger}_{i+a}      + c^{\dagger}_{i+a}  c^{\phantom\dagger}_{i} \right) 
@@ -377,7 +412,7 @@ with $J_{zz} = V $ and $J_{xx}  = 2t$. Hence when $V/t = 2$ we reproduce the Hei
 \end{figure}
 
 
-\subsection*{(b)}  How would you use the code to carry out simulations at $V/t < 0 $?
+\exerciseitem{Challenge}  How would you use the code to carry out simulations at $V/t < 0 $?
 
 
 \end{document}
