@@ -27,7 +27,7 @@
 \usepackage{listings}
 \usepackage{url}
 \usepackage{booktabs}
-\usepackage{hyperref} 
+\usepackage[breaklinks=true,colorlinks,pdfborder={0 0 0}]{hyperref} 
 \usepackage{float} 
 \usepackage{titlesec}
 
@@ -102,7 +102,7 @@
 
 %%% tweaking the form of Part
 \titleclass{\part}{straight}                % "straght": no new page; "top" is another option
-\titleformat{\part}[block]                  % "block": no new line between "Part #."  and "<part_titel>"
+\titleformat{\part}[block]                  % "block": no new line between "Part #."  and "<part_title>"
 {\sffamily\huge\bfseries}{\partname~\thepart.}{0.5em}{}
 \titlespacing*{\part} {0pt}{20pt}{20pt}     % {}{vertical spacing before}{vertical spacing after}
 
@@ -141,90 +141,42 @@
 %\section*{Introduction}
 
 The ALF package provides a general code for auxiliary-field Quantum Monte Carlo simulations and default analysis. In this tutorial we show how users from beginners to specialists can profit from ALF. This document is divided in two parts:
-\begin{enumerate}
-\item The first, introductory part of the tutorial is based on ALF's python interface -- \texttt{pyALF} -- which greatly simplifies using the code, making it ideal for \emph{getting started} with QMC and ALF, obtaining \emph{benchmark} results for established models, or just \emph{quickly} running a simulation.
-\item The second part guides the user on how to modify the package's Fortran source code and presents the resources implemented to facilitate this task. This part is aimed at more advanced users who want to simulate their own systems.
-\end{enumerate}
+\begin{description}
+\item[Part I.] The first, introductory part of the tutorial is based on ALF's python interface -- \texttt{pyALF} -- which greatly simplifies using the code, making it ideal for: obtaining \emph{benchmark} results for established models; \emph{getting started} with QMC and ALF; or just \emph{quickly} running a simulation.
+\item[Part II.] The second part is independent of the first and aimed at more advanced users who want to simulate their own systems. It guides the user on how to modify the package's Fortran source code and presents the resources implemented to facilitate this task.
+\end{description}
+
+This document is intended to be self-contained, but the interested reader should check \href{https://git.physik.uni-wuerzburg.de/ALF/ALF_code/blob/master/Documentation/ALF_v1.0.pdf}{ALF's documentation}, which contains a thorough, systematic description of the package. \red{[Update link when ALF 2 is open.]}
+%\href{https://git.physik.uni-wuerzburg.de/ALF/ALF/-/blob/master/Documentation/doc.pdf}{documentation}.
 
 %%%%%%%%%%%%%%%%%%%%
 \part{Just run it}
 
-\red{[To be updated.]}
 
-\exercise{Testing against ED}
-Run the code with the Mz choice of Hubbard Stratonovitch  transformation on a four site ring, at $U/t=4$  and inverse temperature $ \beta t = 2 $.  For this set of parameters, the exact  internal energy reads:   
-\begin{equation}
- \langle -t \sum_{\langle i,j\rangle, \sigma} c_{i,\sigma}^{\dagger} c_{j,\sigma}^{\phantom\dagger}   +  U  \sum_{i=1}^{N} n_{i,\uparrow}n_{j,\downarrow}  \rangle  =   -1.47261997 t 
- \end{equation}
- 
- To reproduce this result you will have to carry out a systematic $\Delta \tau  t $ extrapolation keeping    $\Delta \tau t  L_\text{Trotter} = 2$  constant.   
- Recall that  the formulation of the auxiliary field QMC approach is based on the Trotter  decomposition 
- \begin{equation}
- 	 e^{-\Delta \tau \left( A + B \right ) }   = e^{-\Delta \tau  A } e^{-\Delta \tau  B  }   + {\cal O}  \left( \Delta \tau^2 \right)
- \end{equation}
- The overall error produced by this  approximation is of the order $\Delta \tau^2  $.   
+This  a collection of Jupyter notebooks, each centered on a detailed example followed by a few simple exercises, while Part II consists in a set of guided advanced exercises. 
+
+can be found, together with its accompanying files, in the \href{https://git.physik.uni-wuerzburg.de/ALF/pyALF}{pyAL repository}.
+
+ALF is compiled from source, which is downloaded from the \href{https://git.physik.uni-wuerzburg.de:ALF}{ALF repository} when not found locally.
 
 
-\noindent
-All the files you will need to  run the code can be found in the directory \texttt{Exercise\_1/Start}.      Beware to define one directory per run so as to avoid conflicts between different parameter sets.   Such conflicts will lead to crashes. 
-Here is the parameter file you should use
-\lstset{style=fortran}
-\begin{lstlisting} 
-!===============================================================================
-!  Variables for the Hubb program
-!-------------------------------------------------------------------------------
-&VAR_lattice
-L1 = 4                    ! Length in direction a_1
-L2 = 1                    ! Length in direction a_2
-Lattice_type = "Square"	  ! a_1 = (1,0),  a_2=(0,1),  Norb=1, N_coord=2
-!Lattice_type ="Honeycomb"! a_1 = (1,0),  a_2 =(1/2,sqrt(3)/2), Norb=2, N_coord=3
-!Model = "Hubbard_SU2"    ! Sets Nf=1, N_sun=2. HS field couples to the density
-Model = "Hubbard_Mz"      ! Sets Nf=2, N_sun=1. HS field couples to the 
-                          ! z-component of magnetization.  
-!Model="Hubbard_SU2_Ising"! Sets Nf_1, N_sun=2 and runs only for the square lattice
-                          ! Hubbard model  coupled to transverse Ising field
-/
-&VAR_Hubbard              ! Variables for the Hubbard model
-ham_T   = 1.D0            ! Hopping parameter
-ham_chem= 0.D0            ! chemical potential
-ham_U   = 4.D0            ! Hubbard interaction
-Beta    = 2.D0            ! inverse temperature
-dtau    = 0.1D0           ! Thereby Ltrot=Beta/dtau
-/
-
-&VAR_QMC                  ! Variables for the QMC run
-Nwrap   = 10              ! Stabilization. Green functions will be computed from 
-                          ! scratch after each time interval  Nwrap*Dtau
-NSweep  = 1000            ! Number of sweeps
-NBin    = 10              ! Number of bins
-Ltau    = 1               ! 1 for calculation of time displaced Green functions;
-                          ! 0 otherwise
-LOBS_ST = 1               ! Start measurements at time slice LOBS_ST
-LOBS_EN = 100             ! End   measurements at time slice LOBS_EN
-CPU_MAX = 0.1             ! Code will stop after CPU_MAX hours. 
-                          ! If not specified, code will stop after Nbin bins.
-/                          
-&VAR_errors               ! Variables for analysis programs
-n_skip  = 2               ! Number of bins that will be skipped. 
-N_rebin = 1               ! Rebinning  
-N_Cov   = 0               ! If set to 1 covariance will be computed
-                          ! for unequal time correlation functions.                   
-/            
-\end{lstlisting}
 
 
-\noindent
 
 
-After running the program,  \texttt{\$DIR/Prog/Examples.out}, run the analysis programs, \texttt{ bash analysis.sh}.  Note that you have to set the environment variable   \texttt{\$DIR}  to  the directory where the package is located. This can be done by running \texttt{. ./sentenv.sh}  in the home directory of the ALF. You will find the internal energy in the file \texttt{Ener\_scalJ}.   This file contains two  entries: \texttt{OBS: 1}  corresponds to the energy and 
-\texttt{OBS: 2}   to the average sign.
-If you want to  improve the quality of the data, you can rerun the code. Before doing this be sure to move the \texttt{confout\_*}  files to the \texttt{confin\_*}   files. The bash script \texttt{out\_to\_in.sh}  will do this for you. 
-Here is the result you should obtain when choosing $ \Delta \tau t = 0.05, 0.1, 0.125$.
+
+
+
+
+
+
+
+
 
 
 \begin{figure}[h]
         \begin{center}
-                \includegraphics[scale=.8]{Figures/Ener_B2.pdf}
+                \includegraphics[scale=.9]{Figures/Ener_B2.pdf}
         \end{center}
         \caption{ $\Delta \tau t $ extrapolation for the 4-site Hubbard ring. }
 \end{figure}
