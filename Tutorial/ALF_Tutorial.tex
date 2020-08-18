@@ -18,7 +18,7 @@
 \usepackage{xspace}
 \usepackage{bm}
 \usepackage{subfigure}
-\usepackage{tcolorbox}
+\usepackage[breakable]{tcolorbox}
 \usepackage{dsfont}
 \usepackage{footnote}
 \usepackage{alltt}
@@ -28,7 +28,8 @@
 \usepackage{url}
 \usepackage{booktabs}
 \usepackage[breaklinks=true,colorlinks,pdfborder={0 0 0}]{hyperref} 
-\usepackage{float} 
+\usepackage{float}
+\usepackage{pdfpages}
 \usepackage{titlesec}
 
 \usepackage[framemethod=default]{mdframed}
@@ -46,7 +47,7 @@
 
 \lstdefinestyle{fortran}{
   language=Fortran,
-  basicstyle=\ttfamily,
+  basicstyle=\ttfamily\small,
   keywordstyle=\color{red},
   commentstyle=\color{blue},
   morecomment=[l]{!\ }% Comment only with space after !
@@ -60,7 +61,7 @@
 
 \lstdefinestyle{fortran_pseudo_code}{
   language=Fortran,
-  basicstyle=\ttfamily,
+  basicstyle=\ttfamily\small,
   keywordstyle=\color{red},
   commentstyle=\normalfont\color{black},
   morecomment=[l]{!\ }% Comment only with space after !
@@ -126,6 +127,7 @@
 \numberwithin{exerciseitem}{exercise} % reset counter ; depends on the amsmath package
 %%%
 
+\input{Notebooks/notebooks_preamble.tex}
 
 \makeindex
 \begin{document}
@@ -142,29 +144,56 @@
 
 The ALF package provides a general code for auxiliary-field Quantum Monte Carlo simulations and default analysis. In this tutorial we show how users from beginners to specialists can profit from ALF. This document is divided in two parts:
 \begin{description}
-\item[Part I.] The first, introductory part of the tutorial is based on ALF's python interface -- \texttt{pyALF} -- which greatly simplifies using the code, making it ideal for: obtaining \emph{benchmark} results for established models; \emph{getting started} with QMC and ALF; or just \emph{quickly} running a simulation.
+\item[Part I.] The first, introductory part of the tutorial is based on ALF's python interface -- \texttt{pyALF} -- which greatly simplifies using the code, making it ideal for: \emph{obtaining benchmark} results for established models; \emph{getting started} with QMC and ALF; or just \emph{quickly running} a simulation.
 \item[Part II.] The second part is independent of the first and aimed at more advanced users who want to simulate their own systems. It guides the user on how to modify the package's Fortran source code and presents the resources implemented to facilitate this task.
 \end{description}
 
-This document is intended to be self-contained, but the interested reader should check \href{https://git.physik.uni-wuerzburg.de/ALF/ALF_code/blob/master/Documentation/ALF_v1.0.pdf}{ALF's documentation}, which contains a thorough, systematic description of the package. \red{[Update link when ALF 2 is open.]}
+This document is intended to be self-contained, but the interested reader should check \href{https://git.physik.uni-wuerzburg.de/ALF/ALF_code/blob/master/Documentation/ALF_v1.0.pdf}{ALF's documentation}, which contains a thorough, systematic description of the package.
+
+\red{[Update link when ALF 2 is open.]}
 %\href{https://git.physik.uni-wuerzburg.de/ALF/ALF/-/blob/master/Documentation/doc.pdf}{documentation}.
+
 
 %%%%%%%%%%%%%%%%%%%%
 \part{Just run it}
 
-
-This  a collection of Jupyter notebooks, each centered on a detailed example followed by a few simple exercises, while Part II consists in a set of guided advanced exercises. 
-
-can be found, together with its accompanying files, in the \href{https://git.physik.uni-wuerzburg.de/ALF/pyALF}{pyAL repository}.
-
-ALF is compiled from source, which is downloaded from the \href{https://git.physik.uni-wuerzburg.de:ALF}{ALF repository} when not found locally.
+What follows is a collection of self-explanatory Jupyter notebooks written in Python, each centered on a detailed example followed by a few simple exercises. The notebooks printed bellow can be found, together with the necessary files and an increasing number of additional notebooks exploring ALF's capabilities, in the \href{https://git.physik.uni-wuerzburg.de/ALF/pyALF}{pyALF repository}.
 
 
+\section*{Requirements}
+
+You can download pyALF from the its repository linked above, or simply run from the command line:
+\begin{lstlisting}[style=bash]
+git clone git@git.physik.uni-wuerzburg.de:ALF/pyALF.git
+\end{lstlisting}
+To run the notebooks you need the following installed in your machine:
+\begin{itemize}
+	\item Python
+	\item Jupyter
+	\item the libraries Lapack and Blas
+	\item a Fortran compiler, such as \texttt{gfortran} or \texttt{ifort},
+\end{itemize}
+where the last two are required by the main package \href{https://git.physik.uni-wuerzburg.de:ALF}{ALF}.%, which is automatically handled by pyALF.
 
 
+\section*{Starting}
+
+Jupyter notebooks \href{https://jupyter.readthedocs.io/en/latest/running.html}{are run} through a Jupyter server started, e.g., from the command line:
+\begin{lstlisting}[style=bash]
+jupyter notebook
+\end{lstlisting}
+(or, depending on the system and installation, \texttt{jupyter-notebook})
+%\begin{lstlisting}[style=bash]
+%jupyter-notebook
+%\end{lstlisting}
+which opens the "notebook dashboard" in your default browser, where you can navigate through your file structure to the pyALF directory.
 
 
+\section*{Notebooks}
 
+\input{Notebooks/minimal_ALF_run.tex}
+
+%\includepdf[pages=-,pagecommand={},width=\textwidth]{Notebooks/minimal_ALF_run.pdf}
 
 
 
@@ -187,6 +216,8 @@ ALF is compiled from source, which is downloaded from the \href{https://git.phys
 \part{Getting your hands dirty - changing the code}
 %\setcounter{exercise}{0}
 
+Part II consists in a set of guided advanced exercises. 
+
 
 A lot already comes implemented in ALF, but unavoidably, as one proceeds in their own investigations, a new model has to be implemented or a new observable defined -- and for that one has to grapple with the package's Fortran source code. However, in ALF this is made easy by means of predefined structures, templates, and the examples below.
 
@@ -205,9 +236,8 @@ Here we will modify the code  so as to allow  for different hopping matrix eleme
 \item Add an extra variable, \texttt{Ham\_Ty}, in the parameter file in the \texttt{VAR\_Hubbard}  name space
 \item Declare the variable \texttt{Ham\_Ty} in the \texttt{Hamiltonian\_Examples.f90 }.
 \item Read in this  variable in \texttt{Ham\_set} subroutine of the  \texttt{Hamiltonian\_Examples.f90 }  file.
-\item  Modify the hopping matrix  in the subroutine \texttt{Ham\_Hop}  in the \texttt{Hamiltonian\_Examples.f90 }  file.   
-\lstset{style=fortran}
-\begin{lstlisting} 
+\item  Modify the hopping matrix  in the subroutine \texttt{Ham\_Hop}  in the \texttt{Hamiltonian\_Examples.f90 }  file.
+\begin{lstlisting}[style=fortran]
 DO I = 1, Latt%N
     I1 = Latt%nnlist(I,1,0)
     I2 = Latt%nnlist(I,0,1)
@@ -230,8 +260,7 @@ In the directory \texttt{Solutions/Exercise\_2} we have  duplicated the ALF and 
 
 \noindent
 As an application of this code, one can consider a ladder  system, defined by the parameter file: 
-\lstset{style=fortran}
-\begin{lstlisting} 
+\begin{lstlisting}[style=fortran]
 !===============================================================================
 !  Variables for the Hubb program
 !-------------------------------------------------------------------------------
@@ -337,8 +366,7 @@ e^{\Delta \tau \frac{V}{2} \left( c^{\dagger}_{i}  c^{\phantom\dagger}_{i+a}    
     \left(c^{\phantom\dagger}_{i},  c^{\phantom\dagger}_{i+a} \right)^{T} }
 \end{equation}
  Here is  how this translates in the code. 
-\lstset{style=fortran}
-\begin{lstlisting}
+\begin{lstlisting}[style=fortran]
   
  Allocate(Op_V(Latt%N,N_FL))
  do nf = 1,N_FL
