@@ -5,6 +5,7 @@
 % For the licensing details of the documentation see license.CCBYSA.
 
 \documentclass[10pt,modern]{scrartcl}
+%\documentclass[10pt,modern]{article}
 \usepackage{graphicx}
 \usepackage[margin=2.5cm]{geometry}
 \usepackage[T1]{fontenc}
@@ -30,7 +31,8 @@
 \usepackage[breaklinks=true,colorlinks,pdfborder={0 0 0}]{hyperref} 
 \usepackage{float}
 \usepackage{pdfpages}
-\usepackage{titlesec}
+%\usepackage{titlesec} % incompatible with Koma
+\usepackage{relsize}
 
 \usepackage[framemethod=default]{mdframed}
 \usepackage{showexpl}
@@ -92,40 +94,50 @@
 \makesavenoteenv{table}
 
 % % only for the scrartcl class:
-\setkomafont{author}{\large}
-\setkomafont{date}{\large}
-% \RedeclareSectionCommand[style=section,indent=0pt]{part}
-% \renewcommand*\partformat{\thepart\autodot\enskip}
+%\setkomafont{author}{\large}
+%\setkomafont{date}{\large}
+%% \RedeclareSectionCommand[style=section,indent=0pt]{part}
+%% \renewcommand*\partformat{\thepart\autodot\enskip}
+\RedeclareSectionCommand[style=section,indent=0pt,font=\huge,beforeskip=4ex,afterskip=4ex]{part}
+\renewcommand*\partformat{{\partname~\thepart\autodot\enskip}}
+\DeclareNewSectionCommand[style=section,level=1,font=\sffamily\Large\bfseries,afterskip=2.3ex plus .2ex,beforeskip=-3.5ex plus -1ex minus -.2ex,tocindent=3.38em,tocnumwidth=2.3em]{exercise}
+\renewcommand*\exerciseformat{{Exercise \theexercise~--~}}
+\DeclareNewSectionCommand[style=section,level=2,font=\sffamily\large\bfseries,afterskip=1.5ex plus .2ex,beforeskip=-3.25ex plus -1ex minus -.2ex,tocindent=3.8em,tocnumwidth=3.2em]{exerciseitem}
+\renewcommand*\exerciseitemformat{{\theexercise{\hspace{.2ex}}\alph{exerciseitem})~}}
+\numberwithin{exerciseitem}{exercise} % reset counter ; depends on the amsmath package
 
 \newcommand{\red}[1]{{\color{red} #1}}
 \newcommand{\mycomment}[1]{{\color{red} #1}}
 \newcommand{\FAcomment}[1]{{\color{red} #1}}
 
+%%%%%%%%%%%%%%%  -- uses package titlesec --  %%%%%%%%%%%%%%%
+
 %%% tweaking the form of Part
-\titleclass{\part}{straight}                % "straght": no new page; "top" is another option
-\titleformat{\part}[block]                  % "block": no new line between "Part #."  and "<part_title>"
-{\sffamily\huge\bfseries}{\partname~\thepart.}{0.5em}{}
-\titlespacing*{\part} {0pt}{20pt}{20pt}     % {}{vertical spacing before}{vertical spacing after}
+%\titleclass{\part}{straight}                % "straght": no new page; "top" is another option
+%\titleformat{\part}[block]                  % "block": no new line between "Part #."  and "<part_title>"
+%{\sffamily\huge\bfseries}{\partname~\thepart.}{0.5em}{}
+%\titlespacing*{\part} {0pt}{20pt}{20pt}     % {}{vertical spacing before}{vertical spacing after}
 
 %%% define section-like "exercise"
-\titleclass{\exercise}{straight}[\subsection]
-\newcounter{exercise}
-\titleformat{\exercise}
-%{\sffamily\Large\bfseries}{}{0em}{Exercise \Roman{part}.\theexercise~--~}
-{\sffamily\Large\bfseries}{}{0em}{Exercise \theexercise~--~}
-\titlespacing*{\exercise}{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
-%\numberwithin{exercise}{part}  % reset exercise number and apend Part counter to it; depends on the amsmath package
-%%%
+%\titleclass{\exercise}{straight}[\subsection]
+%\newcounter{exercise}
+%\titleformat{\exercise}
+%%{\sffamily\Large\bfseries}{}{0em}{Exercise \Roman{part}.\theexercise~--~}
+%{\sffamily\Large\bfseries}{}{0em}{Exercise \theexercise~--~}
+%\titlespacing*{\exercise}{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+%%\numberwithin{exercise}{part}  % reset exercise number and apend Part counter to it; depends on the amsmath package
 
 %%% define subsection-like "exerciseitem"
-\titleclass{\exerciseitem}{straight}[\subsection]
-\newcounter{exerciseitem}
-\titleformat{\exerciseitem}
-%{\sffamily\large\bfseries}{}{0em}{\Roman{part}.\theexercise.\alph{exerciseitem})~}
-{\sffamily\large\bfseries}{}{0em}{ \theexercise{\hspace{.2ex}}\alph{exerciseitem})~}
-\titlespacing*{\exerciseitem}{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
-\numberwithin{exerciseitem}{exercise} % reset counter ; depends on the amsmath package
-%%%
+%\titleclass{\exerciseitem}{straight}[\subsection]
+%\newcounter{exerciseitem}
+%\titleformat{\exerciseitem}
+%%{\sffamily\large\bfseries}{}{0em}{\Roman{part}.\theexercise.\alph{exerciseitem})~}
+%{\sffamily\large\bfseries}{}{0em}{ \theexercise{\hspace{.2ex}}\alph{exerciseitem})~}
+%\titlespacing*{\exerciseitem}{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+%\numberwithin{exerciseitem}{exercise} % reset counter ; depends on the amsmath package
+
+%%%%%%%%%%%%%%%  -- END of "uses package titlesec" --  %%%%%
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \input{Notebooks/notebooks_preamble.tex}
@@ -137,9 +149,10 @@
 \makeindex
 \begin{document}
 %---------------------------------------------------------------------------------------------------------
-\title{ ALF Tutorial }
+\title{ ALF Tutorial \\
+\smaller\smaller The \emph{ALF} (\emph{A}lgorithms for \emph{L}attice \emph{F}ermions) project release 2.0 tutorial}
 
-\subtitle{The \emph{ALF} (\emph{A}lgorithms for \emph{L}attice \emph{F}ermions) project release 2.0 tutorial}
+%\subtitle{The \emph{ALF} (\emph{A}lgorithms for \emph{L}attice \emph{F}ermions) project release 2.0 tutorial} % only for the scrartcl class
 \author{Florian Goth,  Johannes S. Hofmann,  Jonas Schwab,\\  Jefferson S. E. Portela,  Fakher F. Assaad }
 %---------------------------------------------------------------------------------------------------------
 \maketitle
@@ -194,27 +207,20 @@ jupyter notebook
 which opens the "notebook dashboard" in your default browser, where you can navigate through your file structure to the pyALF directory. There you will find the interface's core module, \texttt{py\_alf.py}, some auxiliary files, and notebooks such as the ones included bellow. Have fun. 
 
 
-
 \section*{Notebooks}
 
 %\includepdf[pages=-,pagecommand={},width=1.2\textwidth]{Notebooks/minimal_ALF_run.pdf}
-\input{Notebooks/minimal_ALF_run.tex}
+\input{Notebooks/minimal_ALF_run-content.tex}
+
+%\begin{figure}[h]
+%        \begin{center}
+%                \includegraphics[scale=.9]{Figures/Ener_B2.pdf}
+%        \end{center}
+%        \caption{ $\Delta \tau t $ extrapolation for the 4-site Hubbard ring. }
+%\end{figure}
 
 
 
-
-
-
-
-
-
-
-\begin{figure}[h]
-        \begin{center}
-                \includegraphics[scale=.9]{Figures/Ener_B2.pdf}
-        \end{center}
-        \caption{ $\Delta \tau t $ extrapolation for the 4-site Hubbard ring. }
-\end{figure}
 
 %\newpage
 
