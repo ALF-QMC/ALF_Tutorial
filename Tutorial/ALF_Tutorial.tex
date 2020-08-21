@@ -129,6 +129,9 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \input{Notebooks/notebooks_preamble.tex}
+
+\fvset{fontsize=\footnotesize}                       % To change code cells font size, from:
+\RecustomVerbatimEnvironment{verbatim}{Verbatim}{}   % https://tex.stackexchange.com/a/133449/105662
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \makeindex
@@ -188,14 +191,15 @@ jupyter notebook
 %\begin{lstlisting}[style=bash]
 %jupyter-notebook
 %\end{lstlisting}
-which opens the "notebook dashboard" in your default browser, where you can navigate through your file structure to the pyALF directory.
+which opens the "notebook dashboard" in your default browser, where you can navigate through your file structure to the pyALF directory. There you will find the interface's core module, \texttt{py\_alf.py}, some auxiliary files, and notebooks such as the ones included bellow. Have fun. 
+
 
 
 \section*{Notebooks}
 
+%\includepdf[pages=-,pagecommand={},width=\textwidth]{Notebooks/minimal_ALF_run.pdf}
 \input{Notebooks/minimal_ALF_run.tex}
 
-%\includepdf[pages=-,pagecommand={},width=\textwidth]{Notebooks/minimal_ALF_run.pdf}
 
 
 
