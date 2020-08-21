@@ -46,12 +46,14 @@
 \setcounter{secnumdepth}{4} 
 \setcounter{tocdepth}{4}
 \definecolor{light-gray}{gray}{0.95}
+\definecolor{comment-color}{rgb}{0.8,0.1,0.1}
+\definecolor{keyword-color}{rgb}{0.3,0.3,1}
 
 \lstdefinestyle{fortran}{
   language=Fortran,
   basicstyle=\ttfamily\small,
-  keywordstyle=\color{red},
-  commentstyle=\color{blue},
+  keywordstyle=\color{keyword-color},
+  commentstyle=\color{comment-color},
   morecomment=[l]{!\ }% Comment only with space after !
   breakatwhitespace=false,
   keepspaces=true,
@@ -79,13 +81,15 @@
 \lstdefinestyle{bash}{
   language=bash,
   basicstyle=\ttfamily,
-  keywordstyle=\color{red},
-  commentstyle=\color{blue},
+  keywordstyle=\color{keyword-color},
+  commentstyle=\color{comment-color},
   morecomment=[l]{\#\ }% Comment only with space after #
   breakatwhitespace=false,
   keepspaces=true,
   showstringspaces=false,
-  columns=flexible
+  columns=flexible,
+  breaklines=true,
+  postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space}
 }
 
 \def\Tr{\mathop{\mathrm{Tr}}}
@@ -190,7 +194,18 @@ To run the notebooks you need the following installed in your machine:
 	\item the libraries Lapack and Blas
 	\item a Fortran compiler, such as \texttt{gfortran} or \texttt{ifort},
 \end{itemize}
-where the last two are required by the main package \href{https://git.physik.uni-wuerzburg.de:ALF}{ALF}.%, which is automatically handled by pyALF.
+where the last two are required by the main package \href{https://git.physik.uni-wuerzburg.de:ALF}{ALF}. %, which is automatically handled by pyALF.
+Also, add pyALF's path to your environment variable \texttt{PYTHONPATH}. In Linux, this can be achieved, e.g., by adding the following line to \texttt{.bashrc}:
+
+\begin{lstlisting}[style=bash]
+export PYTHONPATH="/local/path/to/pyALF:$PYTHONPATH"
+\end{lstlisting}
+
+Notice that \texttt{Run.py} assumes the existence of the configuration file  \texttt{Sims}, which defines the simulation parameters. An entry of \texttt{Sims} might read as:
+
+\begin{lstlisting}[style=bash]
+{"Model": "Hubbard", "Lattice_type": "Square", "L1": 4 , "L2": 4, "NBin": 5, "ham_T": 0.0, "Nsweep" : 2000, "Beta": 1.0, "ham_chem": -1.0 }
+\end{lstlisting}
 
 
 \section*{Starting}
@@ -199,11 +214,11 @@ Jupyter notebooks \href{https://jupyter.readthedocs.io/en/latest/running.html}{a
 \begin{lstlisting}[style=bash]
 jupyter notebook
 \end{lstlisting}
-(or, depending on the system and installation, \texttt{jupyter-notebook})
+(or, depending on the installation, \texttt{jupyter-notebook})
 %\begin{lstlisting}[style=bash]
 %jupyter-notebook
 %\end{lstlisting}
-which opens the "notebook dashboard" in your default browser, where you can navigate through your file structure to the pyALF directory. There you will find the interface's core module, \texttt{py\_alf.py}, some auxiliary files, and notebooks such as the ones included bellow. Have fun. 
+which opens the ``notebook dashboard'' in your default browser, where you can navigate through your file structure to the pyALF directory. There you will find the interface's core module, \texttt{py\_alf.py}, some auxiliary files, and notebooks such as the ones included bellow. Have fun. 
 
 
 \section*{Notebooks}
