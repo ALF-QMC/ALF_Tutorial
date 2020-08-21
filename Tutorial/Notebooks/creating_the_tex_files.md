@@ -35,4 +35,5 @@ sed -e '/maketitle/,/end{document}/!d' \
 ```
 \documentclass[11pt]{article}
 \usepackage{mathpazo}
+\usepackage{titling}
 ```
