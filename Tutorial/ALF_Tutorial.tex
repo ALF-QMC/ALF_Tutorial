@@ -183,7 +183,7 @@ What follows is a collection of self-explanatory Jupyter notebooks written in Py
 
 \section*{Requirements}
 
-You can download pyALF from the its repository linked above, or simply run from the command line:
+You can download pyALF from its repository linked above or, from the command line:
 \begin{lstlisting}[style=bash]
 git clone git@git.physik.uni-wuerzburg.de:ALF/pyALF.git
 \end{lstlisting}
@@ -201,16 +201,11 @@ Also, add pyALF's path to your environment variable \texttt{PYTHONPATH}. In Linu
 export PYTHONPATH="/local/path/to/pyALF:$PYTHONPATH"
 \end{lstlisting}
 
-Notice that \texttt{Run.py} assumes the existence of the configuration file  \texttt{Sims}, which defines the simulation parameters. An entry of \texttt{Sims} might read as:
-
-\begin{lstlisting}[style=bash]
-{"Model": "Hubbard", "Lattice_type": "Square", "L1": 4 , "L2": 4, "NBin": 5, "ham_T": 0.0, "Nsweep" : 2000, "Beta": 1.0, "ham_chem": -1.0 }
-\end{lstlisting}
 
 
 \section*{Starting}
 
-Jupyter notebooks \href{https://jupyter.readthedocs.io/en/latest/running.html}{are run} through a Jupyter server started, e.g., from the command line:
+Jupyter notebooks\footnote{Note that pyALF can also be used to start a simulation from the command line, without starting a Jupyter server or using a notebook. For instance: \texttt{python3.7 Run.py -R  --alfdir /home/debian/ALF-1.2/ --config "Intel"  --executable\_R Hubbard --mpi True} starts a parallel run of the Hubbard model, using ALF compiled with \texttt{ifort}.  Notice that \texttt{Run.py} requires a configuration file  \texttt{Sims}, which defines the simulation parameters. An entry of \texttt{Sims} might read as: \texttt{ {"Model": "Hubbard", "Lattice\_type": "Square", "L1": 4, "L2": 4, "NBin": 5, "ham\_T": 0.0, "Nsweep" : 2000, "Beta": 1.0, "ham\_chem": -1.0} } } \href{https://jupyter.readthedocs.io/en/latest/running.html}{are run} through a Jupyter server started, e.g., from the command line:
 \begin{lstlisting}[style=bash]
 jupyter notebook
 \end{lstlisting}
@@ -219,6 +214,16 @@ jupyter notebook
 %jupyter-notebook
 %\end{lstlisting}
 which opens the ``notebook dashboard'' in your default browser, where you can navigate through your file structure to the pyALF directory. There you will find the interface's core module, \texttt{py\_alf.py}, some auxiliary files, and notebooks such as the ones included bellow. Have fun. 
+
+%We note that pyALF can also be used to start a simulation from the command line, without starting a Jupyter server. For instance:
+%\begin{lstlisting}[style=bash]
+%python3.7 Run.py -R  --alfdir /home/debian/ALF-1.2/ --config "Intel"  --executable_R Hubbard --mpi True  &
+%\end{lstlisting}
+%starts a parallel run of the Hubbard model, using ALF compiled with \texttt{ifort}. 
+%Notice that \texttt{Run.py} requires a configuration file  \texttt{Sims}, which defines the simulation parameters. An entry of \texttt{Sims} might read as:
+%\begin{lstlisting}[style=bash]
+%{ "Model": "Hubbard", "Lattice_type": "Square", "L1": 4, "L2": 4, "NBin": 5, "ham_T": 0.0, "Nsweep" : 2000, "Beta": 1.0, "ham_chem": -1.0 }
+%\end{lstlisting}
 
 
 \section*{Notebooks}
