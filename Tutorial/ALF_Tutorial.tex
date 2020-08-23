@@ -33,6 +33,7 @@
 \usepackage{pdfpages}
 %\usepackage{titlesec} % incompatible with Koma
 \usepackage{relsize}
+\graphicspath{{./Figures/}{./Notebooks/}}
 
 \usepackage[framemethod=default]{mdframed}
 \usepackage{showexpl}
@@ -238,13 +239,15 @@ which opens the ``notebook dashboard'' in your default browser, where you can na
 %        \caption{ $\Delta \tau t $ extrapolation for the 4-site Hubbard ring. }
 %\end{figure}
 
+\input{Notebooks/testing_against_ED-content.tex}
 
+%\input{Notebooks/.tex}
 
 
 %\newpage
 
 %%%%%%%%%%%%%%%%%%%%
-\part{Getting your hands dirty - changing the code}
+\part{Getting your hands dirty - writing new code}
 %\setcounter{exercise}{0}
 
 Part II consists in a set of guided advanced exercises. 
@@ -356,7 +359,7 @@ In the program \texttt{Hamiltonian\_Examples.f90 }  to be found in the directory
 
 \begin{figure}[h]
         \begin{center}
-                \includegraphics[scale=.8]{Figures/Ladder.pdf}
+                \includegraphics[scale=.8]{Ladder.pdf}
         \end{center}
         \caption{ \label{Ladder.fig} Spin correlation functions along one leg for the Hubbard ladder.   As $t_y$ grows the spin gap becomes large enough so as to detect the  exponential decal of the spin correlation function on this small lattice size. The underlying physics of odd-even  ladder systems is introduced in the article: Elbio Dagotto and T. M. Rice, Surprises on the way from one- to two-dimensional quantum magnets: The ladder materials, Science 271 (1996), no. 5249, 618?623. }
 \end{figure}
@@ -428,7 +431,7 @@ You can now run the code for  various values of $V/t$. A Jordan-Wigner transform
 with $J_{zz} = V $ and $J_{xx}  = 2t$. Hence when $V/t = 2$ we reproduce the Heisenberg model.   For $V/t > 2$  the model is in the Ising  regime with long-range charge density wave order and is an insulator. In the regime  $ -2 < V/t < 2$   the model  is metallic and corresponds to a Luttinger liquid. Finally, at $ V/t < - 2$   phase separation between hole rich and electron rich phases occur.   Fig.~\ref{tV.fig}  shows typical results. 
 \begin{figure}[h]
         \begin{center}
-                \includegraphics[scale=.8]{Figures/tV.pdf}
+                \includegraphics[scale=.8]{tV.pdf}
         \end{center}
         \caption{ \label{tV.fig}  Density-Density correlation functions  of the t-V model. In the Luttinger liquid phase,  $-2 < V/t < 2$   it is known   that the density -density correlations  decay as 
     $    \langle n(r) n(0)\rangle   \propto \cos(\pi r) r^{-\left(1+K_\rho \right) }   $  with $\left(1+K_\rho \right)^{-1}= \frac{1}{2} + \frac{1}{\pi}  \arcsin \left( \frac{V}{2 | t | }\right)  $
