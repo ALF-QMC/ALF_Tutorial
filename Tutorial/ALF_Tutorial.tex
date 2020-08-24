@@ -30,7 +30,7 @@
 \usepackage{booktabs}
 \usepackage[breaklinks=true,colorlinks,pdfborder={0 0 0}]{hyperref} 
 \usepackage{float}
-\usepackage{pdfpages}
+%\usepackage{pdfpages,eso-pic,atbegshi,pdflscape} % including tex notebooks instead
 %\usepackage{titlesec} % incompatible with Koma
 \usepackage{relsize}
 \graphicspath{{./Figures/}{./Notebooks/}}
@@ -229,7 +229,7 @@ which opens the ``notebook dashboard'' in your default browser, where you can na
 
 \section*{Notebooks}
 
-%\includepdf[pages=-,pagecommand={},width=1.2\textwidth]{Notebooks/minimal_ALF_run.pdf}
+%\includepdf[pages=1-,pagecommand={},width=1.2\textwidth]{Notebooks/minimal_ALF_run.pdf}
 \input{Notebooks/minimal_ALF_run-content.tex}
 
 %\begin{figure}[h]
@@ -239,9 +239,16 @@ which opens the ``notebook dashboard'' in your default browser, where you can na
 %        \caption{ $\Delta \tau t $ extrapolation for the 4-site Hubbard ring. }
 %\end{figure}
 
+%\includepdf[pages=-,pagecommand={},width=1.2\textwidth]{Notebooks/trotter_error.pdf}
+\input{Notebooks/trotter_error-content.tex}
+
+% ? Include Dtau figure ?
+
+%\includepdf[pages=1-,pagecommand={},width=1.2\textwidth]{Notebooks/testing_against_ED.pdf}
 \input{Notebooks/testing_against_ED-content.tex}
 
-%\input{Notebooks/.tex}
+%\includepdf[pages=1-,pagecommand={},width=1.2\textwidth]{Notebooks/projective_algorithm.pdf}
+\input{Notebooks/projective_algorithm-content.tex}
 
 
 %\newpage

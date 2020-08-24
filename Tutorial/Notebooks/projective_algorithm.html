@@ -2,7 +2,7 @@
 <html>
 <head><meta charset="utf-8" />
 
-<title>minimal_ALF_run</title>
+<title>projective_algorithm</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -13077,17 +13077,27 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="A-minimal-ALF-run">A minimal ALF run<a class="anchor-link" href="#A-minimal-ALF-run">&#182;</a></h1>
+<h1 id="Projective-algorithm">Projective algorithm<a class="anchor-link" href="#Projective-algorithm">&#182;</a></h1>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In this bare-bones example we use the <a href="https://git.physik.uni-wuerzburg.de/ALF/pyALF">pyALF</a> interface to run the canonical Hubbard model on a default configuration: a $6\times6$ square grid, with interaction strength $U=4$ and inverse temperature $\beta = 5$.</p>
-<p>Bellow we go through the steps for performing the simulation and outputting observables.</p>
+<p>In this example we use the <a href="https://git.physik.uni-wuerzburg.de/ALF/pyALF">pyALF</a> interface to run ALF's projective algorithm with the Mz choice of Hubbard Stratonovich transformation on a 4-site ring.</p>
+<p>The projective approach is the method of choice if  one is interested in ground-state properties. The starting point is a pair of trial wave functions,  $|\Psi_{T,L/R} \rangle$,  that are  not orthogonal to the ground state $|\Psi_0 \rangle$:
+$$
+  \langle \Psi_{T,L/R}  | \Psi_0 \rangle  \neq 0. 
+$$
+The ground-state expectation value of  any  observable  $\hat{O}$ can then be computed by  propagation along the imaginary time axis:
+$$
+     \frac{ \langle \Psi_0 | \hat{O} | \Psi_0 \rangle }{ \langle \Psi_0 | \Psi_0 \rangle}   = \lim_{\theta \rightarrow \infty}  
+     \frac{ \langle \Psi_{T,L} | e^{-\theta \hat{H}}  e^{-(\beta - \tau)\hat{H}  }\hat{O} e^{- \tau  \hat{H} }   e^{-\theta \hat{H}} | \Psi_{T,R} \rangle } 
+            { \langle \Psi_{T,L} | e^{-(2 \theta + \beta) \hat{H}  } | \Psi_{T,R} \rangle } ,
+$$
+where $\beta$ defines the imaginary time range where observables (time displaced and equal time) are measured and $\tau$ varies from $0$ to $\beta$ in the calculation of time-displace observables. For further details, see Sec. 3 of <a href="https://git.physik.uni-wuerzburg.de/ALF/ALF_code/-/blob/master/Documentation/ALF_v1.0.pdf">ALF documentation</a>.</p>
 <hr>
-<p><strong>1.</strong> Import <code>Simulation</code> class from the <code>py_alf</code> python module, which provides the interface with ALF:</p>
+<p><strong>1.</strong> Import <code>Simulation</code> class from the <code>py_alf</code> python module, which provides the interface with ALF, as well as numerical and plotting packages:</p>
 
 </div>
 </div>
@@ -13098,6 +13108,10 @@ div#notebook {
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">py_alf</span> <span class="kn">import</span> <span class="n">Simulation</span>            <span class="c1"># Interface with ALF</span>
+<span class="c1"># </span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>                       <span class="c1"># Numerical library</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">curve_fit</span>     <span class="c1"># Numerical library</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>          <span class="c1"># Plotting library</span>
 </pre></div>
 
     </div>
@@ -13108,7 +13122,7 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>2.</strong> Create an instance of <code>Simulation</code>, setting parameters as desired:</p>
+<p><strong>2.</strong> Create instances of <code>Simulation</code>, specifying the necessary parameters, in particular the <code>Projector</code> to <code>True</code>:</p>
 
 </div>
 </div>
@@ -13118,15 +13132,58 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sim</span> <span class="o">=</span> <span class="n">Simulation</span><span class="p">(</span>
-    <span class="s2">&quot;Hubbard&quot;</span><span class="p">,</span>                           <span class="c1"># Hamiltonian</span>
-    <span class="p">{</span>                                    <span class="c1"># Model and simulation parameters for each Simulation instance</span>
-    <span class="s2">&quot;Model&quot;</span><span class="p">:</span> <span class="s2">&quot;Hubbard&quot;</span><span class="p">,</span>                  <span class="c1"># Base model</span>
-    <span class="s2">&quot;Lattice_type&quot;</span><span class="p">:</span> <span class="s2">&quot;Square&quot;</span><span class="p">},</span>           <span class="c1"># Lattice type</span>
-<span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sims</span> <span class="o">=</span> <span class="p">[]</span>                                <span class="c1"># Vector of Simulation instances</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Theta values used:&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">theta</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">]:</span>                <span class="c1"># Values of Theta</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="n">sim</span> <span class="o">=</span> <span class="n">Simulation</span><span class="p">(</span>
+        <span class="s1">&#39;Hubbard&#39;</span><span class="p">,</span>                       <span class="c1"># Hamiltonian</span>
+        <span class="p">{</span>                                <span class="c1"># Model and simulation parameters for each Simulation instance</span>
+        <span class="s1">&#39;Model&#39;</span><span class="p">:</span> <span class="s1">&#39;Hubbard&#39;</span><span class="p">,</span>              <span class="c1">#    Base model</span>
+        <span class="s1">&#39;Lattice_type&#39;</span><span class="p">:</span> <span class="s1">&#39;N_leg_ladder&#39;</span><span class="p">,</span>  <span class="c1">#    Lattice type</span>
+        <span class="s1">&#39;L1&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>                         <span class="c1">#    Lattice length in the first unit vector direction</span>
+        <span class="s1">&#39;L2&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>                         <span class="c1">#    Lattice length in the second unit vector direction</span>
+        <span class="s1">&#39;Checkerboard&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>           <span class="c1">#    Whether checkerboard decomposition is used or not</span>
+        <span class="s1">&#39;Symm&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>                    <span class="c1">#    Whether symmetrization takes place</span>
+        <span class="s1">&#39;Projector&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>               <span class="c1">#    Whether to use the projective algorithm</span>
+        <span class="s1">&#39;Theta&#39;</span><span class="p">:</span> <span class="n">theta</span><span class="p">,</span>                  <span class="c1">#    Projector parameter</span>
+        <span class="s1">&#39;ham_T&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>                    <span class="c1">#    Hopping parameter</span>
+        <span class="s1">&#39;ham_U&#39;</span><span class="p">:</span> <span class="mf">4.0</span><span class="p">,</span>                    <span class="c1">#    Hubbard interaction</span>
+        <span class="s1">&#39;ham_Tperp&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>                <span class="c1">#    For bilayer systems</span>
+        <span class="s1">&#39;beta&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>                     <span class="c1">#    Inverse temperature</span>
+        <span class="s1">&#39;Ltau&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>                       <span class="c1">#    &#39;1&#39; for time-displaced Green functions; &#39;0&#39; otherwise </span>
+        <span class="s1">&#39;NSweep&#39;</span><span class="p">:</span> <span class="mi">400</span><span class="p">,</span>                   <span class="c1">#    Number of sweeps</span>
+        <span class="s1">&#39;NBin&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>                      <span class="c1">#    Number of bins</span>
+        <span class="s1">&#39;Dtau&#39;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span>                    <span class="c1">#    Only dtau varies between simulations, Ltrot=beta/Dtau</span>
+        <span class="s1">&#39;Mz&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>                      <span class="c1">#    If true, sets the M_z-Hubbard model: Nf=2, N_sum=1,</span>
+        <span class="p">},</span>                               <span class="c1">#             HS field couples to z-component of magnetization</span>
+        <span class="n">alf_dir</span><span class="o">=</span><span class="s1">&#39;~/Programs/ALF&#39;</span><span class="p">,</span>        <span class="c1"># Local ALF copy, if present</span>
+    <span class="p">)</span>
+    <span class="n">sims</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sim</span><span class="p">)</span>
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Theta values used:
+5
+10
+20
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -13134,7 +13191,7 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>3.</strong> Compile ALF, downloading it first from the <a href="https://git.physik.uni-wuerzburg.de:ALF">ALF repository</a> if not found locally. This may take a few minutes:</p>
+<p><strong>3.</strong> Compile ALF, downloading it first if not found locally. This may take a few minutes:</p>
 
 </div>
 </div>
@@ -13144,7 +13201,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sim</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>                            <span class="c1"># Compilation needs to be performed only once</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sims</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>                        <span class="c1"># Compilation needs to be performed only once</span>
 </pre></div>
 
     </div>
@@ -13161,8 +13218,7 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Repository /home/stafusa/ALF/pyALF/Notebooks/ALF does not exist, cloning from git@git.physik.uni-wuerzburg.de:ALF/ALF.git
-Compiling ALF... Done.
+<pre>Compiling ALF... Done.
 </pre>
 </div>
 </div>
@@ -13174,7 +13230,7 @@ Compiling ALF... Done.
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>4.</strong> Perform the simulation as specified in <code>sim</code>:</p>
+<p><strong>4.</strong> Perform the simulations, as specified in each element of <code>sim</code>:</p>
 
 </div>
 </div>
@@ -13184,7 +13240,8 @@ Compiling ALF... Done.
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sim</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>                                <span class="c1"># Perform the actual simulation in ALF</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">sim</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sims</span><span class="p">):</span>
+    <span class="n">sim</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>                            <span class="c1"># Perform the actual simulation in ALF</span>
 </pre></div>
 
     </div>
@@ -13201,9 +13258,15 @@ Compiling ALF... Done.
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Prepare directory &#34;/home/stafusa/ALF/pyALF/Notebooks/Hubbard_Square&#34; for Monte Carlo run.
+<pre>Prepare directory &#34;/home/stafusa/ALF/pyALF/Hubbard_N_leg_ladder_L1=4_L2=1_Checkerboard=False_Symm=True_Projector=True_Theta=5_T=1.0_U=4.0_Tperp=0.0_beta=1.0_Dtau=0.05_Mz=True&#34; for Monte Carlo run.
 Create new directory.
-Run /home/stafusa/ALF/pyALF/Notebooks/ALF/Prog/Hubbard.out
+Run /home/stafusa/Programs/ALF/Prog/Hubbard.out
+Prepare directory &#34;/home/stafusa/ALF/pyALF/Hubbard_N_leg_ladder_L1=4_L2=1_Checkerboard=False_Symm=True_Projector=True_Theta=10_T=1.0_U=4.0_Tperp=0.0_beta=1.0_Dtau=0.05_Mz=True&#34; for Monte Carlo run.
+Create new directory.
+Run /home/stafusa/Programs/ALF/Prog/Hubbard.out
+Prepare directory &#34;/home/stafusa/ALF/pyALF/Hubbard_N_leg_ladder_L1=4_L2=1_Checkerboard=False_Symm=True_Projector=True_Theta=20_T=1.0_U=4.0_Tperp=0.0_beta=1.0_Dtau=0.05_Mz=True&#34; for Monte Carlo run.
+Create new directory.
+Run /home/stafusa/Programs/ALF/Prog/Hubbard.out
 </pre>
 </div>
 </div>
@@ -13215,59 +13278,7 @@ Run /home/stafusa/ALF/pyALF/Notebooks/ALF/Prog/Hubbard.out
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>5.</strong> Perform some simple analyses:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sim</span><span class="o">.</span><span class="n">analysis</span><span class="p">()</span>                           <span class="c1"># Perform default analysis; list observables</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Analysing Ener_scal
-Analysing Part_scal
-Analysing Pot_scal
-Analysing Kin_scal
-Analysing Den_eq
-Analysing SpinZ_eq
-Analysing Green_eq
-Analysing SpinXY_eq
-Analysing SpinT_eq
-Analysing SpinXY_tau
-Analysing SpinZ_tau
-Analysing Den_tau
-Analysing Green_tau
-Analysing SpinT_tau
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>6.</strong> Store computed observables list:</p>
+<p><strong>5.</strong> Calculate the internal energies:</p>
 
 </div>
 </div>
@@ -13277,7 +13288,14 @@ Analysing SpinT_tau
 <div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">obs</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">get_obs</span><span class="p">()</span>                      <span class="c1"># Dictionary for the observables</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%capture</span>
+<span class="n">ener</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">sims</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>          <span class="c1"># Matrix for storing energy values</span>
+<span class="n">thetas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">sims</span><span class="p">),))</span>          <span class="c1"># Matrix for Thetas values, for plotting</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">sim</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sims</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">sim</span><span class="o">.</span><span class="n">sim_dir</span><span class="p">)</span>                   <span class="c1"># Directory containing the simulation output</span>
+    <span class="n">sim</span><span class="o">.</span><span class="n">analysis</span><span class="p">()</span>                       <span class="c1"># Perform default analysis</span>
+    <span class="n">thetas</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">sim_dict</span><span class="p">[</span><span class="s1">&#39;Theta&#39;</span><span class="p">]</span>                           <span class="c1"># Store Theta value</span>
+    <span class="n">ener</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">get_obs</span><span class="p">([</span><span class="s1">&#39;Ener_scalJ&#39;</span><span class="p">])[</span><span class="s1">&#39;Ener_scalJ&#39;</span><span class="p">][</span><span class="s1">&#39;obs&#39;</span><span class="p">]</span>  <span class="c1"># Store internal energy</span>
 </pre></div>
 
     </div>
@@ -13288,7 +13306,7 @@ Analysing SpinT_tau
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>which are available for further analyses. For instance, the internal energy of the system (and its error) is accessed by:</p>
+<p>Where the <em>cell magic</em> <code>%%capture</code> suppresses the output of <code>sim.analysis()</code>, which lists the data directories and observables.</p>
 
 </div>
 </div>
@@ -13298,53 +13316,7 @@ Analysing SpinT_tau
 <div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;Ener_scalJ&#39;</span><span class="p">][</span><span class="s1">&#39;obs&#39;</span><span class="p">]</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[7]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>array([[-29.983503,   0.232685]])</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<hr>
-<p><strong>7.</strong> Running again: The simulation can be resumed to increase the precision of the results.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sim</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="n">sim</span><span class="o">.</span><span class="n">analysis</span><span class="p">()</span>
-<span class="n">obs2</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">get_obs</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">obs2</span><span class="p">[</span><span class="s1">&#39;Ener_scalJ&#39;</span><span class="p">][</span><span class="s1">&#39;obs&#39;</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Running again reduced the error from &quot;</span><span class="p">,</span> <span class="n">obs</span><span class="p">[</span><span class="s1">&#39;Ener_scalJ&#39;</span><span class="p">][</span><span class="s1">&#39;obs&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span><span class="s2">&quot; to &quot;</span><span class="p">,</span> <span class="n">obs2</span><span class="p">[</span><span class="s1">&#39;Ener_scalJ&#39;</span><span class="p">][</span><span class="s1">&#39;obs&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;.&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;For Theta values&#39;</span><span class="p">,</span> <span class="n">thetas</span><span class="p">,</span> <span class="s1">&#39;the measured energies are:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">ener</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13361,26 +13333,10 @@ Analysing SpinT_tau
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Prepare directory &#34;/home/stafusa/ALF/pyALF/Notebooks/Hubbard_Square&#34; for Monte Carlo run.
-Resuming previous run.
-Run /home/stafusa/ALF/pyALF/Notebooks/ALF/Prog/Hubbard.out
-Analysing Ener_scal
-Analysing Part_scal
-Analysing Pot_scal
-Analysing Kin_scal
-Analysing Den_eq
-Analysing SpinZ_eq
-Analysing Green_eq
-Analysing SpinXY_eq
-Analysing SpinT_eq
-Analysing SpinXY_tau
-Analysing SpinZ_tau
-Analysing Den_tau
-Analysing Green_tau
-Analysing SpinT_tau
-[[-29.819654   0.135667]]
-
-Running again reduced the error from  0.232685  to  0.135667 .
+<pre>For Theta values [ 5. 10. 20.] the measured energies are:
+ [[-2.137697  0.025552]
+ [-2.108235  0.023964]
+ [-2.089294  0.025426]]
 </pre>
 </div>
 </div>
@@ -13389,22 +13345,62 @@ Running again reduced the error from  0.232685  to  0.135667 .
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Note</strong>: To run a fresh simulation - instead of performing a refinement over previous run(s) - the Monte Carlo run directory should be deleted before rerunning.</p>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">thetas</span><span class="p">,</span> <span class="n">ener</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">ener</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[8]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&lt;ErrorbarContainer object of 3 artists&gt;</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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
+"
+>
+</div>
+
+</div>
 
 </div>
 </div>
+
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <hr>
 <h2 id="Exercises">Exercises<a class="anchor-link" href="#Exercises">&#182;</a></h2><ol>
-<li>Rerun once again and check the new improvement in precision.</li>
-<li>Look at a few other observables (<code>sim.analysis()</code> outputs the names of those available).</li>
-<li>Change the lattice size by adding, e.g., <code>"L1": 4,</code> and <code>"L2": 1,</code> to the simulation parameters definitions of <code>sim</code> (step 2).</li>
+<li><strong>[ TO BE FLESHED OUT ]</strong> Kondo phase transition. References:<br>
+<a href="https://journals.aps.org/prb/abstract/10.1103/PhysRevB.63.155114">https://journals.aps.org/prb/abstract/10.1103/PhysRevB.63.155114</a><br>
+<a href="https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.83.796">https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.83.796</a></li>
 </ol>
 
 </div>
