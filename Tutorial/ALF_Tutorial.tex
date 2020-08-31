@@ -205,11 +205,15 @@ Python and its packages can be easily installed on a variety of platforms using 
 \begin{lstlisting}[style=bash]
 conda install -c anaconda  ipython jupyterlab scipy numpy matplotlib
 \end{lstlisting}
-Anaconda is recommended due to its convenience, but the system's package management (e.g., apt-get) or Python's own package management (pip3) can be used instead if preferred -- see, for instance, SciPy \href{https://www.scipy.org/install.html}{installation instructions}.
+Anaconda is recommended due to its convenience, but the system's package management (e.g., apt-get) or Python's own package management, pip3, can be used instead if preferred -- see, for instance, SciPy \href{https://www.scipy.org/install.html}{installation instructions}.
 
-A Fortran compiler and the libraries needed for ALF... [CHECK the tutorial's README.md]
+A Fortran compiler and the libraries needed for ALF can be installed in a Debian-based Linux via
+\begin{lstlisting}[style=bash]
+sudo apt-get install  gfortran liblapack-dev make
+\end{lstlisting}
+In MacOS, gfortran can be found at \url{https://gcc.gnu.org/wiki/GFortranBinaries#MacOS}, where detailed instructions \href{https://gcc.gnu.org/wiki/GFortranBinariesMacOS}{are available}. You will need to have Xcode as well as the Apple developer tools installed.
 
-maybe mention... example... https://www.scipy.org/install.html
+For Windows and other Linuxes and Unixes, please check the Tutorials' repository \href{https://git.physik.uni-wuerzburg.de/ALF/ALF_Tutorial/-/blob/23fa561262cd3f6ccd99757fd8699862da635d47/README.md}{README}.
 
 \section*{Starting}
 
