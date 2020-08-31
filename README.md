@@ -3,25 +3,25 @@ This is a tutorial for using ALF intended to get you started from zero up to you
 projects.
 
 ## Installation.
-ALF is pretty self-contained, you only need a LAPACK and a BLAS implementation
+**ALF** is pretty self-contained, you only need a LAPACK and a BLAS implementation
 as external libraries. For compiling the source code you need make and a
 Fortran 2003 compatible Compiler.
 
+**pyALF**, the Python interface for ALF, also demands only Python, Jupiter and a few basic Python packages: SciPy, NumPy and matplotlib.
+
+Python and its packages can be easily installed on a variety of platforms using the Anaconda distribution -- check its [installation instructions](https://docs.anaconda.com/anaconda/install/) for your system. Then, from Anaconda, all that is needed is to issue the command
+```bash
+conda install -c anaconda  ipython jupyterlab scipy numpy matplotlib
+```
+Anaconda is recommended due to its convenience, but the system's package management (e.g., apt-get) or Python's own package management, pip3, can be used instead if preferred.
+
 ### Linux
-In the following we give hints on how to install relevant packages.
+In the following we give hints on how to install relevant ALF packages.
 
-#### Debian/Ubuntu/Linux Mint
-- sudo apt-get install gfortran liblapack-dev make
-
-#### Red Hat/Fedora/CentOS
-- sudo yum install gcc-gfortran make liblapack-devel
-
-#### OpenSuSE / SLES
-- sudo zypper install gcc-gfortran make lapack-devel
-
-#### Arch Linux
-- pacman -S make gcc-fortran lapack
-
+- **Debian/Ubuntu/Linux Mint**:  `sudo apt-get install gfortran liblapack-dev make`
+- **Red Hat/Fedora/CentOS**:  `sudo yum install gcc-gfortran make liblapack-devel`
+- **OpenSuSE/SLES**:  `sudo zypper install gcc-gfortran make lapack-devel`
+- **Arch Linux**:  `pacman -S make gcc-fortran lapack`
 
 ### Other Unixes
 gfortran and the lapack implementation from netlib.org should be available for
