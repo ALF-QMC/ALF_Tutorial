@@ -18,7 +18,8 @@
 \usepackage{soul}
 \usepackage{xspace}
 \usepackage{bm}
-\usepackage{subfigure}
+%\usepackage{subfigure} % outdated package
+\usepackage{subcaption}
 \usepackage[breakable]{tcolorbox}
 \usepackage{dsfont}
 \usepackage{footnote}
@@ -44,6 +45,7 @@
             {1.25ex \@plus .25ex}%
             {\normalfont\normalsize\bfseries}}
 \makeatother
+\renewcommand{\linethickness}{0.05em} % temporary fix for pandoc/markdown issue  https://stackoverflow.com/q/58587918/1264299
 \setcounter{secnumdepth}{4} 
 \setcounter{tocdepth}{4}
 \definecolor{light-gray}{gray}{0.95}
@@ -273,9 +275,18 @@ Part II consists in a set of guided advanced exercises.
 
 A lot already comes implemented in ALF, but unavoidably, as one proceeds in their own investigations, a new model has to be implemented or a new observable defined -- and for that one has to grapple with the package's Fortran source code. However, in ALF this is made easy by means of predefined structures, templates, and the examples below.
 
+
 \section*{Downloading the code and tutorial}
-To download the code, type    \texttt{ git clone  git@git.physik.uni-wuerzburg.de:ALF/ALF\_code.git}  in a shell.    \\
-To download the tutorial including solutions type: \\  \texttt{git clone git@git.physik.uni-wuerzburg.de:ALF/ALF\_Tutorial.git}  again  in a shell.
+One can use the ALF package downloaded automatically by the Python script in the first part of this tutorial, or manually, by typing
+\begin{lstlisting}[style=bash]
+git clone  git@git.physik.uni-wuerzburg.de:ALF/ALF\_code.git
+\end{lstlisting}
+in a shell. And to download the tutorial, including solutions:
+\begin{lstlisting}[style=bash]
+git clone git@git.physik.uni-wuerzburg.de:ALF/ALF\_Tutorial.git
+\end{lstlisting}
+
+
 
 \exercise{Dimensional crossover}
 
