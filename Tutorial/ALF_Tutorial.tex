@@ -18,7 +18,9 @@
 \usepackage{soul}
 \usepackage{xspace}
 \usepackage{bm}
-\usepackage{subfigure}
+%%\usepackage{subfigure} % outdated package
+%\usepackage{subcaption}
+%\usepackage{caption}
 \usepackage[breakable]{tcolorbox}
 \usepackage{dsfont}
 \usepackage{footnote}
@@ -44,6 +46,7 @@
             {1.25ex \@plus .25ex}%
             {\normalfont\normalsize\bfseries}}
 \makeatother
+\renewcommand{\linethickness}{0.05em} % temporary fix for pandoc/markdown issue  https://stackoverflow.com/q/58587918/1264299
 \setcounter{secnumdepth}{4} 
 \setcounter{tocdepth}{4}
 \definecolor{light-gray}{gray}{0.95}
@@ -268,14 +271,22 @@ which opens the ``notebook dashboard'' in your default browser, where you can na
 \part{Getting your hands dirty - writing new code}
 %\setcounter{exercise}{0}
 
-Part II consists in a set of guided advanced exercises. 
-
+This second part of the tutorial consists in a set of guided advanced exercises. 
 
 A lot already comes implemented in ALF, but unavoidably, as one proceeds in their own investigations, a new model has to be implemented or a new observable defined -- and for that one has to grapple with the package's Fortran source code. However, in ALF this is made easy by means of predefined structures, templates, and the examples below.
 
+
 \section*{Downloading the code and tutorial}
-To download the code, type    \texttt{ git clone  git@git.physik.uni-wuerzburg.de:ALF/ALF\_code.git}  in a shell.    \\
-To download the tutorial including solutions type: \\  \texttt{git clone git@git.physik.uni-wuerzburg.de:ALF/ALF\_Tutorial.git}  again  in a shell.
+One can use the ALF package downloaded automatically by the Python script in the first part of this tutorial, or manually, by typing
+\begin{lstlisting}[style=bash]
+git clone  git@git.physik.uni-wuerzburg.de:ALF/ALF_code.git
+\end{lstlisting}
+in a shell. And to download the tutorial, including solutions:
+\begin{lstlisting}[style=bash]
+git clone  git@git.physik.uni-wuerzburg.de:ALF/ALF_Tutorial.git
+\end{lstlisting}
+
+
 
 \exercise{Dimensional crossover}
 
@@ -353,69 +364,73 @@ N_Cov = 0
 ! slash terminates namelist statement - DO NOT REMOVE
 \end{lstlisting} 
 
-\noindent
-When running the code for the above ladder system  and analyzing the spin correlation functions, \texttt{SpinZ\_eqJR}  and \texttt{SpinXY\_eqJR}  one will notice that  it is hard restore the SU(2) spin symmetry and that very long runs are required to  obtain the desired equality
-\begin{equation}
-	\langle S^{z}_{i} S^{z}_{j}  \rangle  = \langle S^{y}_{i} S^{y}_{j}  \rangle  = \langle S^{x}_{i} S^{x}_{j}  \rangle. 
-\end{equation}
-The structure of the output files \texttt{SpinZ\_eqJR}  and \texttt{SpinXY\_eqJR}  is described in the doucmentation. 
-For the Mz Hubbard-Stratonovitch transformation it  is hence better to consider the improved estimator 
-\begin{equation}
-	\langle \vec{S}_{i}  \cdot \vec{S}_{j}  \rangle
-\end{equation}
- to compute the spin-spin correlations. 
+% [Excluding the introduction to the exercise item: improved estimator  \langle \vec{S}_{i}  \cdot \vec{S}_{j}  \rangle]
 
-\exerciseitem{Adding a new observable}
-Here the aim is to include  the new observable equal time observable  $\langle \vec{S}_{i}  \cdot \vec{S}_{j}  \rangle$ in the  \texttt{Hubbard\_Mz} code. 
-To achieve this, you will have to carry  out the following steps. 
-\begin{itemize}
-\item In the  subroutine \texttt{Alloc\_obs}  in the \texttt{Hamiltonian\_example.f90}  file you will have to add  a new equal time observable with a call to 
-\texttt{Call Obser\_Latt\_make(Obs\_eq(I),Ns,Nt,No,Filename)}  with \texttt{Ns = Latt\%N;  No = Norb;  Filename ="SpinT", Nt=1, I=5}
-\item  In the subroutine \texttt{Obser}  you will have to add the Wick decomposition of this observable.  
-\end{itemize}
-In the program \texttt{Hamiltonian\_Examples.f90 }  to be found in the directory  \texttt{Solutions/Exercise\_2/Prog/}   we have commented the changes that have to be carried out to add this   observable.  The new variable takes the name SpinT and the results you should obtain are summarized in  Fig.~\ref{Ladder.fig}.
 
-\begin{figure}[h]
-        \begin{center}
-                \includegraphics[scale=.8]{Ladder.pdf}
-        \end{center}
-        \caption{ \label{Ladder.fig} Spin correlation functions along one leg for the Hubbard ladder.   As $t_y$ grows the spin gap becomes large enough so as to detect the  exponential decal of the spin correlation function on this small lattice size. The underlying physics of odd-even  ladder systems is introduced in the article: Elbio Dagotto and T. M. Rice, Surprises on the way from one- to two-dimensional quantum magnets: The ladder materials, Science 271 (1996), no. 5249, 618?623. }
-\end{figure}
+
 
 \exerciseitem{The SU(2) Hubbard-Stratonovich transformation} 
 The SU(2)  Hubbard-Stratonovich decomposition, conserves  spin rotational symmetry. Run the ladder code with the SU(2) flag in the parameter file switched on (i.e. \texttt{Model = Hubbard\_SU2}) and compare results.  
 
-\newpage 
+
+
+\exercise{Adding a new observable}
+
+\red{[Stub]}
+
+Here the task if to define a new observable, the kinetic energy correlation, given by
+\begin{align}
+&\left\langle \hat{O}_{i,\delta} \hat{O}_{j,\delta'} \right\rangle  -  \left\langle \hat{O}_{i,\delta} \right\rangle \left\langle \hat{O}_{j,\delta'} \right\rangle  =  S_O\big(i-j,\delta,\delta'\big)
+\end{align}
+where
+\begin{align}
+&\hat{O}_{i,x} = \sum_{\sigma}\left( \hat{c}^\dagger_{i,\sigma}\hat{c}^{\phantom\dagger}_{i+ax,\sigma} +H.c. \right).
+\end{align}
+
+[...]\\
+
+In the 1-D Hubbard we have emergent $SO(4)$ symmetry:
+\begin{align}
+\left\langle \bar{S}(r)S(0) \right\rangle  &\sim  \frac{(-1)^r}{r}\ln^d(r)\\
+\left\langle \hat{O}_{r,x} \hat{O}_{0,x} \right\rangle  -  \left\langle \hat{O}_{r,x} \right\rangle \left\langle \hat{O}_{0,x} \right\rangle  &\sim   \frac{(-1)^r}{r}\ln^\beta(r)
+\end{align}
+
+[It should be added to the Predefined Structures.]\\
+
+
+
 \exercise{Defining a new model: The one-dimensional t-V model}
 
-\red{[To be updated.]}
 
 \exerciseitem{Define new model}
 
 In this section, one  we will show  what modifications have to be carried out for computing the physics of the  one dimensional t-V model of spinless fermions.  
 \begin{equation}
-	 H =  -t \sum_{i} \left( c^{\dagger}_{i}  c^{\phantom\dagger}_{i+a}      + c^{\dagger}_{i+a}  c^{\phantom\dagger}_{i} \right) 
-	      - \frac{V}{2} \sum_{i}  \left( c^{\dagger}_{i}  c^{\phantom\dagger}_{i+a}      + c^{\dagger}_{i+a}  c^{\phantom\dagger}_{i} \right)^2 
+\hat{H} =  -t \sum_{i} \left( \hat{c}^{\dagger}_{i}  \hat{c}^{\phantom\dagger}_{i+a}      + \hat{c}^{\dagger}_{i+a}  \hat{c}^{\phantom\dagger}_{i} \right) - \frac{V}{2} \sum_{i}  \left( \hat{c}^{\dagger}_{i}  \hat{c}^{\phantom\dagger}_{i+a}      + \hat{c}^{\dagger}_{i+a}  \hat{c}^{\phantom\dagger}_{i} \right)^2 
 \end{equation}
 The above form is  readily included in the ALF since  the interaction is written in terms of a perfect square. Expanding the square  yields (up to a constant)  the desired model: 
 \begin{equation}
-	 H =  -t \sum_{i} \left( c^{\dagger}_{i}  c^{\phantom\dagger}_{i+a}      + c^{\dagger}_{i+a}  c^{\phantom\dagger}_{i} \right) 
-	       + V  \sum_{i}  \left( n_{i} - 1/2 \right)  \left( n_{i+a} - 1/2 \right)  
+\hat{H} =  -t \sum_{i} \left( \hat{c}^{\dagger}_{i}  \hat{c}^{\phantom\dagger}_{i+a}      + \hat{c}^{\dagger}_{i+a}  \hat{c}^{\phantom\dagger}_{i} \right)  + V  \sum_{i}  \left( \hat{n}_{i} - 1/2 \right)  \left( \hat{n}_{i+a} - 1/2 \right)  
 \end{equation}
+
+\red{[Mention tV Jupyter notebook.]}
+
+\red{[To be updated:]}\\
+
 In the directory  \texttt{Solutions/Exercise\_3} we have  duplicated the ALF and commented  the changes that have to be carried out to the file 
-\texttt{Hamiltonian\_Examples.f90 }  in the \texttt{Prog}  directory so as to include the t$\_$V model. 
+\texttt{Hamiltonian\_Examples.f90 }  in the \texttt{Prog}  directory so as to include the \texttt{t\_V} model. 
 Here are the steps to be carried out. 
 \begin{itemize}
-\item  Add   the $t-V$  name space in the parameter file so as to read in the appropriate  variables.
+\item  Add   the t-V  name space in the parameter file so as to read in the appropriate  variables.
 \item  Declare new variables  in the \texttt{Hamiltonian\_Examples.f90 }   file. 
 \item  In the  \texttt{Ham\_set} subroutine of the   file \texttt{Hamiltonian\_Examples.f90} set and read in the parameters for the new model, 
 \texttt{t\_V}.  For  this model \texttt{NF=1} and \texttt{N\_SUN=1} since we are working with spinless fermions
 \item  In the \texttt{Ham\_V}  subroutine you will have to add the new interaction.  
 For a given bond at a given time-slice, we need to decouple the interaction: 
 \begin{equation}
-e^{\Delta \tau \frac{V}{2} \left( c^{\dagger}_{i}  c^{\phantom\dagger}_{i+a}      + c^{\dagger}_{i+a}  c^{\phantom\dagger}_{i} \right)^2} = 
-\sum_{l= \pm1, \pm 2} \gamma_l e^{ \sqrt{\Delta \tau \frac{V}{2}}  \eta_l   \left( c^{\dagger}_{i}  c^{\phantom\dagger}_{i+a}      + c^{\dagger}_{i+a}  c^{\phantom\dagger}_{i} \right) } =  \sum_{l= \pm1, \pm 2} \gamma_l e^{ g  \eta_l   \left( c^{\dagger}_{i},  c^{\dagger}_{i+a}  \right)  O 
-    \left(c^{\phantom\dagger}_{i},  c^{\phantom\dagger}_{i+a} \right)^{T} }
+e^{\Delta \tau \frac{V}{2} \left( \hat{c}^{\dagger}_{i}  \hat{c}^{\phantom\dagger}_{i+a}      + \hat{c}^{\dagger}_{i+a}  \hat{c}^{\phantom\dagger}_{i} \right)^2} = 
+\sum_{l= \pm1, \pm 2} \gamma_l e^{ \sqrt{\Delta \tau \frac{V}{2}}  \eta_l   \left( \hat{c}^{\dagger}_{i}  \hat{c}^{\phantom\dagger}_{i+a}      + \hat{c}^{\dagger}_{i+a}  \hat{c}^{\phantom\dagger}_{i} \right) } =  \sum_{l= \pm1, \pm 2} \gamma_l e^{ g  \eta_l   \left( \hat{c}^{\dagger}_{i},  \hat{c}^{\dagger}_{i+a}  \right)  O 
+    \left(\hat{c}^{\phantom\dagger}_{i},  \hat{c}^{\phantom\dagger}_{i+a} \right)^{T} }
 \end{equation}
  Here is  how this translates in the code. 
 \begin{lstlisting}[style=fortran]
@@ -444,20 +459,60 @@ e^{\Delta \tau \frac{V}{2} \left( c^{\dagger}_{i}  c^{\phantom\dagger}_{i+a}    
 
 You can now run the code for  various values of $V/t$. A Jordan-Wigner transformation  will map the  \texttt{t\_V}  model onto the XXZ  chain:
 \begin{equation}
-	H = J_{xx} \sum_{i}   S^{x}_i S^{x}_{i+a} +   S^{y}_i S^{y}_{i+a}  + J_{zz}  \sum_{i}S^{z}_i S^{z}_{i +a}  
+\hat{H} = J_{xx} \sum_{i}   \hat{S}^{x}_i \hat{S}^{x}_{i+a} +   \hat{S}^{y}_i \hat{S}^{y}_{i+a}  + J_{zz}  \sum_{i}\hat{S}^{z}_i \hat{S}^{z}_{i +a}  
 \end{equation}
 with $J_{zz} = V $ and $J_{xx}  = 2t$. Hence when $V/t = 2$ we reproduce the Heisenberg model.   For $V/t > 2$  the model is in the Ising  regime with long-range charge density wave order and is an insulator. In the regime  $ -2 < V/t < 2$   the model  is metallic and corresponds to a Luttinger liquid. Finally, at $ V/t < - 2$   phase separation between hole rich and electron rich phases occur.   Fig.~\ref{tV.fig}  shows typical results. 
-\begin{figure}[h]
-        \begin{center}
-                \includegraphics[scale=.8]{tV.pdf}
-        \end{center}
-        \caption{ \label{tV.fig}  Density-Density correlation functions  of the t-V model. In the Luttinger liquid phase,  $-2 < V/t < 2$   it is known   that the density -density correlations  decay as 
+\begin{figure}[htb]
+	\begin{center}
+   	\includegraphics[scale=.8]{tV.pdf}
+    \caption{Density-Density correlation functions  of the t-V model. In the Luttinger liquid phase,  $-2 < V/t < 2$   it is known   that the density -density correlations  decay as 
     $    \langle n(r) n(0)\rangle   \propto \cos(\pi r) r^{-\left(1+K_\rho \right) }   $  with $\left(1+K_\rho \right)^{-1}= \frac{1}{2} + \frac{1}{\pi}  \arcsin \left( \frac{V}{2 | t | }\right)  $
-   (A. Luther and I. Peschel, Calculation of critical exponents in two dimensions from quantum field theory in one dimension, Phys. Rev. B 12 (1975), 3908.)  The interested reader can try to reproduce this result. }
+   (A. Luther and I. Peschel, Calculation of critical exponents in two dimensions from quantum field theory in one dimension, Phys. Rev. B 12 (1975), 3908.)  The interested reader can try to reproduce this result.}
+   \label{tV.fig} 
+   \end{center}
 \end{figure}
 
 
-\exerciseitem{Challenge}  How would you use the code to carry out simulations at $V/t < 0 $?
+%\exerciseitem{Challenge}  How would you use the code to carry out simulations at $V/t < 0 $?
 
 
 \end{document}
+
+
+
+Exercise item excluded from exercise "Dimensional crossover":
+
+\hrule
+
+
+\noindent
+When running the code for the above ladder system  and analyzing the spin correlation functions, \texttt{SpinZ\_eqJR}  and \texttt{SpinXY\_eqJR}  one will notice that  it is hard restore the SU(2) spin symmetry and that very long runs are required to  obtain the desired equality
+\begin{equation}
+\langle S^{z}_{i} S^{z}_{j}  \rangle  = \langle S^{y}_{i} S^{y}_{j}  \rangle  = \langle S^{x}_{i} S^{x}_{j}  \rangle. 
+\end{equation}
+The structure of the output files \texttt{SpinZ\_eqJR}  and \texttt{SpinXY\_eqJR}  is described in the doucmentation.  For the Mz Hubbard-Stratonovitch transformation it  is hence better to consider the improved estimator 
+\begin{equation}
+\langle \vec{S}_{i}  \cdot \vec{S}_{j}  \rangle
+\end{equation}
+to compute the spin-spin correlations. 
+
+
+Here the aim is to include  the new observable equal time observable  $\langle \vec{S}_{i}  \cdot \vec{S}_{j}  \rangle$ in the  \texttt{Hubbard\_Mz} code. 
+To achieve this, you will have to carry  out the following steps. 
+\begin{itemize}
+	\item In the  subroutine \texttt{Alloc\_obs}  in the \texttt{Hamiltonian\_example.f90}  file you will have to add  a new equal time observable with a call to 
+	\texttt{Call Obser\_Latt\_make(Obs\_eq(I),Ns,Nt,No,Filename)}  with \texttt{Ns = Latt\%N;  No = Norb;  Filename ="SpinT", Nt=1, I=5}
+	\item  In the subroutine \texttt{Obser}  you will have to add the Wick decomposition of this observable.  
+\end{itemize}
+In the program \texttt{Hamiltonian\_Examples.f90 }  to be found in the directory  \texttt{Solutions/Exercise\_2/Prog/}   we have commented the changes that have to be carried out to add this   observable.  The new variable takes the name SpinT and the results you should obtain are summarized in  Fig.~\ref{Ladder.fig}.
+
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[scale=.8]{Ladder.pdf}
+		\caption{Spin correlation functions along one leg for the Hubbard ladder.   As $t_y$ grows the spin gap becomes large enough so as to detect the  exponential decal of the spin correlation function on this small lattice size. The underlying physics of odd-even  ladder systems is introduced in the article: Elbio Dagotto and T. M. Rice, Surprises on the way from one- to two-dimensional quantum magnets: The ladder materials, Science 271 (1996), no. 5249, 618?623.}
+		\label{Ladder.fig}
+	\end{center}
+\end{figure}
+
+
+
