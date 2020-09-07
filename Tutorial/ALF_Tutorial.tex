@@ -308,7 +308,7 @@ Do I = 1,Latt%N
    Op_T(1,nf)%O(Ix, I ) = cmplx(-Ham_T,    0.d0, kind(0.D0))
    If ( L2 > 1 ) then
       Iy = Latt%nnlist(I,0,1)
-!!!!!!! Modifications for Exercise
+!!!!!!! Modifications for Exercise 1a
       !Op_T(1,nf)%O(I,  Iy) = cmplx(-Ham_T,    0.d0, kind(0.D0))
       !Op_T(1,nf)%O(Iy, I ) = cmplx(-Ham_T,    0.d0, kind(0.D0))
       Op_T(1,nf)%O(I,  Iy) = cmplx(-Ham_Ty,    0.d0, kind(0.D0))
@@ -322,7 +322,7 @@ Enddo
 \end{itemize}
 Note: If you'd like to run the simulation using MPI, you should also add the broadcasting call for \texttt{Ham\_Ty} to \texttt{Ham\_Set}.
 
-\red{[NOT yet done. Necessary?]}  In the directory \texttt{Solutions/Exercise\_2} we have  duplicated the ALF and commented  the changes that have to be carried out to the file \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod.F90} in the \texttt{Prog} directory. 
+\red{[NOT yet done.]}  In the directory \texttt{Solutions/Exercise\_2} we have  duplicated the ALF and commented  the changes that have to be carried out to the file \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod.F90} in the \texttt{Prog} directory. 
 
 \noindent
 As an application of this code, one can consider a 2-leg ladder system defined, e.g., with \texttt{L1=14},  \texttt{L2=2}, \texttt{Lattice\_type="Square"}, \texttt{Model="Hubbard\_Plain\_Vanilla"} and \texttt{Ham\_Ty=2.0D0}.
@@ -331,7 +331,7 @@ As an application of this code, one can consider a 2-leg ladder system defined, 
 
 
 \exerciseitem{The SU(2) Hubbard-Stratonovich transformation} 
-\red{[HOW to best implement this? Introduce modifications to \texttt{Hamiltonian\_Hubbard\_mod.F90}?]} The SU(2)  Hubbard-Stratonovich decomposition, conserves  spin rotational symmetry. Run the ladder code with the SU(2) flag in the parameter file switched on (i.e. \texttt{Model = Hubbard\_SU2}) and compare results.  
+\red{[Introduce modifications to \texttt{Hamiltonian\_Hubbard\_mod.F90}]} The SU(2) Hubbard-Stratonovich decomposition, conserves  spin rotational symmetry. Run the ladder code with the SU(2) flag in the parameter file switched on (i.e. \texttt{Model = Hubbard\_SU2}) and compare results.  
 
 
 
@@ -355,6 +355,7 @@ In the 1-D Hubbard we have emergent $SO(4)$ symmetry:
 \left\langle \bar{S}(r)S(0) \right\rangle  &\sim  \frac{(-1)^r}{r}\ln^d(r)\\
 \left\langle \hat{O}_{r,x} \hat{O}_{0,x} \right\rangle  -  \left\langle \hat{O}_{r,x} \right\rangle \left\langle \hat{O}_{0,x} \right\rangle  &\sim   \frac{(-1)^r}{r}\ln^\beta(r)
 \end{align}
+where $d=??$ and $\beta=??$ \cite{references}.
 
 [It should be added to the Predefined Structures.]\\
 
