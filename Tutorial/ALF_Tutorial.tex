@@ -220,7 +220,7 @@ For Windows and other Linuxes and Unixes, please check the Tutorials' repository
 
 \section*{Starting}
 
-Jupyter notebooks\footnote{Note that pyALF can also be used to start a simulation from the command line, without starting a Jupyter server or using a notebook. For instance: \texttt{python3.7 Run.py -R  --alfdir /home/debian/ALF-1.2/ --config "Intel"  --executable\_R Hubbard --mpi True} starts a parallel run of the Hubbard model, using ALF compiled with \texttt{ifort}.  Notice that \texttt{Run.py} requires a configuration file  \texttt{Sims}, which defines the simulation parameters. An entry of \texttt{Sims} might read as: \texttt{ {"Model": "Hubbard", "Lattice\_type": "Square", "L1": 4, "L2": 4, "NBin": 5, "ham\_T": 0.0, "Nsweep" : 2000, "Beta": 1.0, "ham\_chem": -1.0} } } \href{https://jupyter.readthedocs.io/en/latest/running.html}{are run} through a Jupyter server started, e.g., from the command line:
+Jupyter notebooks \href{https://jupyter.readthedocs.io/en/latest/running.html}{are run} through a Jupyter server\footnote{Note that pyALF can also be used to start a simulation from the command line, without starting a Jupyter server or using a notebook. For instance: \texttt{python3.7 Run.py -R  --alfdir /home/debian/ALF-1.2/ --config "Intel"  --executable\_R Hubbard --mpi True} starts a parallel run of the Hubbard model, using ALF compiled with \texttt{ifort}.  Notice that \texttt{Run.py} requires a configuration file  \texttt{Sims}, which defines the simulation parameters. An entry of \texttt{Sims} might read as: \texttt{ {"Model": "Hubbard", "Lattice\_type": "Square", "L1": 4, "L2": 4, "NBin": 5, "ham\_T": 0.0, "Nsweep" : 2000, "Beta": 1.0, "ham\_chem": -1.0} } } started, e.g., from the command line:
 \begin{lstlisting}[style=bash]
 jupyter notebook
 \end{lstlisting}
@@ -265,15 +265,16 @@ which opens the ``notebook dashboard'' in your default browser, where you can na
 \input{Notebooks/projective_algorithm-content.tex}
 
 
-%\newpage
+\newpage
 
 %%%%%%%%%%%%%%%%%%%%
 \part{Getting your hands dirty - writing new code}
 %\setcounter{exercise}{0}
 
-This second part of the tutorial consists in a set of guided advanced exercises. 
+A lot already comes implemented in ALF, but unavoidably, as one proceeds in their own investigations, a new model has to be implemented or a new observable defined -- and for that, one must grapple with the package's Fortran source code. 
+This second part of the tutorial consists in a set of guided exercises that exemplify how to make basic additions to the code, taking as starting point the template-like, relatively self-contained module \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod.F90}, which is also a good display of ALF's internal workings.
 
-A lot already comes implemented in ALF, but unavoidably, as one proceeds in their own investigations, a new model has to be implemented or a new observable defined -- and for that one has to grapple with the package's Fortran source code. However, in ALF this is made easy by means of predefined structures, templates, and the examples below.
+These worked-out exercises, together with ALF's modularity provided by its Predefined Structures should make getting your hands dirty less daunting than it may sound.
 
 
 \section*{Downloading the code and tutorial}
@@ -281,7 +282,9 @@ One can use the ALF package downloaded automatically by the Python script in the
 \begin{lstlisting}[style=bash]
 git clone  git@git.physik.uni-wuerzburg.de:ALF/ALF_code.git
 \end{lstlisting}
-in a shell. And to download the tutorial, including solutions:
+in a shell. The necessary environment variables and the directives for compiling the code are set by the script \texttt{configure.sh}: \lstinline[style=bash]|source configure.sh GNU|, followed by the command  \lstinline[style=bash,morekeywords={make}]|make|. Details and further options are described in the package's documentation found in its repository.
+
+Similarly, to download the tutorial, including solutions, enter:
 \begin{lstlisting}[style=bash]
 git clone  git@git.physik.uni-wuerzburg.de:ALF/ALF_Tutorial.git
 \end{lstlisting}
@@ -290,87 +293,45 @@ git clone  git@git.physik.uni-wuerzburg.de:ALF/ALF_Tutorial.git
 
 \exercise{Dimensional crossover}
 
-\red{[To be updated.]}
 
 \exerciseitem{Modifying the hopping}
-Here we will modify the code  so as to allow  for different hopping matrix elements along the x and y directions of a square lattice.  To do so, one merely has to  do the following 
+Here we will modify the code  so as to allow  for different hopping matrix elements along the $x$ and $y$ directions of a square lattice.  To do so we start from the module \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod.F90} found in \texttt{<ALF\_DIR>/Prog/Hamiltonians/}, which we will simply call ``\texttt{Vanilla}'', and then: 
 \begin{itemize}
-
-\item Add an extra variable, \texttt{Ham\_Ty}, in the parameter file in the \texttt{VAR\_Hubbard}  name space
-\item Declare the variable \texttt{Ham\_Ty} in the \texttt{Hamiltonian\_Examples.f90 }.
-\item Read in this  variable in \texttt{Ham\_set} subroutine of the  \texttt{Hamiltonian\_Examples.f90 }  file.
-\item  Modify the hopping matrix  in the subroutine \texttt{Ham\_Hop}  in the \texttt{Hamiltonian\_Examples.f90 }  file.
+	\item Declare a new variable, \texttt{Ham\_Ty}, in the module's specification (just search for the declaration of \texttt{Ham\_T} in \texttt{Vanilla}).
+	\item Add \texttt{Ham\_Ty} to the \texttt{VAR\_Hubbard\_Plain\_Vanilla} name space in the parameter file \texttt{parameters}.
+	\item Add this variable also to the name space (\texttt{namelist}) declaration at the \texttt{Ham\_Set} subroutine of \texttt{Vanilla}.
+	\item Modify the hopping matrix in the subroutine \texttt{Ham\_Hop} in \texttt{Vanilla}:
 \begin{lstlisting}[style=fortran]
-DO I = 1, Latt%N
-    I1 = Latt%nnlist(I,1,0)
-    I2 = Latt%nnlist(I,0,1)
-    Op_T(nc,n)%O(I,I1) = cmplx(-Ham_T,    0.d0, kind(0.D0))
-    Op_T(nc,n)%O(I1,I) = cmplx(-Ham_T,    0.d0, kind(0.D0))
-!!!!!! Modifications for Exercise 2 (a)
-     !Op_T(nc,n)%O(I,I2) = cmplx(-Ham_T,    0.d0, kind(0.D0))
-     !Op_T(nc,n)%O(I2,I) = cmplx(-Ham_T,    0.d0, kind(0.D0))
-     Op_T(nc,n)%O(I,I2) = cmplx(-Ham_Ty,    0.d0, kind(0.D0))
-     Op_T(nc,n)%O(I2,I) = cmplx(-Ham_Ty,    0.d0, kind(0.D0))
-!!!!!!
-      Op_T(nc,n)%O(I ,I) = cmplx(-Ham_chem, 0.d0, kind(0.D0))
-ENDDO
+Do I = 1,Latt%N
+   Ix = Latt%nnlist(I,1,0)
+   Op_T(1,nf)%O(I,  Ix) = cmplx(-Ham_T,    0.d0, kind(0.D0))
+   Op_T(1,nf)%O(Ix, I ) = cmplx(-Ham_T,    0.d0, kind(0.D0))
+   If ( L2 > 1 ) then
+      Iy = Latt%nnlist(I,0,1)
+!!!!!!! Modifications for Exercise
+      !Op_T(1,nf)%O(I,  Iy) = cmplx(-Ham_T,    0.d0, kind(0.D0))
+      !Op_T(1,nf)%O(Iy, I ) = cmplx(-Ham_T,    0.d0, kind(0.D0))
+      Op_T(1,nf)%O(I,  Iy) = cmplx(-Ham_Ty,    0.d0, kind(0.D0))
+      Op_T(1,nf)%O(Iy, I ) = cmplx(-Ham_Ty,    0.d0, kind(0.D0))
+!!!!!!!
+   endif
+   Op_T(1,nf)%O(I,  I ) = cmplx(-Ham_chem, 0.d0, kind(0.D0))
+   Op_T(1,nf)%P(i) = i 
+Enddo
 \end{lstlisting} 
-
 \end{itemize}
-In the directory \texttt{Solutions/Exercise\_2} we have  duplicated the ALF and commented  the changes that have to be carried out to the file 
-\texttt{Hamiltonian\_Examples.f90 }    in the \texttt{Prog}  directory. 
+Note: If you'd like to run the simulation using MPI, you should also add the broadcasting call for \texttt{Ham\_Ty} to \texttt{Ham\_Set}.
 
+\red{[NOT yet done. Necessary?]}  In the directory \texttt{Solutions/Exercise\_2} we have  duplicated the ALF and commented  the changes that have to be carried out to the file \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod.F90} in the \texttt{Prog} directory. 
 
 \noindent
-As an application of this code, one can consider a ladder  system, defined by the parameter file: 
-\begin{lstlisting}[style=fortran]
-!===============================================================================
-!  Variables for the Hubb program
-!-------------------------------------------------------------------------------
-
-&VAR_lattice
-L1    = 14
-L2    = 2
-Lattice_type = "Square"
-Model = "Hubbard_Mz"  ! Hubbard_SU2, Hubbard_Mz
-/
-
-&VAR_Hubbard
-ham_T   = 1.0D0
-!!!!!! Modifications for Exercise 2
-ham_Ty  = 2.0D0
-!!!!!!
-ham_chem= 0.0D0
-ham_U   = 4.0
-Beta    = 10.0
-dtau    = 0.1
-/
-
-&VAR_QMC
-Nwrap   = 10
-NSweep  = 100
-NBin    = 10
-Ltau    = 1
-LOBS_ST = 1
-LOBS_EN = 100
-CPU_MAX = 0.1
-/
-
-&VAR_errors
-n_skip  = 2
-N_rebin = 1
-N_Cov = 0
-/
-! slash terminates namelist statement - DO NOT REMOVE
-\end{lstlisting} 
+As an application of this code, one can consider a 2-leg ladder system defined, e.g., with \texttt{L1=14},  \texttt{L2=2}, \texttt{Lattice\_type="Square"}, \texttt{Model="Hubbard\_Plain\_Vanilla"} and \texttt{Ham\_Ty=2.0D0}.
 
 % [Excluding the introduction to the exercise item: improved estimator  \langle \vec{S}_{i}  \cdot \vec{S}_{j}  \rangle]
 
 
-
-
 \exerciseitem{The SU(2) Hubbard-Stratonovich transformation} 
-The SU(2)  Hubbard-Stratonovich decomposition, conserves  spin rotational symmetry. Run the ladder code with the SU(2) flag in the parameter file switched on (i.e. \texttt{Model = Hubbard\_SU2}) and compare results.  
+\red{[HOW to best implement this? Introduce modifications to \texttt{Hamiltonian\_Hubbard\_mod.F90}?]} The SU(2)  Hubbard-Stratonovich decomposition, conserves  spin rotational symmetry. Run the ladder code with the SU(2) flag in the parameter file switched on (i.e. \texttt{Model = Hubbard\_SU2}) and compare results.  
 
 
 
