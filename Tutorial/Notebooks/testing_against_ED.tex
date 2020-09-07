@@ -380,7 +380,7 @@ run ALF with the Mz choice of Hubbard Stratonovitch transformation on a
 four site ring, at \(U/t=4\) and inverse temperature \(\beta t = 2\).
 For this set of parameters, the exact internal energy reads:\\
 \[
- \left\langle -t \sum_{\langle i,j\rangle, \sigma} c_{i,\sigma}^{\dagger} c_{j,\sigma}^{\phantom\dagger}   +  U  \sum_{i=1}^{N} n_{i,\uparrow}n_{j,\downarrow}  \right\rangle  =   -1.47261997 t 
+ \left\langle -t \sum_{\langle i,j\rangle, \sigma} \hat{c}_{i,\sigma}^{\dagger} \hat{c}_{j,\sigma}^{\phantom\dagger}   +  U  \sum_{i=1}^{N} \hat{n}_{i,\uparrow}\hat{n}_{j,\downarrow}  \right\rangle  =   -1.47261997 t 
 \]
 
 To reproduce this result we will have to carry out a systematic
@@ -388,14 +388,14 @@ To reproduce this result we will have to carry out a systematic
 \(\Delta \tau t L_\text{Trotter} = 2\) constant.\\
 Recall that the formulation of the auxiliary field QMC approach is based
 on the Trotter decomposition \[
-e^{-\Delta \tau \left( A + B \right ) }   = e^{-\Delta \tau  A } e^{-\Delta \tau  B  }   + {\cal O}  \left( \Delta \tau^2 \right)
+e^{ -\Delta \tau \left( \hat{A} + \hat{B} \right) }  =  e^{ -\Delta \tau \hat{A}/2}  e^{ -\Delta \tau  \hat{B}  }   e^{ -\Delta \tau \hat{A}/2}  +  \mathcal{O} \left (\Delta  \tau^3\right)
 \] The overall error produced by this approximation is of the order
 \(\Delta \tau^2\).
 
 Bellow we go through the steps for performing this extrapolation:
 setting the simulation parameters, running it and analyzing the data.
 
-\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
 \textbf{1.} Import \texttt{Simulation} class from the \texttt{py\_alf}
 python module, which provides the interface with ALF, as well as
@@ -404,10 +404,10 @@ mathematics and plotting packages:
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
 \prompt{In}{incolor}{1}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
-\PY{k+kn}{from} \PY{n+nn}{py\PYZus{}alf} \PY{k+kn}{import} \PY{n}{Simulation}            \PY{c+c1}{\PYZsh{} Interface with ALF}
+\PY{k+kn}{from} \PY{n+nn}{py\PYZus{}alf} \PY{k}{import} \PY{n}{Simulation}            \PY{c+c1}{\PYZsh{} Interface with ALF}
 \PY{c+c1}{\PYZsh{} }
 \PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}                       \PY{c+c1}{\PYZsh{} Numerical library}
-\PY{k+kn}{from} \PY{n+nn}{scipy}\PY{n+nn}{.}\PY{n+nn}{optimize} \PY{k+kn}{import} \PY{n}{curve\PYZus{}fit}     \PY{c+c1}{\PYZsh{} Numerical library}
+\PY{k+kn}{from} \PY{n+nn}{scipy}\PY{n+nn}{.}\PY{n+nn}{optimize} \PY{k}{import} \PY{n}{curve\PYZus{}fit}     \PY{c+c1}{\PYZsh{} Numerical library}
 \PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}          \PY{c+c1}{\PYZsh{} Plotting library}
 \end{Verbatim}
 \end{tcolorbox}
@@ -596,7 +596,7 @@ For Dtau values [0.05 0.1  0.15] the measured energies are:
     \end{center}
     { \hspace*{\fill} \\}
     
-    \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+    \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
 \hypertarget{exercises}{%
 \subsection{Exercises}\label{exercises}}
