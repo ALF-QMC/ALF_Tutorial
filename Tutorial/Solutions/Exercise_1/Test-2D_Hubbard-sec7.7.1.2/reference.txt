@@ -1,0 +1,1 @@
+ref.: sec. 7.7.1.2, 2D vanilla hubbard numerics
