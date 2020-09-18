@@ -32,6 +32,8 @@ Remarks
 \documentclass[11pt]{article}
 \usepackage{mathpazo}
 \usepackage{titling}
+\DeclareCaptionFormat{nocaption}{}
+\captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
 ```
 
 - TO DO: instead of downloading notebooks' html and latex versions, use nbconvert command line
