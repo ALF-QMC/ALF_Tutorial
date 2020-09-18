@@ -151,7 +151,10 @@
       Type (Lattice),       private :: Latt
       Type (Unit_cell),     private :: Latt_unit
       Integer,              private :: L1, L2
-      real (Kind=Kind(0.d0)),        private :: ham_T , ham_U,  Ham_chem
+      real (Kind=Kind(0.d0)),        private :: Ham_T , Ham_U,  Ham_chem
+!!!!!!! Modifications for Exercise 1a
+      real (Kind=Kind(0.d0)),        private :: Ham_Ty
+!!!!!!!
       real (Kind=Kind(0.d0)),        private :: Dtau, Beta, Theta
       Integer               ,        private :: N_part
       Character (len=64),   private :: Model, Lattice_type
@@ -187,7 +190,10 @@
           NAMELIST /VAR_Lattice/  L1, L2, Lattice_type, Model
 
 
-          NAMELIST /VAR_Hubbard_Plain_Vanilla/  ham_T, ham_chem, ham_U, Dtau, Beta, Projector, Theta, Symm, N_part
+!!!!!!! Modifications for Exercise 1a
+          !NAMELIST /VAR_Hubbard_Plain_Vanilla/  Ham_T, ham_chem, ham_U, Dtau, Beta, Projector, Theta, Symm, N_part
+          NAMELIST /VAR_Hubbard_Plain_Vanilla/  Ham_T, Ham_Ty, ham_chem, ham_U, Dtau, Beta, Projector, Theta, Symm, N_part
+!!!!!!!
           
           
 
@@ -250,7 +256,7 @@
           CALL MPI_BCAST(Projector   ,1,  MPI_LOGICAL  , 0,Group_Comm,ierr)
           CALL MPI_BCAST(Dtau        ,1,  MPI_REAL8    , 0,Group_Comm,ierr)
           CALL MPI_BCAST(Beta        ,1,  MPI_REAL8    , 0,Group_Comm,ierr)
-          CALL MPI_BCAST(ham_T       ,1,  MPI_REAL8    , 0,Group_Comm,ierr)
+          CALL MPI_BCAST(Ham_T       ,1,  MPI_REAL8    , 0,Group_Comm,ierr)
           CALL MPI_BCAST(ham_chem    ,1,  MPI_REAL8    , 0,Group_Comm,ierr)
           CALL MPI_BCAST(ham_U       ,1,  MPI_REAL8    , 0,Group_Comm,ierr)
 #endif
@@ -287,6 +293,9 @@
              endif
              Write(50,*) 'dtau,Ltrot_eff: ', dtau,Ltrot
              Write(50,*) 't             : ', Ham_T
+!!!!!!! Modifications for Exercise 1a
+             Write(50,*) 'ty            : ', Ham_Ty
+!!!!!!!
              Write(50,*) 'Ham_U         : ', Ham_U
              Write(50,*) 'Ham_chem      : ', Ham_chem
              Close(50) 
@@ -346,8 +355,12 @@
                 Op_T(1,nf)%O(Ix, I ) = cmplx(-Ham_T,    0.d0, kind(0.D0))
                 If ( L2 > 1 ) then
                    Iy = Latt%nnlist(I,0,1)
-                   Op_T(1,nf)%O(I,  Iy) = cmplx(-Ham_T,    0.d0, kind(0.D0))
-                   Op_T(1,nf)%O(Iy, I ) = cmplx(-Ham_T,    0.d0, kind(0.D0))
+!!!!!!! Modifications for Exercise 1a
+                   !Op_T(1,nf)%O(I, Iy) = cmplx(-Ham_T,  0.d0, kind(0.D0))
+                   !Op_T(1,nf)%O(Iy, I ) = cmplx(-Ham_T, 0.d0, kind(0.D0))
+                   Op_T(1,nf)%O(I, Iy) = cmplx(-Ham_Ty,  0.d0, kind(0.D0))
+                   Op_T(1,nf)%O(Iy, I ) = cmplx(-Ham_Ty, 0.d0, kind(0.D0))
+!!!!!!!
                 endif
                 Op_T(1,nf)%O(I,  I ) = cmplx(-Ham_chem, 0.d0, kind(0.D0))
                 Op_T(1,nf)%P(i) = i 
@@ -406,8 +419,12 @@
              H0(Ix, I ) = -Ham_T*(1.d0   +   Delta*cos(Pi*real(Latt%list(I,1) + Latt%list(I,2),Kind(0.d0))))
              If (L2  > 1 ) Then
                 Iy = Latt%nnlist(I,0,1)
-                H0(I,  Iy) = -Ham_T *(1.d0  -   Delta)
-                H0(Iy, I ) = -Ham_T *(1.d0  -   Delta)
+!!!!!!! Modifications for Exercise 1a
+                !H0(I,  Iy) = -Ham_T *(1.d0  -   Delta)
+                !H0(Iy, I ) = -Ham_T *(1.d0  -   Delta)
+                H0(I,  Iy) = -Ham_Ty *(1.d0  -   Delta)
+                H0(Iy, I ) = -Ham_Ty *(1.d0  -   Delta)
+!!!!!!!
              Endif
           Enddo
           Call  Diag(H0,U0,E0)

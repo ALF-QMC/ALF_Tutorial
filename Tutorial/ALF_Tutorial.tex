@@ -297,9 +297,9 @@ git clone  git@git.physik.uni-wuerzburg.de:ALF/ALF_Tutorial.git
 \exerciseitem{Modifying the hopping}
 Here we will modify the code  so as to allow  for different hopping matrix elements along the $x$ and $y$ directions of a square lattice.  To do so we start from the module \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod.F90} found in \texttt{<ALF\_DIR>/Prog/Hamiltonians/}, which we will simply call ``\texttt{Vanilla}'', and then: 
 \begin{itemize}
-	\item Declare a new variable, \texttt{Ham\_Ty}, in the module's specification (just search for the declaration of \texttt{Ham\_T} in \texttt{Vanilla}).
 	\item Add \texttt{Ham\_Ty} to the \texttt{VAR\_Hubbard\_Plain\_Vanilla} name space in the parameter file \texttt{parameters}.
-	\item Add this variable also to the name space (\texttt{namelist}) declaration at the \texttt{Ham\_Set} subroutine of \texttt{Vanilla}.
+	\item Declare a new variable, \texttt{Ham\_Ty}, in the module's specification (just search for the declaration of \texttt{Ham\_T} in \texttt{Vanilla}).
+	\item Add \texttt{Ham\_Ty} to the \texttt{VAR\_Hubbard\_Plain\_Vanilla} name space (\texttt{namelist}) declaration at the \texttt{Ham\_Set} subroutine of \texttt{Vanilla}.
 	\item Modify the hopping matrix in the subroutine \texttt{Ham\_Hop} in \texttt{Vanilla}:
 \begin{lstlisting}[style=fortran]
 Do I = 1,Latt%N
@@ -320,18 +320,26 @@ Do I = 1,Latt%N
 Enddo
 \end{lstlisting} 
 \end{itemize}
-Note: If you'd like to run the simulation using MPI, you should also add the broadcasting call for \texttt{Ham\_Ty} to \texttt{Ham\_Set}.
+Note: If you'd like to run the simulation using MPI, you should also add the broadcasting call for \texttt{Ham\_Ty} to \texttt{Ham\_Set}. It is a good idea as well to include the new variable to the simulation parameters written into the file \texttt{info}, also in \texttt{Ham\_Set}.
 
-\red{[NOT yet done.]}  In the directory \texttt{Solutions/Exercise\_2} we have  duplicated the ALF and commented  the changes that have to be carried out to the file \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod.F90} in the \texttt{Prog} directory. 
+In the directory \texttt{Solutions/Exercise\_1} we have duplicated ALF's code and commented  the changes that have to be carried out to the file \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod.F90} in the \texttt{Prog} directory. The solution directory also includes reference data and the necessary \texttt{Start} directory (remember to copy its contents to every new \texttt{Run} directory, and to have a different \texttt{Run} directory for each simulationi).
 
 \noindent
-As an application of this code, one can consider a 2-leg ladder system defined, e.g., with \texttt{L1=14},  \texttt{L2=2}, \texttt{Lattice\_type="Square"}, \texttt{Model="Hubbard\_Plain\_Vanilla"} and \texttt{Ham\_Ty=2.0D0}.
+As an application of this code, we can consider a 2-leg ladder system defined, e.g., with \texttt{L1=14},  \texttt{L2=2}, \texttt{Lattice\_type="Square"}, \texttt{Model="Hubbard\_Plain\_Vanilla"} and different values of \texttt{Ham\_Ty}. The results you should obtain are summarized in Fig.~\ref{fig:ladder}.
 
-% [Excluding the introduction to the exercise item: improved estimator  \langle \vec{S}_{i}  \cdot \vec{S}_{j}  \rangle]
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width=0.6\columnwidth]{Figures/ladder.pdf}
+	\end{center}
+	\caption{Spin correlation functions along one leg for the Hubbard ladder.   As $t_y$ grows the spin gap becomes large enough so as to detect the  exponential decal of the spin correlation function on this small lattice size. The underlying physics of odd-even  ladder systems is introduced in the article: Elbio Dagotto and T. M. Rice, Surprises on the way from one- to two-dimensional quantum magnets: The ladder materials, Science 271 (1996), no. 5249, 618--623.}
+	\label{fig:ladder}
+\end{figure}
+
 
 
 \exerciseitem{The SU(2) Hubbard-Stratonovich transformation} 
-\red{[Introduce modifications to \texttt{Hamiltonian\_Hubbard\_mod.F90}]} The SU(2) Hubbard-Stratonovich decomposition, conserves  spin rotational symmetry. Run the ladder code with the SU(2) flag in the parameter file switched on (i.e. \texttt{Model = Hubbard\_SU2}) and compare results.  
+
+The SU(2) Hubbard-Stratonovich decomposition conserves spin rotational symmetry. Introduce into \texttt{Hamiltonian\_Hubbard\_mod.F90} the same changes done to the \texttt{Vanilla} module, described in the previous item, and compare results.  
 
 
 
