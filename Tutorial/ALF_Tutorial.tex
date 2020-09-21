@@ -293,9 +293,10 @@ git clone  git@git.physik.uni-wuerzburg.de:ALF/ALF_Tutorial.git
 
 \exercise{Dimensional crossover}
 
+Here we will modify the code  so as to allow  for different hopping matrix elements along the $x$ and $y$ directions of a square lattice.
 
 \exerciseitem{Modifying the hopping}
-Here we will modify the code  so as to allow  for different hopping matrix elements along the $x$ and $y$ directions of a square lattice.  To do so we start from the module \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod.F90} found in \texttt{<ALF\_DIR>/Prog/Hamiltonians/}, which we will simply call ``\texttt{Vanilla}'', and then: 
+To do so we start from the module \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod.F90} found in \texttt{<ALF\_DIR>/Prog/Hamiltonians/}, which we will simply call ``\texttt{Vanilla}'', and then: 
 \begin{itemize}
 	\item Add \texttt{Ham\_Ty} to the \texttt{VAR\_Hubbard\_Plain\_Vanilla} name space in the parameter file \texttt{parameters}.
 	\item Declare a new variable, \texttt{Ham\_Ty}, in the module's specification (just search for the declaration of \texttt{Ham\_T} in \texttt{Vanilla}).
@@ -325,7 +326,7 @@ Note: If you'd like to run the simulation using MPI, you should also add the bro
 In the directory \texttt{Solutions/Exercise\_1} we have duplicated ALF's code and commented  the changes that have to be carried out to the file \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod.F90} in the \texttt{Prog} directory. The solution directory also includes reference data and the necessary \texttt{Start} directory (remember to copy its contents to every new \texttt{Run} directory, and to have a different \texttt{Run} directory for each simulation).
 
 \noindent
-As an application of this code, we can consider a 2-leg ladder system defined, e.g., with \texttt{L1=14},  \texttt{L2=2}, \texttt{Lattice\_type="Square"}, \texttt{Model="Hubbard\_Plain\_Vanilla"} and different values of \texttt{Ham\_Ty}. The results you should obtain are summarized in Fig.~\ref{fig:ladder}.
+As an application of this code, we can once again consider a ladder system (e.g, a 2-leg ladder with \texttt{L1=14} and \texttt{L2=2}), for different values of \texttt{Ham\_Ty}. The results you should obtain are summarized in Fig.~\ref{fig:ladder}.
 
 \begin{figure}[h]
 	\begin{center}
@@ -339,53 +340,26 @@ As an application of this code, we can consider a 2-leg ladder system defined, e
 
 \exerciseitem{The SU(2) Hubbard-Stratonovich transformation} 
 
-The SU(2) Hubbard-Stratonovich decomposition conserves spin rotational symmetry. Introduce into the moduel \texttt{Hamiltonian\_Hubbard\_mod.F90} and into the name space \texttt{VAR\_Hubbard} the same changes done to the \texttt{Vanilla} module, described in the previous item, and enter \texttt{Mz=.F.} in the \texttt{parameters} file (to choose the $SU(N)$ Hubbard interaction) and compare results. 
-
-\red{[Should we state the expected result? Should we also provide a solution directory as done for the item (a)?]}
-
-
-
-\exercise{Adding a new observable}
-
-\red{[Stub]}
-
-Here the task if to define a new observable, the kinetic energy correlation, given by
-\begin{align}
-&\left\langle \hat{O}_{i,\delta} \hat{O}_{j,\delta'} \right\rangle  -  \left\langle \hat{O}_{i,\delta} \right\rangle \left\langle \hat{O}_{j,\delta'} \right\rangle  =  S_O\big(i-j,\delta,\delta'\big)
-\end{align}
-where
-\begin{align}
-&\hat{O}_{i,x} = \sum_{\sigma}\left( \hat{c}^\dagger_{i,\sigma}\hat{c}^{\phantom\dagger}_{i+ax,\sigma} +H.c. \right).
-\end{align}
-
-[...]\\
-
-In the 1-D Hubbard we have emergent $SO(4)$ symmetry:
-\begin{align}
-\left\langle \bar{S}(r)S(0) \right\rangle  &\sim  \frac{(-1)^r}{r}\ln^d(r)\\
-\left\langle \hat{O}_{r,x} \hat{O}_{0,x} \right\rangle  -  \left\langle \hat{O}_{r,x} \right\rangle \left\langle \hat{O}_{0,x} \right\rangle  &\sim   \frac{(-1)^r}{r}\ln^\beta(r)
-\end{align}
-where $d=??$ and $\beta=??$ \cite{references}.
-
-[It should be added to the Predefined Structures.]\\
+The SU(2) Hubbard-Stratonovich decomposition couples to the density and conserves spin rotational symmetry. Introduce into the module \texttt{Hamiltonian\_Hubbard\_mod.F90} and into the name space \texttt{VAR\_Hubbard} the same changes done to the \texttt{Vanilla} module, described in the previous item, and enter \texttt{Mz=.F.} in the \texttt{parameters} file (in order to choose the $SU(N)$ Hubbard interaction) and compare results to those of the $M_z$ decomposition above -- especially with regard to numerical convergence.
 
 
 
 \exercise{Defining a new model: The one-dimensional t-V model}
 
 
-\exerciseitem{Define new model}
-
 In this section, one  we will show  what modifications have to be carried out for computing the physics of the  one dimensional t-V model of spinless fermions.  
 \begin{equation}
-\hat{H} =  -t \sum_{i} \left( \hat{c}^{\dagger}_{i}  \hat{c}^{\phantom\dagger}_{i+a}      + \hat{c}^{\dagger}_{i+a}  \hat{c}^{\phantom\dagger}_{i} \right) - \frac{V}{2} \sum_{i}  \left( \hat{c}^{\dagger}_{i}  \hat{c}^{\phantom\dagger}_{i+a}      + \hat{c}^{\dagger}_{i+a}  \hat{c}^{\phantom\dagger}_{i} \right)^2 
+\hat{H} =  -t \sum_{i} \left( \hat{c}^{\dagger}_{i}  \hat{c}^{\phantom\dagger}_{i+a}      + \hat{c}^{\dagger}_{i+a}  \hat{c}^{\phantom\dagger}_{i} \right) - \frac{V}{2} \sum_{i}  \left( \hat{c}^{\dagger}_{i}  \hat{c}^{\phantom\dagger}_{i+a}      + \hat{c}^{\dagger}_{i+a}  \hat{c}^{\phantom\dagger}_{i} \right)^2 .
 \end{equation}
 The above form is  readily included in the ALF since  the interaction is written in terms of a perfect square. Expanding the square  yields (up to a constant)  the desired model: 
 \begin{equation}
-\hat{H} =  -t \sum_{i} \left( \hat{c}^{\dagger}_{i}  \hat{c}^{\phantom\dagger}_{i+a}      + \hat{c}^{\dagger}_{i+a}  \hat{c}^{\phantom\dagger}_{i} \right)  + V  \sum_{i}  \left( \hat{n}_{i} - 1/2 \right)  \left( \hat{n}_{i+a} - 1/2 \right)  
+\hat{H} =  -t \sum_{i} \left( \hat{c}^{\dagger}_{i}  \hat{c}^{\phantom\dagger}_{i+a}      + \hat{c}^{\dagger}_{i+a}  \hat{c}^{\phantom\dagger}_{i} \right)  + V  \sum_{i}  \left( \hat{n}_{i} - 1/2 \right)  \left( \hat{n}_{i+a} - 1/2 \right).
 \end{equation}
 
-\red{[Mention tV Jupyter notebook.]}
+\red{[Mention more general tV implementation in pred. strutct. (for checking correctness), as well as the tV Jupyter notebook.]}
+
+
+\exerciseitem{Define new model}
 
 \red{[To be updated:]}\\
 
@@ -444,11 +418,47 @@ with $J_{zz} = V $ and $J_{xx}  = 2t$. Hence when $V/t = 2$ we reproduce the Hei
    \end{center}
 \end{figure}
 
-
 %\exerciseitem{Challenge}  How would you use the code to carry out simulations at $V/t < 0 $?
 
 
+
+\exercise{Adding a new observable}
+
+\red{[Stub]}
+
+Here the task if to define a new observable, the kinetic energy correlation, given by
+\begin{align}
+&\left\langle \hat{O}_{i,\delta} \hat{O}_{j,\delta'} \right\rangle  -  \left\langle \hat{O}_{i,\delta} \right\rangle \left\langle \hat{O}_{j,\delta'} \right\rangle  =  S_O\big(i-j,\delta,\delta'\big)
+\end{align}
+where
+\begin{align}
+&\hat{O}_{i,x} = \sum_{\sigma}\left( \hat{c}^\dagger_{i,\sigma}\hat{c}^{\phantom\dagger}_{i+ax,\sigma} +H.c. \right).
+\end{align}
+
+[...]\\
+
+In the 1-D Hubbard we have emergent $SO(4)$ symmetry:
+\begin{align}
+\left\langle \bar{S}(r)S(0) \right\rangle  &\sim  \frac{(-1)^r}{r}\ln^d(r)\\
+\left\langle \hat{O}_{r,x} \hat{O}_{0,x} \right\rangle  -  \left\langle \hat{O}_{r,x} \right\rangle \left\langle \hat{O}_{0,x} \right\rangle  &\sim   \frac{(-1)^r}{r}\ln^\beta(r)
+\end{align}
+where $d=??$ and $\beta=??$ \cite{references}.
+
+[It should be added to the Predefined Structures.]\\
+
+
+
 \end{document}
+
+
+
+
+
+
+
+
+
+
 
 
 
