@@ -322,7 +322,7 @@ Enddo
 \end{itemize}
 Note: If you'd like to run the simulation using MPI, you should also add the broadcasting call for \texttt{Ham\_Ty} to \texttt{Ham\_Set}. It is a good idea as well to include the new variable to the simulation parameters written into the file \texttt{info}, also in \texttt{Ham\_Set}.
 
-In the directory \texttt{Solutions/Exercise\_1} we have duplicated ALF's code and commented  the changes that have to be carried out to the file \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod.F90} in the \texttt{Prog} directory. The solution directory also includes reference data and the necessary \texttt{Start} directory (remember to copy its contents to every new \texttt{Run} directory, and to have a different \texttt{Run} directory for each simulationi).
+In the directory \texttt{Solutions/Exercise\_1} we have duplicated ALF's code and commented  the changes that have to be carried out to the file \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod.F90} in the \texttt{Prog} directory. The solution directory also includes reference data and the necessary \texttt{Start} directory (remember to copy its contents to every new \texttt{Run} directory, and to have a different \texttt{Run} directory for each simulation).
 
 \noindent
 As an application of this code, we can consider a 2-leg ladder system defined, e.g., with \texttt{L1=14},  \texttt{L2=2}, \texttt{Lattice\_type="Square"}, \texttt{Model="Hubbard\_Plain\_Vanilla"} and different values of \texttt{Ham\_Ty}. The results you should obtain are summarized in Fig.~\ref{fig:ladder}.
@@ -339,7 +339,9 @@ As an application of this code, we can consider a 2-leg ladder system defined, e
 
 \exerciseitem{The SU(2) Hubbard-Stratonovich transformation} 
 
-The SU(2) Hubbard-Stratonovich decomposition conserves spin rotational symmetry. Introduce into \texttt{Hamiltonian\_Hubbard\_mod.F90} the same changes done to the \texttt{Vanilla} module, described in the previous item, and compare results.  
+The SU(2) Hubbard-Stratonovich decomposition conserves spin rotational symmetry. Introduce into the moduel \texttt{Hamiltonian\_Hubbard\_mod.F90} and into the name space \texttt{VAR\_Hubbard} the same changes done to the \texttt{Vanilla} module, described in the previous item, and enter \texttt{Mz=.F.} in the \texttt{parameters} file (to choose the $SU(N)$ Hubbard interaction) and compare results. 
+
+\red{[Should we state the expected result? Should we also provide a solution directory as done for the item (a)?]}
 
 
 
