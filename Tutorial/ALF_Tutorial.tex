@@ -296,7 +296,7 @@ git clone  git@git.physik.uni-wuerzburg.de:ALF/ALF_Tutorial.git
 Here we will modify the code  so as to allow  for different hopping matrix elements along the $x$ and $y$ directions of a square lattice.
 
 \exerciseitem{Modifying the hopping}
-To do so we start from the module \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod.F90} found in \texttt{<ALF\_DIR>/Prog/Hamiltonians/}, which we will simply call ``\texttt{Vanilla}'', and then: 
+To do so we start from the module \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod.F90} found in \texttt{\$ALF\_DIR/Prog/Hamiltonians/}, which we will simply call ``\texttt{Vanilla}'', and then: 
 \begin{itemize}
 	\item Add \texttt{Ham\_Ty} to the \texttt{VAR\_Hubbard\_Plain\_Vanilla} name space in the parameter file \texttt{parameters}.
 	\item Declare a new variable, \texttt{Ham\_Ty}, in the module's specification (just search for the declaration of \texttt{Ham\_T} in \texttt{Vanilla}).
@@ -355,6 +355,8 @@ The above form is  readily included in the ALF since  the interaction is written
 \begin{equation}
 \hat{H} =  -t \sum_{i} \left( \hat{c}^{\dagger}_{i}  \hat{c}^{\phantom\dagger}_{i+a}      + \hat{c}^{\dagger}_{i+a}  \hat{c}^{\phantom\dagger}_{i} \right)  + V  \sum_{i}  \left( \hat{n}_{i} - 1/2 \right)  \left( \hat{n}_{i+a} - 1/2 \right).
 \end{equation}
+
+Note that the t-V model is already implemented in ALF in the module \texttt{Hamiltonian\_tV\_mod.F90} found in  \texttt{Prog/Hamiltonians/}. While it can be used for checking your own results\footnote{A short simulation of the t-V model can be conveniently run using its Jupyter notebook available in pyALF.}, you are not supposed to reproduce that implementation -- which is more general and makes use of predefined structures -- but instead to write a simpler one, based on the module \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod.F90} as detailed below.
 
 \red{[Mention more general tV implementation in pred. strutct. (for checking correctness), as well as the tV Jupyter notebook.]}
 
