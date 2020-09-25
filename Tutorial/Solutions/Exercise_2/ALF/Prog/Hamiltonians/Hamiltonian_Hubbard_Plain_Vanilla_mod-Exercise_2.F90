@@ -482,12 +482,9 @@
 !!!!! Modifications for Exercise 2
           Integer :: i2
 !!!!!
-          
 
           Allocate(Op_V(Ndim,N_FL))
 
-          ham_U = Ham_Vint ! for testing
-          
           do nf = 1,N_FL
              do i  = 1, Ndim
 !!!!! Modifications for Exercise 2
@@ -560,7 +557,10 @@
           enddo
           
           ! Equal time correlators
-          Allocate ( Obs_eq(5) )
+!!!!! Modifications for Exercise 2
+          !Allocate ( Obs_eq(5) )
+          Allocate ( Obs_eq(3) )
+!!!!!
           Do I = 1,Size(Obs_eq,1)
              select case (I)
              case (1)
@@ -568,11 +568,13 @@
              case (2)
                 Ns = Latt%N;  No = 1;  Filename ="SpinZ"
              case (3)
-                Ns = Latt%N;  No = 1;  Filename ="SpinXY"
-             case (4)
-                Ns = Latt%N;  No = 1;  Filename ="SpinT"
-             case (5)
+!!!!! Modifications for Exercise 2
+             !   Ns = Latt%N;  No = 1;  Filename ="SpinXY"
+             !case (4)
+             !   Ns = Latt%N;  No = 1;  Filename ="SpinT"
+             !case (5)
                 Ns = Latt%N;  No = 1;  Filename ="Den"
+!!!!!
              case default
                 Write(6,*) ' Error in Alloc_obs '  
              end select
@@ -582,7 +584,10 @@
              
           If (Ltau == 1) then 
              ! Equal time correlators
-             Allocate ( Obs_tau(5) )
+!!!!! Modifications for Exercise 2
+             !Allocate ( Obs_tau(5) )
+             Allocate ( Obs_tau(3) )
+!!!!!
              Do I = 1,Size(Obs_tau,1)
                 select case (I)
                 case (1)
@@ -590,11 +595,13 @@
                 case (2)
                    Ns = Latt%N; No = 1;  Filename ="SpinZ"
                 case (3)
-                   Ns = Latt%N; No = 1;  Filename ="SpinXY"
-                case (4)
-                   Ns = Latt%N; No = 1;  Filename ="SpinT"
-                case (5)
+!!!!! Modifications for Exercise 2
+                !   Ns = Latt%N; No = 1;  Filename ="SpinXY"
+                !case (4)
+                !   Ns = Latt%N; No = 1;  Filename ="SpinT"
+                !case (5)
                    Ns = Latt%N; No = 1;  Filename ="Den"
+!!!!!
                 case default
                    Write(6,*) ' Error in Alloc_obs '  
                 end select
@@ -692,9 +699,10 @@
              !ZPot = ZPot + Grc(i,i,1) * Grc(i,i, 2)
              i1 = Latt%nnlist(i,1,0)
              ZPot = ZPot + Grc(i,i,1) * Grc(i1,i1, 1) +  Grc(i,i1,1)*Gr(i,i1,1)
-!!!!!
           Enddo
-          Zpot = Zpot*ham_U
+          !Zpot = Zpot*ham_U
+          Zpot = Zpot*Ham_Vint
+!!!!!
           Obs_scal(2)%Obs_vec(1)  =  Obs_scal(2)%Obs_vec(1) + Zpot * ZP*ZS
 
 
@@ -745,13 +753,13 @@
                      &               Z * GRC(I1,J1,1) * ZP*ZS  ! Green
                 Obs_eq(2)%Obs_Latt(imj,1,no_I,no_J) =  Obs_eq(2)%Obs_Latt(imj,1,no_I,no_J) + &
                      &               Z * GRC(I1,J1,1) * GR(I1,J1,1) * ZP*ZS! SpinZ
+                !Obs_eq(3)%Obs_Latt(imj,1,no_I,no_J) =  Obs_eq(3)%Obs_Latt(imj,1,no_I,no_J) + &
+                !     &               Z * GRC(I1,J1,1) * GR(I1,J1,1) * ZP*ZS ! SpinXY
                 Obs_eq(3)%Obs_Latt(imj,1,no_I,no_J) =  Obs_eq(3)%Obs_Latt(imj,1,no_I,no_J) + &
-                     &               Z * GRC(I1,J1,1) * GR(I1,J1,1) * ZP*ZS ! SpinXY
-                Obs_eq(4)%Obs_Latt(imj,1,no_I,no_J) =  Obs_eq(4)%Obs_Latt(imj,1,no_I,no_J) + &
                      &               ( GRC(I1,I1,1) * GRC(J1,J1,1) * Z + &
                      &                 GRC(I1,J1,1) * GR(I1,J1,1 )       ) * Z * ZP*ZS ! Den
              enddo
-             Obs_eq(4)%Obs_Latt0(no_I) =  Obs_eq(4)%Obs_Latt0(no_I) +  Z * GRC(I1,I1,1) * ZP * ZS
+             Obs_eq(3)%Obs_Latt0(no_I) =  Obs_eq(3)%Obs_Latt0(no_I) +  Z * GRC(I1,I1,1) * ZP * ZS
           enddo
 !!!!!
           
@@ -843,14 +851,14 @@
                      & +  Z * GT0(I1,J1,1) * ZP*ZS ! Green
                 Obs_tau(2)%Obs_Latt(imj,nt+1,no_I,no_J) =  Obs_tau(2)%Obs_Latt(imj,nt+1,no_I,no_J)  &
                      & -  Z * G0T(J1,I1,1) * GT0(I1,J1,1) *ZP*ZS ! SpinZ
+                !Obs_tau(3)%Obs_Latt(imj,nt+1,no_I,no_J) =  Obs_tau(3)%Obs_Latt(imj,nt+1,no_I,no_J)  &
+                !     & -  Z * G0T(J1,I1,1) * GT0(I1,J1,1) *ZP*ZS ! SpinXY
                 Obs_tau(3)%Obs_Latt(imj,nt+1,no_I,no_J) =  Obs_tau(3)%Obs_Latt(imj,nt+1,no_I,no_J)  &
-                     & -  Z * G0T(J1,I1,1) * GT0(I1,J1,1) *ZP*ZS ! SpinXY
-                Obs_tau(4)%Obs_Latt(imj,nt+1,no_I,no_J) =  Obs_tau(4)%Obs_Latt(imj,nt+1,no_I,no_J)  &
                      & + ( Z*Z*(cmplx(1.d0,0.d0,kind(0.d0)) - GTT(I1,I1,1))*   &
                      &     (cmplx(1.d0,0.d0,kind(0.d0)) - G00(J1,J1,1))  -     &
                      &     Z * GT0(I1,J1,1)*G0T(J1,I1,1)                         ) * ZP * ZS ! Den
              Enddo
-             Obs_tau(4)%Obs_Latt0(no_I) = Obs_tau(4)%Obs_Latt0(no_I) + &
+             Obs_tau(3)%Obs_Latt0(no_I) = Obs_tau(3)%Obs_Latt0(no_I) + &
                   &         Z*(cmplx(1.d0,0.d0,kind(0.d0)) - GTT(I1,I1,1)) * ZP * ZS
           Enddo
 !!!!!

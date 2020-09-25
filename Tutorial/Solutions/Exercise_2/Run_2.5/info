@@ -1,0 +1,35 @@
+ =====================================
+ Model is      : Hubbard_Plain_Vanilla                                           
+ Lattice is    : Square                                                          
+ L1            :           28
+ L2            :            1
+ # of orbitals :           28
+ Symm. decomp  :  F
+ Finite temperture version
+ Beta          :    20.000000000000000     
+ dtau,Ltrot_eff:   0.10000000000000001              200
+ t             :    1.0000000000000000     
+ Ham_Vint      :    2.5000000000000000     
+ Ham_chem      :    0.0000000000000000     
+ No initial configuration
+ Sweeps                              :           20
+ Prog will stop after hours:    0.0500
+ Measure Int.                        :            1         200
+ Stabilization,Wrap                  :           10
+ Nstm                                :           20
+ Ltau                                :            1
+ # of interacting Ops per time slice :           28
+ Default sequential updating 
+ Number of mpi-processes :            1
+  Precision Green  Mean, Max :    3.0362844269438346E-015   2.1704860131421810E-014
+  Precision Phase, Max       :    0.0000000000000000     
+  Precision tau    Mean, Max :    1.0412269700600421E-015   2.4757973449140991E-014
+  Acceptance                 :   0.45569637345679015     
+  Effective Acceptance       :   0.45569637345679015     
+  Acceptance_Glob              :    0.0000000000000000     
+  Mean Phase diff Glob         :    0.0000000000000000     
+  Max  Phase diff Glob         :    0.0000000000000000     
+  Average cluster size         :    0.0000000000000000     
+  Average accepted cluster size:    0.0000000000000000     
+  CPU Time                   :    178.63890373100000     
+  Effective number of bins   :          162
