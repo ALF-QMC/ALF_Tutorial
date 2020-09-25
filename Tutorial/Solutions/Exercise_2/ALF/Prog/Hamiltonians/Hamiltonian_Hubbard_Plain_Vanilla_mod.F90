@@ -679,7 +679,8 @@
 !!!!! Modifications for Exercise 2
              !Zkin = Zkin  + GRC(I,Ix,1)  + GRC(Ix,I,1)  &
              !     &       + GRC(I,Ix,2)  + GRC(Ix,I,2)
-             Zkin = Zkin + GRC(I,Ix,1)  + GRC(Ix,I,1)
+             !!!Zkin = Zkin + GRC(I,Ix,1)  + GRC(Ix,I,1) ! 1st attempt, wrong?, two lines above: orig.
+             Zkin = Zkin + sum(Op_T(1,1)%O(:, i)*Grc(:, i, 1))
 !!!!!
           Enddo
           If (L2 > 1) then
@@ -757,6 +758,7 @@
                 !     &               Z * GRC(I1,J1,1) * GR(I1,J1,1) * ZP*ZS ! SpinXY
                 Obs_eq(3)%Obs_Latt(imj,1,no_I,no_J) =  Obs_eq(3)%Obs_Latt(imj,1,no_I,no_J) + &
                      &               ( GRC(I1,I1,1) * GRC(J1,J1,1) * Z + &
+                     !!!&               ( GRC(I1,I1,1) * GRC(I1,I1,1) * Z + &
                      &                 GRC(I1,J1,1) * GR(I1,J1,1 )       ) * Z * ZP*ZS ! Den
              enddo
              Obs_eq(3)%Obs_Latt0(no_I) =  Obs_eq(3)%Obs_Latt0(no_I) +  Z * GRC(I1,I1,1) * ZP * ZS
