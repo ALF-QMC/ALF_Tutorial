@@ -40,6 +40,7 @@
          Use Errors
          Use MyMats
          Use Matrix
+         use iso_fortran_env, only: output_unit, error_unit
          Implicit none
          Integer :: Nunit, Norb, N_auto
          Integer :: no, no1, n, nbins, n_skip, nb, NT, NT1, Lt, N_rebin, N_cov, ierr, N_Back
@@ -61,8 +62,8 @@
          N_auto = 0
          OPEN(UNIT=5,FILE='parameters',STATUS='old',ACTION='read',IOSTAT=ierr)
          IF (ierr /= 0) THEN
-            WRITE(*,*) 'unable to open <parameters>',ierr
-            STOP
+            WRITE(error_unit,*) 'unable to open <parameters>',ierr
+            error stop 1
          END IF
          READ(5,NML=VAR_errors)
          CLOSE(5)
@@ -93,8 +94,8 @@
          nbins = Nbins - n_skip
          Write(6,*) "Effective # of bins: ", Nbins
          if(Nbins <= 1) then
-           write (*,*) "Effective # of bins smaller than 2. Analysis impossible!"
-           stop 1
+           write (error_unit,*) "Effective # of bins smaller than 2. Analysis impossible!"
+           error stop 1
          endif
          if (mod(Lt-1,2) == 0 ) then
             Lt_eff = (Lt -1 ) /2 + 1

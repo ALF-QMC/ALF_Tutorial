@@ -296,7 +296,7 @@ git clone  git@git.physik.uni-wuerzburg.de:ALF/ALF_Tutorial.git
 Here we will modify the code  so as to allow  for different hopping matrix elements along the $x$ and $y$ directions of a square lattice.
 
 \exerciseitem{Modifying the hopping}
-To do so we start from the module \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod.F90} found in \texttt{\$ALF\_DIR/Prog/Hamiltonians/}, which we will simply call ``\texttt{Vanilla}'', and then: 
+To do so we start from the module \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod.F90} found in \texttt{\$ALF\_DIR/Prog/Hamiltonians/}, which we here shorten to ``\texttt{Vanilla}'', and then: 
 \begin{itemize}
 	\item Add \texttt{Ham\_Ty} to the \texttt{VAR\_Hubbard\_Plain\_Vanilla} name space in the parameter file \texttt{parameters}.
 	\item Declare a new variable, \texttt{Ham\_Ty}, in the module's specification (just search for the declaration of \texttt{Ham\_T} in \texttt{Vanilla}).
@@ -358,29 +358,24 @@ The above form is  readily included in the ALF since  the interaction is written
 
 Note that the t-V model is already implemented in ALF in the module \texttt{Hamiltonian\_tV\_mod.F90} found in  \texttt{Prog/Hamiltonians/}. While it can be used for checking your own results\footnote{A short simulation of the t-V model can be conveniently run using its Jupyter notebook available in pyALF.}, you are not supposed to reproduce that implementation -- which is more general and makes use of predefined structures -- but instead to write a simpler one, based on the module \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod.F90} as detailed below.
 
-\red{[Mention more general tV implementation in pred. strutct. (for checking correctness), as well as the tV Jupyter notebook.]}
-
 
 \exerciseitem{Define new model}
 
-\red{[To be updated:]}\\
-
-In the directory  \texttt{Solutions/Exercise\_3} we have  duplicated the ALF and commented  the changes that have to be carried out to the file 
-\texttt{Hamiltonian\_Examples.f90 }  in the \texttt{Prog}  directory so as to include the \texttt{t\_V} model. 
-Here are the steps to be carried out. 
+In the directory  \texttt{\$ALF\_DIR/Solutions/Exercise\_2} we have  duplicated the ALF and commented  the changes that have to be carried out to the file \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod.F90} found in \texttt{\$ALF\_DIR/Prog/Hamiltonians/}, which we here shorten to ``\texttt{Vanilla}''. The following are the essential steps to be carried out:
 \begin{itemize}
-\item  Add   the t-V  name space in the parameter file so as to read in the appropriate  variables.
-\item  Declare new variables  in the \texttt{Hamiltonian\_Examples.f90 }   file. 
-\item  In the  \texttt{Ham\_set} subroutine of the   file \texttt{Hamiltonian\_Examples.f90} set and read in the parameters for the new model, 
-\texttt{t\_V}.  For  this model \texttt{NF=1} and \texttt{N\_SUN=1} since we are working with spinless fermions
-\item  In the \texttt{Ham\_V}  subroutine you will have to add the new interaction.  
-For a given bond at a given time-slice, we need to decouple the interaction: 
+\item  Add the \texttt{VAR\_t\_V} name space in the file \texttt{parameters} and set the necessary variables -- or simply rename the \texttt{VAR\_Hubbard\_Plain\_Vanilla} name space to \texttt{VAR\_t\_V} and, within it, \texttt{Ham\_U} to \texttt{Ham\_Vint}. (Ignore the name space \texttt{VAR\_tV}, which is used by the general implementation mentioned above.)
+\item  Declare a new variable, \texttt{Ham\_Vint}, in \texttt{Vanilla}'s specification.
+\item Add the \texttt{VAR\_t\_V} name space (\texttt{namelist}) declaration at the \texttt{Ham\_Set} subroutine of \texttt{Vanilla}, containing the same variables the name space contains in \texttt{parameters}, and read it in.
+\item  Still in the  \texttt{Ham\_set} subroutine of \texttt{Vanilla}: set \texttt{NF=1}, since we are working with spinless fermions; change the MPI broadcast call for \texttt{Ham\_U} to broadcast \texttt{Ham\_Vint} instead; and change similarly the output to the info file.
+\item  In the \texttt{Ham\_V} subroutine you have to add the new interaction. For a given bond at a given time slice, we need to decouple the interaction: 
 \begin{equation}
 e^{\Delta \tau \frac{V}{2} \left( \hat{c}^{\dagger}_{i}  \hat{c}^{\phantom\dagger}_{i+a}      + \hat{c}^{\dagger}_{i+a}  \hat{c}^{\phantom\dagger}_{i} \right)^2} = 
 \sum_{l= \pm1, \pm 2} \gamma_l e^{ \sqrt{\Delta \tau \frac{V}{2}}  \eta_l   \left( \hat{c}^{\dagger}_{i}  \hat{c}^{\phantom\dagger}_{i+a}      + \hat{c}^{\dagger}_{i+a}  \hat{c}^{\phantom\dagger}_{i} \right) } =  \sum_{l= \pm1, \pm 2} \gamma_l e^{ g  \eta_l   \left( \hat{c}^{\dagger}_{i},  \hat{c}^{\dagger}_{i+a}  \right)  O 
-    \left(\hat{c}^{\phantom\dagger}_{i},  \hat{c}^{\phantom\dagger}_{i+a} \right)^{T} }
+    \left(\hat{c}^{\phantom\dagger}_{i},  \hat{c}^{\phantom\dagger}_{i+a} \right)^{T} }.
 \end{equation}
  Here is  how this translates in the code. 
+ 
+ 
 \begin{lstlisting}[style=fortran]
   
  Allocate(Op_V(Latt%N,N_FL))

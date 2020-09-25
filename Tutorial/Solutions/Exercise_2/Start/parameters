@@ -3,10 +3,13 @@
 !---------------------------------------------------------------------------------------
 
 &VAR_lattice               !! Parameters defining the specific lattice and base model
-L1           = 6            ! Length in direction a_1
-L2           = 6            ! Length in direction a_2
+L1           = 4            ! Length in direction a_1
+L2           = 1            ! Length in direction a_2
 Lattice_type = "Square"     ! Sets a_1 = (1,0), a_2=(0,1), Norb=1, N_coord=2
-Model        = "Hubbard"    ! Sets the Hubbard model, to be specified in &VAR_Hubbard
+!!!!!! Modifications for Exercise 2
+!Model        = "Hubbard"    ! Sets the Hubbard model, to be specified in &VAR_Hubbard
+Model        = "Hubbard_Plain_Vanilla" ! Sets (after modified) the t-V model, to be specified in &VAR_t_V
+!!!!!!
 /
 
 &VAR_Model_Generic         !! Common model parameters
@@ -32,7 +35,7 @@ NBin                = 5     ! Number of bins
 Ltau                = 1     ! 1 to calculate time-displaced Green functions; 0 otherwise
 LOBS_ST             = 0     ! Start measurements at time slice LOBS_ST
 LOBS_EN             = 0     ! End measurements at time slice LOBS_EN
-CPU_MAX             = 0.0   ! Code stops after CPU_MAX hours, if 0 or not
+CPU_MAX             = 0.05  ! Code stops after CPU_MAX hours, if 0 or not
                             ! specified, the code stops after Nbin bins
 Propose_S0          = .F.   ! Proposes single spin flip moves with probability exp(-S0) 
 Global_moves        = .F.   ! Allows for global moves in space and time 
@@ -93,6 +96,21 @@ ham_U     = 4.d0            ! Hubbard interaction
 ham_T2    = 1.d0            ! For bilayer systems
 ham_U2    = 4.d0            ! For bilayer systems
 ham_Tperp = 1.d0            ! For bilayer systems
+/
+
+!!!!!! Modifications for Exercise 2
+!&VAR_Hubbard_Plain_Vanilla !! Variables for the specific model
+&VAR_t_V                   !! Variables for the specific model
+ham_T     = 1.d0            ! Hopping parameter
+ham_chem  = 0.d0            ! Chemical potential
+!ham_U     = 4.d0            ! Hubbard interaction
+Ham_Vint  = 4.d0            ! Hubbard interaction
+!!!!!!
+Dtau      = 0.1d0           ! Thereby Ltrot=Beta/dtau
+Beta      = 5.d0            ! Inverse temperature
+Projector = .T.             ! Whether the projective algorithm is used
+Theta     = 10.d0           ! Projection parameter
+Symm      = .T.             ! Whether symmetrization takes place
 /
 
 &VAR_tV                    !! Variables for the t-V class

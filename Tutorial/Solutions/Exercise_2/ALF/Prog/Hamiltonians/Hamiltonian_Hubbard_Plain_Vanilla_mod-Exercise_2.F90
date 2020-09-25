@@ -152,6 +152,9 @@
       Type (Unit_cell),     private :: Latt_unit
       Integer,              private :: L1, L2
       real (Kind=Kind(0.d0)),        private :: Ham_T , ham_U,  Ham_chem
+!!!!! Modifications for Exercise 2
+      real (Kind=Kind(0.d0)),        private :: Ham_Vint
+!!!!!      
       real (Kind=Kind(0.d0)),        private :: Dtau, Beta, Theta
       Integer               ,        private :: N_part
       Character (len=64),   private :: Model, Lattice_type
@@ -189,6 +192,9 @@
 
           NAMELIST /VAR_Hubbard_Plain_Vanilla/  Ham_T, ham_chem, ham_U, Dtau, Beta, Projector, Theta, Symm, N_part
           
+!!!!! Modifications for Exercise 2
+          NAMELIST /VAR_t_V/  Ham_T, Ham_chem, Ham_Vint, Dtau, Beta, Projector, Theta, Symm
+!!!!!           
           
 
 #ifdef MPI
@@ -226,14 +232,24 @@
                 Write(6,*) 'For  one-dimensional lattices set L2=1'
                 stop
              endif
-             READ(5,NML=VAR_Hubbard_Plain_Vanilla)
+!!!!! Modifications for Exercise 2
+             !READ(5,NML=VAR_Hubbard_Plain_Vanilla)
+             READ(5,NML=VAR_t_V)
+!!!!!
              CLOSE(5)
 
              Ltrot = nint(beta/dtau)
              if (Projector) Thtrot = nint(theta/dtau)
              Ltrot = Ltrot+2*Thtrot
              N_SUN        = 1
-             N_FL         = 2
+!!!!! Modifications for Exercise 2
+             !N_FL         = 2
+             N_FL         = 1
+             If (L2 /= 1) then
+                Write(6,*) "The t_V model is implemented only for L2 = 1"
+                Stop
+             Endif
+!!!!!
           
 #ifdef MPI
           Endif
@@ -252,7 +268,10 @@
           CALL MPI_BCAST(Beta        ,1,  MPI_REAL8    , 0,Group_Comm,ierr)
           CALL MPI_BCAST(Ham_T       ,1,  MPI_REAL8    , 0,Group_Comm,ierr)
           CALL MPI_BCAST(ham_chem    ,1,  MPI_REAL8    , 0,Group_Comm,ierr)
-          CALL MPI_BCAST(ham_U       ,1,  MPI_REAL8    , 0,Group_Comm,ierr)
+!!!!! Modifications for Exercise 2
+          !CALL MPI_BCAST(ham_U       ,1,  MPI_REAL8    , 0,Group_Comm,ierr)
+          CALL MPI_BCAST(Ham_Vint    ,1,  MPI_REAL8    , 0,Group_Comm,ierr)
+!!!!!
 #endif
 
           ! Setup the Bravais lattice
@@ -287,7 +306,10 @@
              endif
              Write(50,*) 'dtau,Ltrot_eff: ', dtau,Ltrot
              Write(50,*) 't             : ', Ham_T
-             Write(50,*) 'Ham_U         : ', Ham_U
+!!!!! Modifications for Exercise 2
+             !Write(50,*) 'Ham_U         : ', Ham_U
+             Write(50,*) 'Ham_Vint      : ', Ham_Vint
+!!!!!
              Write(50,*) 'Ham_chem      : ', Ham_chem
              Close(50) 
 #ifdef MPI
@@ -457,13 +479,21 @@
           
           Integer :: nf, I
           Real (Kind=Kind(0.d0)) :: X
+!!!!! Modifications for Exercise 2
+          Integer :: i2
+!!!!!
           
 
           Allocate(Op_V(Ndim,N_FL))
 
+          ham_U = Ham_Vint ! for testing
+          
           do nf = 1,N_FL
              do i  = 1, Ndim
+!!!!! Modifications for Exercise 2
                 Call Op_make(Op_V(i,nf), 1)
+                !Call Op_make(Op_V(i,nf), 2)
+!!!!!
              enddo
           enddo
           
@@ -471,11 +501,21 @@
              X = 1.d0
              if (nf == 2)  X = -1.d0
              Do i = 1,Ndim
-                Op_V(i,nf)%P(1)   = I
-                Op_V(i,nf)%O(1,1) = cmplx(1.d0, 0.d0, kind(0.D0))
-                Op_V(i,nf)%g      = X*SQRT(CMPLX(DTAU*ham_U/2.d0, 0.D0, kind(0.D0))) 
-                Op_V(i,nf)%alpha  = cmplx(0.d0, 0.d0, kind(0.D0))
+!!!!! Modifications for Exercise 2
+                !Op_V(i,nf)%P(1)   = i
+                !Op_V(i,nf)%O(1,1) = cmplx(1.d0, 0.d0, kind(0.D0))
+                !Op_V(i,nf)%g      = X*SQRT(CMPLX(DTAU*ham_U/2.d0, 0.D0, kind(0.D0))) 
+                !Op_V(i,nf)%alpha  = cmplx(0.d0, 0.d0, kind(0.D0))
+                !Op_V(i,nf)%type   = 2
+                i2                = Latt%nnlist(i,1,0)
+                Op_V(i,nf)%P(1)   = i
+                Op_V(i,nf)%P(2)   = i2
+                Op_V(i,nf)%O(1,2) = cmplx(1.d0 ,0.d0, kind(0.d0))
+                Op_V(i,nf)%O(2,1) = cmplx(1.d0 ,0.d0, kind(0.d0)) 
+                Op_V(i,nf)%g      = sqrt(cmplx(Dtau*Ham_Vint/2.d0, 0.d0, kind(0.d0)))  
+                Op_V(i,nf)%alpha  = cmplx(0d0  ,0.d0, kind(0.d0))
                 Op_V(i,nf)%type   = 2
+!!!!!
                 Call Op_set( Op_V(i,nf) )
              Enddo
           Enddo
@@ -600,6 +640,9 @@
           Complex (Kind=Kind(0.d0)) :: Zrho, Zkin, ZPot, Z, ZP,ZS, ZZ, ZXY, ZDen
           Integer :: I,J, imj, nf,  Ix, Iy
           Real    (Kind=Kind(0.d0)) :: X
+!!!!! Modifications for Exercise 2
+          Integer ::I1, J1, no_I, no_J
+!!!!!
           
           ZP = PHASE/Real(Phase, kind(0.D0))
           ZS = Real(Phase, kind(0.D0))/Abs(Real(Phase, kind(0.D0)))
@@ -626,8 +669,11 @@
           Zkin = Zkin* dble(N_SUN)
           Do I = 1,Latt%N
              Ix = Latt%nnlist(I,1,0)
-             Zkin = Zkin  + GRC(I,Ix,1)  + GRC(Ix,I,1)  &
-                  &       + GRC(I,Ix,2)  + GRC(Ix,I,2)
+!!!!! Modifications for Exercise 2
+             !Zkin = Zkin  + GRC(I,Ix,1)  + GRC(Ix,I,1)  &
+             !     &       + GRC(I,Ix,2)  + GRC(Ix,I,2)
+             Zkin = Zkin + GRC(I,Ix,1)  + GRC(Ix,I,1)
+!!!!!
           Enddo
           If (L2 > 1) then
              Do I = 1,Latt%N
@@ -642,7 +688,11 @@
 
           ZPot = cmplx(0.d0, 0.d0, kind(0.D0))
           Do I = 1,Ndim
-             ZPot = ZPot + Grc(i,i,1) * Grc(i,i, 2)
+!!!!! Modifications for Exercise 2
+             !ZPot = ZPot + Grc(i,i,1) * Grc(i,i, 2)
+             i1 = Latt%nnlist(i,1,0)
+             ZPot = ZPot + Grc(i,i,1) * Grc(i1,i1, 1) +  Grc(i,i1,1)*Gr(i,i1,1)
+!!!!!
           Enddo
           Zpot = Zpot*ham_U
           Obs_scal(2)%Obs_vec(1)  =  Obs_scal(2)%Obs_vec(1) + Zpot * ZP*ZS
@@ -650,7 +700,10 @@
 
           Zrho = cmplx(0.d0,0.d0, kind(0.D0))
           Do I = 1,Ndim
-             Zrho = Zrho + Grc(i,i,1) +  Grc(i,i,2)
+!!!!! Modifications for Exercise 2
+             !Zrho = Zrho + Grc(i,i,1) +  Grc(i,i,2)
+             Zrho = Zrho + Grc(i,i,1)
+!!!!!
           enddo
           Obs_scal(3)%Obs_vec(1)  =    Obs_scal(3)%Obs_vec(1) + Zrho * ZP*ZS
           Obs_scal(4)%Obs_vec(1)  =    Obs_scal(4)%Obs_vec(1) + (Zkin + Zpot)*ZP*ZS
@@ -660,25 +713,47 @@
              Obs_eq(I)%Ave_sign  =  Obs_eq(I)%Ave_sign + Real(ZS,kind(0.d0))
           Enddo
 
-          Do I = 1,Latt%N
-             Do J = 1,Latt%N
-                imj  = latt%imj(I,J)
-                ZXY  = GRC(I,J,1) * GR(I,J,2) +  GRC(I,J,2) * GR(I,J,1) 
-                ZZ   = GRC(I,J,1) * GR(I,J,1) +  GRC(I,J,2) * GR(I,J,2)    + &
-                       (GRC(I,I,2) - GRC(I,I,1))*(GRC(J,J,2) - GRC(J,J,1))  
+!!!!! Modifications for Exercise 2
+          !Do I = 1,Latt%N
+          !   Do J = 1,Latt%N
+          !      imj  = latt%imj(I,J)
+          !      ZXY  = GRC(I,J,1) * GR(I,J,2) +  GRC(I,J,2) * GR(I,J,1) 
+          !      ZZ   = GRC(I,J,1) * GR(I,J,1) +  GRC(I,J,2) * GR(I,J,2)    + &
+          !             (GRC(I,I,2) - GRC(I,I,1))*(GRC(J,J,2) - GRC(J,J,1))  
 
-                ZDen = (GRC(I,I,1) + GRC(I,I,2)) * (GRC(I,I,1) + GRC(I,I,2)) + &
-                     &  GRC(I,J,1) * GR(I,J,1)   +  GRC(I,J,2) * GR(I,J,2)  
-                Obs_eq(1)%Obs_Latt(imj,1,1,1) =  Obs_eq(1)%Obs_Latt(imj,1,1,1) + (GRC(I,J,1) + GRC(I,J,2))*ZP*ZS
-                Obs_eq(2)%Obs_Latt(imj,1,1,1) =  Obs_eq(2)%Obs_Latt(imj,1,1,1) +  ZZ  *ZP*ZS
-                Obs_eq(3)%Obs_Latt(imj,1,1,1) =  Obs_eq(3)%Obs_Latt(imj,1,1,1) +  ZXY *ZP*ZS
-                Obs_eq(4)%Obs_Latt(imj,1,1,1) =  Obs_eq(4)%Obs_Latt(imj,1,1,1) + (2.d0*ZXY + ZZ)*ZP*ZS/3.d0
-                Obs_eq(5)%Obs_Latt(imj,1,1,1) =  Obs_eq(5)%Obs_Latt(imj,1,1,1) +  ZDen * ZP * ZS 
+          !      ZDen = (GRC(I,I,1) + GRC(I,I,2)) * (GRC(I,I,1) + GRC(I,I,2)) + &
+          !           &  GRC(I,J,1) * GR(I,J,1)   +  GRC(I,J,2) * GR(I,J,2)  
+          !      Obs_eq(1)%Obs_Latt(imj,1,1,1) =  Obs_eq(1)%Obs_Latt(imj,1,1,1) + (GRC(I,J,1) + GRC(I,J,2))*ZP*ZS
+          !      Obs_eq(2)%Obs_Latt(imj,1,1,1) =  Obs_eq(2)%Obs_Latt(imj,1,1,1) +  ZZ  *ZP*ZS
+          !      Obs_eq(3)%Obs_Latt(imj,1,1,1) =  Obs_eq(3)%Obs_Latt(imj,1,1,1) +  ZXY *ZP*ZS
+          !      Obs_eq(4)%Obs_Latt(imj,1,1,1) =  Obs_eq(4)%Obs_Latt(imj,1,1,1) + (2.d0*ZXY + ZZ)*ZP*ZS/3.d0
+          !      Obs_eq(5)%Obs_Latt(imj,1,1,1) =  Obs_eq(5)%Obs_Latt(imj,1,1,1) +  ZDen * ZP * ZS 
 
-                
+          !   enddo
+          !   Obs_eq(5)%Obs_Latt0(1) = Obs_eq(5)%Obs_Latt0(1) + (GRC(I,I,1) + GRC(I,I,2)) *  ZP*ZS
+          !enddo
+          Z =  cmplx(dble(N_SUN), 0.d0, kind(0.D0))
+          Do I1 = 1,Ndim
+             I    = I1 !List(I1,1)
+             no_I = 1  !List(I1,2)
+             Do J1 = 1,Ndim
+                J    = J1 !List(J1,1)
+                no_J = 1  !List(J1,2)
+                imj = latt%imj(I,J)
+                ! Green
+                Obs_eq(1)%Obs_Latt(imj,1,no_I,no_J) =  Obs_eq(1)%Obs_Latt(imj,1,no_I,no_J) + &
+                     &               Z * GRC(I1,J1,1) * ZP*ZS  ! Green
+                Obs_eq(2)%Obs_Latt(imj,1,no_I,no_J) =  Obs_eq(2)%Obs_Latt(imj,1,no_I,no_J) + &
+                     &               Z * GRC(I1,J1,1) * GR(I1,J1,1) * ZP*ZS! SpinZ
+                Obs_eq(3)%Obs_Latt(imj,1,no_I,no_J) =  Obs_eq(3)%Obs_Latt(imj,1,no_I,no_J) + &
+                     &               Z * GRC(I1,J1,1) * GR(I1,J1,1) * ZP*ZS ! SpinXY
+                Obs_eq(4)%Obs_Latt(imj,1,no_I,no_J) =  Obs_eq(4)%Obs_Latt(imj,1,no_I,no_J) + &
+                     &               ( GRC(I1,I1,1) * GRC(J1,J1,1) * Z + &
+                     &                 GRC(I1,J1,1) * GR(I1,J1,1 )       ) * Z * ZP*ZS ! Den
              enddo
-             Obs_eq(5)%Obs_Latt0(1) = Obs_eq(5)%Obs_Latt0(1) + (GRC(I,I,1) + GRC(I,I,2)) *  ZP*ZS
+             Obs_eq(4)%Obs_Latt0(no_I) =  Obs_eq(4)%Obs_Latt0(no_I) +  Z * GRC(I1,I1,1) * ZP * ZS
           enddo
+!!!!!
           
           
           
@@ -732,30 +807,53 @@
                 Obs_tau(I)%Ave_sign  =  Obs_tau(I)%Ave_sign + Real(ZS,kind(0.d0))
              Enddo
           Endif
-          Do I = 1,Latt%N
-             Do J = 1,Latt%N
-                imj  = latt%imj(I,J)
-
-                ZZ   =      (GTT(I,I,1) -  GTT(I,I,2) ) * ( G00(J,J,1)  -  G00(J,J,2) )   &
-                     &    -  G0T(J,I,1) * GT0(I,J,1)  -  G0T(J,I,2) * GT0(I,J,2) 
-                ZXY  =    -  G0T(J,I,1) * GT0(I,J,2)  -  G0T(J,I,2) * GT0(I,J,1) 
-                
-
-                ZDen =   (cmplx(2.d0,0.d0,kind(0.d0)) -  GTT(I,I,1) - GTT(I,I,2) ) * &
-                     &   (cmplx(2.d0,0.d0,kind(0.d0)) -  G00(J,J,1) - G00(J,J,2) )   &
-                     &   -G0T(J,I,1) * GT0(I,J,1)  -  G0T(J,I,2) * GT0(I,J,2) 
-
-                Obs_tau(1)%Obs_Latt(imj,NT+1,1,1) =  Obs_tau(1)%Obs_Latt(imj,NT+1,1,1) + (GT0(I,J,1) + GT0(I,J,2))*ZP*ZS
-                Obs_tau(2)%Obs_Latt(imj,NT+1,1,1) =  Obs_tau(2)%Obs_Latt(imj,NT+1,1,1) +  ZZ  *ZP*ZS
-                Obs_tau(3)%Obs_Latt(imj,NT+1,1,1) =  Obs_tau(3)%Obs_Latt(imj,NT+1,1,1) +  ZXY *ZP*ZS
-                Obs_tau(4)%Obs_Latt(imj,NT+1,1,1) =  Obs_tau(4)%Obs_Latt(imj,NT+1,1,1) + (2.d0*ZXY + ZZ)*ZP*ZS/3.d0
-                Obs_tau(5)%Obs_Latt(imj,NT+1,1,1) =  Obs_tau(5)%Obs_Latt(imj,NT+1,1,1) +  ZDen * ZP * ZS 
-
-                
-             enddo
-             Obs_tau(5)%Obs_Latt0(1) = Obs_tau(5)%Obs_Latt0(1) + &
-                  &                   (cmplx(2.d0,0.d0,kind(0.d0)) -  GTT(I,I,1) - GTT(I,I,2))  *  ZP*ZS
-          enddo
+!!!!! Modifications for Exercise 2
+!          Do I = 1,Latt%N
+!             Do J = 1,Latt%N
+!                imj  = latt%imj(I,J)
+!
+!                ZZ   =      (GTT(I,I,1) -  GTT(I,I,2) ) * ( G00(J,J,1)  -  G00(J,J,2) )   &
+!                     &    -  G0T(J,I,1) * GT0(I,J,1)  -  G0T(J,I,2) * GT0(I,J,2) 
+!                ZXY  =    -  G0T(J,I,1) * GT0(I,J,2)  -  G0T(J,I,2) * GT0(I,J,1) 
+!                
+!
+!                ZDen =   (cmplx(2.d0,0.d0,kind(0.d0)) -  GTT(I,I,1) - GTT(I,I,2) ) * &
+!                     &   (cmplx(2.d0,0.d0,kind(0.d0)) -  G00(J,J,1) - G00(J,J,2) )   &
+!                     &   -G0T(J,I,1) * GT0(I,J,1)  -  G0T(J,I,2) * GT0(I,J,2) 
+!
+!                Obs_tau(1)%Obs_Latt(imj,NT+1,1,1) =  Obs_tau(1)%Obs_Latt(imj,NT+1,1,1) + (GT0(I,J,1) + GT0(I,J,2))*ZP*ZS
+!                Obs_tau(2)%Obs_Latt(imj,NT+1,1,1) =  Obs_tau(2)%Obs_Latt(imj,NT+1,1,1) +  ZZ  *ZP*ZS
+!                Obs_tau(3)%Obs_Latt(imj,NT+1,1,1) =  Obs_tau(3)%Obs_Latt(imj,NT+1,1,1) +  ZXY *ZP*ZS
+!                Obs_tau(4)%Obs_Latt(imj,NT+1,1,1) =  Obs_tau(4)%Obs_Latt(imj,NT+1,1,1) + (2.d0*ZXY + ZZ)*ZP*ZS/3.d0
+!                Obs_tau(5)%Obs_Latt(imj,NT+1,1,1) =  Obs_tau(5)%Obs_Latt(imj,NT+1,1,1) +  ZDen * ZP * ZS 
+!   
+!             enddo
+!             Obs_tau(5)%Obs_Latt0(1) = Obs_tau(5)%Obs_Latt0(1) + &
+!                  &                   (cmplx(2.d0,0.d0,kind(0.d0)) -  GTT(I,I,1) - GTT(I,I,2))  *  ZP*ZS
+!          enddo
+          Z =  cmplx(dble(N_SUN),0.d0, kind(0.D0))
+          Do I1 = 1,Ndim
+             I    = I1 !List(I1,1)
+             no_I = 1  !List(I1,2)
+             Do J1 = 1,Ndim
+                J    = J1 !List(J1,1)
+                no_J = 1  !List(J1,2)
+                imj = latt%imj(I,J)
+                Obs_tau(1)%Obs_Latt(imj,nt+1,no_I,no_J) =  Obs_tau(1)%Obs_Latt(imj,nt+1,no_I,no_J)  &
+                     & +  Z * GT0(I1,J1,1) * ZP*ZS ! Green
+                Obs_tau(2)%Obs_Latt(imj,nt+1,no_I,no_J) =  Obs_tau(2)%Obs_Latt(imj,nt+1,no_I,no_J)  &
+                     & -  Z * G0T(J1,I1,1) * GT0(I1,J1,1) *ZP*ZS ! SpinZ
+                Obs_tau(3)%Obs_Latt(imj,nt+1,no_I,no_J) =  Obs_tau(3)%Obs_Latt(imj,nt+1,no_I,no_J)  &
+                     & -  Z * G0T(J1,I1,1) * GT0(I1,J1,1) *ZP*ZS ! SpinXY
+                Obs_tau(4)%Obs_Latt(imj,nt+1,no_I,no_J) =  Obs_tau(4)%Obs_Latt(imj,nt+1,no_I,no_J)  &
+                     & + ( Z*Z*(cmplx(1.d0,0.d0,kind(0.d0)) - GTT(I1,I1,1))*   &
+                     &     (cmplx(1.d0,0.d0,kind(0.d0)) - G00(J1,J1,1))  -     &
+                     &     Z * GT0(I1,J1,1)*G0T(J1,I1,1)                         ) * ZP * ZS ! Den
+             Enddo
+             Obs_tau(4)%Obs_Latt0(no_I) = Obs_tau(4)%Obs_Latt0(no_I) + &
+                  &         Z*(cmplx(1.d0,0.d0,kind(0.d0)) - GTT(I1,I1,1)) * ZP * ZS
+          Enddo
+!!!!!
           
 
           
