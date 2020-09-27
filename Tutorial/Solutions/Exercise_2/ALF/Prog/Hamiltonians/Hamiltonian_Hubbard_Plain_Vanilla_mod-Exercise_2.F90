@@ -492,8 +492,8 @@
           do nf = 1,N_FL
              do i  = 1, Ndim
 !!!!! Modifications for Exercise 2
-                Call Op_make(Op_V(i,nf), 1)
-                !Call Op_make(Op_V(i,nf), 2)
+                !Call Op_make(Op_V(i,nf), 1)
+                Call Op_make(Op_V(i,nf), 2)
 !!!!!
              enddo
           enddo

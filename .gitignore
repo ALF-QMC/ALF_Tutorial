@@ -6,3 +6,6 @@
 */*.synctex.gz
 */*/*.synctex.gz
 */*.toc
+*.mod
+*.o
+*.out
