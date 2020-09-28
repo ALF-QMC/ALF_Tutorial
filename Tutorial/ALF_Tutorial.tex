@@ -296,7 +296,7 @@ git clone  git@git.physik.uni-wuerzburg.de:ALF/ALF_Tutorial.git
 Here we will modify the code  so as to allow  for different hopping matrix elements along the $x$ and $y$ directions of a square lattice.
 
 \exerciseitem{Modifying the hopping}
-To do so we start from the module \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod.F90} found in \texttt{\$ALF\_DIR/Prog/Hamiltonians/}, which we here shorten to ``\texttt{Vanilla}'', and then: 
+To do so we start from the module \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod.F90}, which we here shorten to ``\texttt{Vanilla}'', found in \texttt{\$ALF\_DIR/Prog/Hamiltonians/}, proceeding as follows: 
 \begin{itemize}
 	\item Add \texttt{Ham\_Ty} to the \texttt{VAR\_Hubbard\_Plain\_Vanilla} name space in the parameter file \texttt{parameters}.
 	\item Declare a new variable, \texttt{Ham\_Ty}, in the module's specification (just search for the declaration of \texttt{Ham\_T} in \texttt{Vanilla}).
@@ -321,9 +321,9 @@ Do I = 1,Latt%N
 Enddo
 \end{lstlisting} 
 \end{itemize}
-Note: If you'd like to run the simulation using MPI, you should also add the broadcasting call for \texttt{Ham\_Ty} to \texttt{Ham\_Set}. It is a good idea as well to include the new variable to the simulation parameters written into the file \texttt{info}, also in \texttt{Ham\_Set}.
+Note: If you'd like to run the simulation using MPI, you should also add the broadcasting call for \texttt{Ham\_Ty} to \texttt{Ham\_Set}. It is a good idea as well to get the new simulation parameter written into the file \texttt{info}, also a change in \texttt{Ham\_Set}.
 
-In the directory \texttt{Solutions/Exercise\_1} we have duplicated ALF's code and commented  the changes that have to be carried out to the file \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod.F90} in the \texttt{Prog} directory. The solution directory also includes reference data and the necessary \texttt{Start} directory (remember to copy its contents to every new \texttt{Run} directory, and to have a different \texttt{Run} directory for each simulation).
+In the directory \texttt{Solutions/Exercise\_1} we have duplicated ALF's code and commented the changes that have to be carried out to the file \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod.F90}, found in the \texttt{Prog/Hamiltonians} directory. The solution directory also includes the modified and original modules, as well as reference data and the necessary \texttt{Start} directory (remember to copy its contents to every new \texttt{Run} directory, and to have a different \texttt{Run} directory for each simulation).
 
 \noindent
 As an application of this code, we can once again consider a ladder system (e.g, a 2-leg ladder with \texttt{L1=14} and \texttt{L2=2}), for different values of \texttt{Ham\_Ty}. The results you should obtain are summarized in Fig.~\ref{fig:ladder}.
@@ -361,7 +361,7 @@ Note that the t-V model is already implemented in ALF in the module \texttt{Hami
 
 \exerciseitem{Define new model}
 
-In the directory  \texttt{\$ALF\_DIR/Solutions/Exercise\_2} we have  duplicated the ALF and commented  the changes that have to be carried out to the file \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod.F90} found in \texttt{\$ALF\_DIR/Prog/Hamiltonians/}, which we here shorten to ``\texttt{Vanilla}''. The following are the essential steps to be carried out:
+In the directory  \texttt{\$ALF\_DIR/Solutions/Exercise\_2} we have  duplicated the ALF and commented  the changes that have to be carried out to the file \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod.F90}, which we here shorten to ``\texttt{Vanilla}'', found in \texttt{\$ALF\_DIR/Prog/Hamiltonians/}. The following are the essential steps to be carried out:
 \begin{itemize}
 \item  Add the \texttt{VAR\_t\_V} name space in the file \texttt{parameters} and set the necessary variables -- or simply rename the \texttt{VAR\_Hubbard\_Plain\_Vanilla} name space to \texttt{VAR\_t\_V} and, within it, \texttt{Ham\_U} to \texttt{Ham\_Vint}. (Ignore the name space \texttt{VAR\_tV}, which is used by the general implementation mentioned above.)
 \item  Declare a new variable, \texttt{Ham\_Vint}, in \texttt{Vanilla}'s specification.
@@ -373,32 +373,67 @@ e^{\Delta \tau \frac{V}{2} \left( \hat{c}^{\dagger}_{i}  \hat{c}^{\phantom\dagge
 \sum_{l= \pm1, \pm 2} \gamma_l e^{ \sqrt{\Delta \tau \frac{V}{2}}  \eta_l   \left( \hat{c}^{\dagger}_{i}  \hat{c}^{\phantom\dagger}_{i+a}      + \hat{c}^{\dagger}_{i+a}  \hat{c}^{\phantom\dagger}_{i} \right) } =  \sum_{l= \pm1, \pm 2} \gamma_l e^{ g  \eta_l   \left( \hat{c}^{\dagger}_{i},  \hat{c}^{\dagger}_{i+a}  \right)  O 
     \left(\hat{c}^{\phantom\dagger}_{i},  \hat{c}^{\phantom\dagger}_{i+a} \right)^{T} }.
 \end{equation}
- Here is  how this translates in the code. 
+ Here is  how this translates in the code (the new integer variable, \texttt{i2}, should be declared): 
  
  
 \begin{lstlisting}[style=fortran]
-  
- Allocate(Op_V(Latt%N,N_FL))
+Allocate(Op_V(Ndim,N_FL))
  do nf = 1,N_FL
-    do i  =  1, N_coord*Ndim
+    do i  =  1, Ndim
        call Op_make(Op_V(i,nf),2)
     enddo
  enddo
- Do nc = 1, Latt%N  ! Runs over bonds = # of lattice sites in one-dimension. 
-    I1 = nc
-    I2 = Latt%nnlist(I1,1,0)  
-    Op_V(nc,1)%P(1) = I1
-    Op_V(nc,1)%P(2) = I2
-    Op_V(nc,1)%O(1,2) = cmplx(1.d0 ,0.d0, kind(0.D0)) 
-    Op_V(nc,1)%O(2,1) = cmplx(1.d0 ,0.d0, kind(0.D0)) 
-    Op_V(nc,1)%g      = SQRT(CMPLX( DTAU*Ham_Vint/2.d0, 0.D0, kind(0.D0)))  
-    Op_V(nc,1)%alpha  = cmplx(0d0,0.d0, kind(0.D0)) 
-    Op_V(nc,1)%type =2
-    Call Op_set( Op_V(nc,1) )
+ Do i = 1, Ndim  ! Runs over bonds = # of lattice sites in one-dimension. 
+    i2                = Latt%nnlist(i,1,0)
+    Op_V(i,nf)%P(1)   = i
+    Op_V(i,nf)%P(2)   = i2
+    Op_V(i,nf)%O(1,2) = cmplx(1.d0 ,0.d0, kind(0.d0))
+    Op_V(i,nf)%O(2,1) = cmplx(1.d0 ,0.d0, kind(0.d0)) 
+    Op_V(i,nf)%g      = sqrt(cmplx(Dtau*Ham_Vint/2.d0, 0.d0, kind(0.d0)))  
+    Op_V(i,nf)%alpha  = cmplx(0d0  ,0.d0, kind(0.d0))
+    Op_V(i,nf)%type   = 2
+    Call Op_set( Op_V(i,nf) )
  enddo
 \end{lstlisting}
-\item  Finally you will have to update the  \texttt{Obser} and  \texttt{ObserT} routines for  the calculation of the equal and time  displaced correlations.  For the \texttt{t\_V}  model you can essentially use the same observables as for the \texttt{Hubbard\_SU(2)}  model.  
+\item  Finally, you have to update the \texttt{Obser} and \texttt{ObserT} routines for the calculation of equal- and time-displaced correlations. For the \texttt{t\_V} model you can essentially use the same observables as for the \texttt{Hubbard\_SU(2)} model in 1D -- a step which requires a number of changes with respect to the \texttt{Vanilla} base, such as:
+\begin{lstlisting}[style=fortran]
+!!!!! Modifications for Exercise 2
+!Zpot = Zpot*ham_U                       ! Vanilla
+ Zpot = Zpot*Ham_Vint                     ! t-V
+ !!!!!
+\end{lstlisting}
+and
+\begin{lstlisting}[style=fortran]
+ !Zrho = Zrho + Grc(i,i,1) +  Grc(i,i,2)  ! Vanilla
+ Zrho = Zrho + Grc(i,i,1)                 ! t-V
+\end{lstlisting}
+with the observables being coded in the routine \texttt{Obser} as
+\begin{lstlisting}[style=fortran]
+Z = cmplx(dble(N_SUN), 0.d0, kind(0.D0))
+ Do I1 = 1,Ndim
+    I = I1
+    no_I = 1
+    Do J1 = 1,Ndim
+       J = J1
+       no_J = 1
+       imj = latt%imj(I,J)
+       Obs_eq(1)%Obs_Latt(imj,1,no_I,no_J) =  Obs_eq(1)%Obs_Latt(imj,1,no_I,no_J) + &
+       &               Z * GRC(I1,J1,1) * ZP*ZS  ! Green
+       Obs_eq(2)%Obs_Latt(imj,1,no_I,no_J) =  Obs_eq(2)%Obs_Latt(imj,1,no_I,no_J) + &
+       &               Z * GRC(I1,J1,1) * GR(I1,J1,1) * ZP*ZS  ! SpinZ
+       Obs_eq(3)%Obs_Latt(imj,1,no_I,no_J) =  Obs_eq(3)%Obs_Latt(imj,1,no_I,no_J) + &
+       &               ( GRC(I1,I1,1) * GRC(J1,J1,1) * Z + &
+       &                 GRC(I1,J1,1) * GR(I1,J1,1 )       ) * Z * ZP*ZS  ! Den
+    enddo
+    Obs_eq(3)%Obs_Latt0(no_I) =  Obs_eq(3)%Obs_Latt0(no_I) + Z * GRC(I1,I1,1) * ZP * ZS
+ enddo
+\end{lstlisting}
+among other changes - with similar ones in the \texttt{ObserT} routine.
+
+All necessary changes are implemented and clearly indicated in the solution provided in \texttt{Solutions/Exercise\_2/Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod-Exercise\_2.F90}.
 \end{itemize}
+
+In the directory \texttt{Solutions/Exercise\_2} we have duplicated ALF's code and commented the changes that have to be carried out to the file \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod.F90} in the \texttt{Prog/Hamiltonians} directory. The solution directory also includes reference data and the necessary \texttt{Start} directory (remember to copy its contents to every new \texttt{Run} directory, and to have a different \texttt{Run} directory for each simulation).
 
 You can now run the code for  various values of $V/t$. A Jordan-Wigner transformation  will map the  \texttt{t\_V}  model onto the XXZ  chain:
 \begin{equation}
@@ -407,9 +442,8 @@ You can now run the code for  various values of $V/t$. A Jordan-Wigner transform
 with $J_{zz} = V $ and $J_{xx}  = 2t$. Hence when $V/t = 2$ we reproduce the Heisenberg model.   For $V/t > 2$  the model is in the Ising  regime with long-range charge density wave order and is an insulator. In the regime  $ -2 < V/t < 2$   the model  is metallic and corresponds to a Luttinger liquid. Finally, at $ V/t < - 2$   phase separation between hole rich and electron rich phases occur.   Fig.~\ref{tV.fig}  shows typical results. 
 \begin{figure}[htb]
 	\begin{center}
-   	\includegraphics[scale=.8]{tV.pdf}
-    \caption{Density-Density correlation functions  of the t-V model. In the Luttinger liquid phase,  $-2 < V/t < 2$   it is known   that the density -density correlations  decay as 
-    $    \langle n(r) n(0)\rangle   \propto \cos(\pi r) r^{-\left(1+K_\rho \right) }   $  with $\left(1+K_\rho \right)^{-1}= \frac{1}{2} + \frac{1}{\pi}  \arcsin \left( \frac{V}{2 | t | }\right)  $
+   	\includegraphics[width=0.6\columnwidth]{tV.pdf}
+    \caption{Density-Density correlation functions  of the t-V model. In the Luttinger liquid phase, $-2 < V/t < 2$, it is known that the density-density correlations decay as $ \langle n(r) n(0)\rangle   \propto \cos(\pi r) r^{-\left(1+K_\rho \right) } $  with $\left(1+K_\rho \right)^{-1}= \frac{1}{2} + \frac{1}{\pi}  \arcsin \left( \frac{V}{2 | t | }\right) $
    (A. Luther and I. Peschel, Calculation of critical exponents in two dimensions from quantum field theory in one dimension, Phys. Rev. B 12 (1975), 3908.)  The interested reader can try to reproduce this result.}
    \label{tV.fig} 
    \end{center}
