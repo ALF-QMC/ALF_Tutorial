@@ -274,21 +274,39 @@ which opens the ``notebook dashboard'' in your default browser, where you can na
 A lot already comes implemented in ALF, but unavoidably, as one proceeds in their own investigations, a new model has to be implemented or a new observable defined -- and for that, one must grapple with the package's Fortran source code. 
 This second part of the tutorial consists in a set of guided exercises that exemplify how to make basic additions to the code, taking as starting point the template-like, relatively self-contained module \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod.F90}, which is also a good display of ALF's internal workings.
 
-These worked-out exercises, together with ALF's modularity provided by its Predefined Structures should make getting your hands dirty less daunting than it may sound.
+These worked-out exercises, together with ALF's modularity, boosted by its Predefined Structures, should make getting your hands dirty less daunting than it may sound.
 
 
-\section*{Downloading the code and tutorial}
+\section*{Downloading and using the code and tutorial}
 One can use the ALF package downloaded automatically by the Python script in the first part of this tutorial, or manually, by typing
 \begin{lstlisting}[style=bash]
 git clone  git@git.physik.uni-wuerzburg.de:ALF/ALF.git
 \end{lstlisting}
-in a shell. The necessary environment variables and the directives for compiling the code are set by the script \texttt{configure.sh}: \lstinline[style=bash]|source configure.sh GNU|, followed by the command  \lstinline[style=bash,morekeywords={make}]|make|. Details and further options are described in the package's documentation found in its repository.
-
-Similarly, to download the tutorial, including solutions, enter:
+in a shell. Similarly, to download the tutorial, including solutions, enter:
 \begin{lstlisting}[style=bash]
 git clone  git@git.physik.uni-wuerzburg.de:ALF/ALF_Tutorial.git
 \end{lstlisting}
 
+The necessary environment variables and the directives for compiling the code are set by the script \texttt{configure.sh}: \lstinline[style=bash]|source configure.sh GNU|, followed by the command  \lstinline[style=bash,morekeywords={make}]|make|. Details and further options are described in the package's documentation found in its repository.
+
+A workflow you can adopt for solving the exercises -- or indeed using ALF in general -- is the following:
+\begin{enumerate}
+	\item Compile the modified Hamiltonian module, for instance:\\
+	\lstinline[style=bash,morekeywords={make}]{make Hubbard_Plain_Vanilla}
+	\item Create a data directory with the content of \texttt{Start}:\\
+	\lstinline[style=bash,morekeywords={cp}]{cp -r ./Start ./Run  &&  cd ./Run/}
+	\item Run its executable, e.g., serially:\\
+	\lstinline[style=bash]{$ALF_DIR/Prog/Hamiltonians/Hubbard_Plain_Vanilla.out} %$
+	\item Perform default analyses\footnote{The \texttt{analysis.sh} bash script from earlier versions of ALF, run without arguments, is still available in the \texttt{Start} directory.}:\\
+	\lstinline[style=bash]{$ALF_DIR/Analysis/ana.out *} %$
+\end{enumerate}
+The structure of the data files and details on the analysis output can be found in ALF's documentation.
+
+%Two common pitfalls are:
+%\begin{itemize}
+%	\item forgetting to run \texttt{configure.sh}, and
+%	\item not using different \texttt{Run} data directories for independent runs.
+%\end{itemize}
 
 
 \exercise{Dimensional crossover}
@@ -325,8 +343,7 @@ Note: If you'd like to run the simulation using MPI, you should also add the bro
 
 In the directory \texttt{Solutions/Exercise\_1} we have duplicated ALF's code and commented the changes that have to be carried out to the file \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod.F90}, found in the \texttt{Prog/Hamiltonians} directory. The solution directory also includes the modified and original modules, as well as reference data and the necessary \texttt{Start} directory (remember to copy its contents to every new \texttt{Run} directory, and to have a different \texttt{Run} directory for each simulation).
 
-\noindent
-As an application of this code, we can once again consider a ladder system (e.g, a 2-leg ladder with \texttt{L1=14} and \texttt{L2=2}), for different values of \texttt{Ham\_Ty}. The results you should obtain are summarized in Fig.~\ref{fig:ladder}.
+As an application of this code, we can once again consider a ladder system (e.g, a 2-leg ladder with \texttt{L1=14} and \texttt{L2=2}), for different values of \texttt{Ham\_Ty}. The results you should obtain for the total spin correlation function (file \texttt{SpinT\_eqJR}) are summarized in Fig.~\ref{fig:ladder}.
 
 \begin{figure}[h]
 	\begin{center}
@@ -398,13 +415,13 @@ Allocate(Op_V(Ndim,N_FL))
 \item  Finally, you have to update the \texttt{Obser} and \texttt{ObserT} routines for the calculation of equal- and time-displaced correlations. For the \texttt{t\_V} model you can essentially use the same observables as for the \texttt{Hubbard\_SU(2)} model in 1D -- a step which requires a number of changes with respect to the \texttt{Vanilla} base, such as:
 \begin{lstlisting}[style=fortran]
 !!!!! Modifications for Exercise 2
-!Zpot = Zpot*ham_U                       ! Vanilla
+ !Zpot = Zpot*ham_U                       ! Vanilla
  Zpot = Zpot*Ham_Vint                     ! t-V
  !!!!!
 \end{lstlisting}
 and
 \begin{lstlisting}[style=fortran]
- !Zrho = Zrho + Grc(i,i,1) +  Grc(i,i,2)  ! Vanilla
+!Zrho = Zrho + Grc(i,i,1) +  Grc(i,i,2)  ! Vanilla
  Zrho = Zrho + Grc(i,i,1)                 ! t-V
 \end{lstlisting}
 with the observables being coded in the routine \texttt{Obser} as
@@ -437,9 +454,9 @@ In the directory \texttt{Solutions/Exercise\_2} we have duplicated ALF's code an
 
 You can now run the code for  various values of $V/t$. A Jordan-Wigner transformation  will map the  \texttt{t\_V}  model onto the XXZ  chain:
 \begin{equation}
-\hat{H} = J_{xx} \sum_{i}   \hat{S}^{x}_i \hat{S}^{x}_{i+a} +   \hat{S}^{y}_i \hat{S}^{y}_{i+a}  + J_{zz}  \sum_{i}\hat{S}^{z}_i \hat{S}^{z}_{i +a}  
+\hat{H} = J_{xx} \sum_{i}   \hat{S}^{x}_i \hat{S}^{x}_{i+a} +   \hat{S}^{y}_i \hat{S}^{y}_{i+a}  + J_{zz}  \sum_{i}\hat{S}^{z}_i \hat{S}^{z}_{i +a}\quad,
 \end{equation}
-with $J_{zz} = V $ and $J_{xx}  = 2t$. Hence when $V/t = 2$ we reproduce the Heisenberg model.   For $V/t > 2$  the model is in the Ising  regime with long-range charge density wave order and is an insulator. In the regime  $ -2 < V/t < 2$   the model  is metallic and corresponds to a Luttinger liquid. Finally, at $ V/t < - 2$   phase separation between hole rich and electron rich phases occur.   Fig.~\ref{tV.fig}  shows typical results. 
+with $J_{zz} = V $ and $J_{xx}  = 2t$. Hence, when $V/t = 2$ we reproduce the Heisenberg model.   For $V/t > 2$  the model is in the Ising  regime with long-range charge density wave order and is an insulator. In the regime  $ -2 < V/t < 2$   the model  is metallic and corresponds to a Luttinger liquid. Finally, at $ V/t < - 2$   phase separation between hole rich and electron rich phases occur.   Fig.~\ref{tV.fig}  shows typical results for the density-density correlation function (file \texttt{Den\_eqJR}). 
 \begin{figure}[htb]
 	\begin{center}
    	\includegraphics[width=0.6\columnwidth]{tV.pdf}
