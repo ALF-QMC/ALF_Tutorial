@@ -392,10 +392,10 @@ e^{ -\Delta \tau \left( \hat{A} + \hat{B} \right) }  =  e^{ -\Delta \tau \hat{A}
 Bellow we go through the steps for performing this extrapolation:
 setting the simulation parameters, running it and analysing the data. A
 reference plot for this analyses is found in
-\href{https://git.physik.uni-wuerzburg.de/ALF/ALF_code/-/blob/master/Documentation/ALF_v1.0.pdf}{ALF
+\href{https://git.physik.uni-wuerzburg.de/ALF/ALF/-/blob/master/Documentation/doc.pdf}{ALF
 documentation}, Sec. 2.3.2 (Symmetric Trotter decomposition).
 
-\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
 \textbf{1.} Import \texttt{Simulation} class from the \texttt{py\_alf}
 python module, which provides the interface with ALF, as well as
@@ -404,10 +404,10 @@ mathematics and plotting packages:
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
 \prompt{In}{incolor}{1}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
-\PY{k+kn}{from} \PY{n+nn}{py\PYZus{}alf} \PY{k}{import} \PY{n}{Simulation}            \PY{c+c1}{\PYZsh{} Interface with ALF}
+\PY{k+kn}{from} \PY{n+nn}{py\PYZus{}alf} \PY{k+kn}{import} \PY{n}{Simulation}            \PY{c+c1}{\PYZsh{} Interface with ALF}
 \PY{c+c1}{\PYZsh{} }
 \PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}                       \PY{c+c1}{\PYZsh{} Numerical library}
-\PY{k+kn}{from} \PY{n+nn}{scipy}\PY{n+nn}{.}\PY{n+nn}{optimize} \PY{k}{import} \PY{n}{curve\PYZus{}fit}     \PY{c+c1}{\PYZsh{} Numerical library}
+\PY{k+kn}{from} \PY{n+nn}{scipy}\PY{n+nn}{.}\PY{n+nn}{optimize} \PY{k+kn}{import} \PY{n}{curve\PYZus{}fit}     \PY{c+c1}{\PYZsh{} Numerical library}
 \PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}          \PY{c+c1}{\PYZsh{} Plotting library}
 \end{Verbatim}
 \end{tcolorbox}
@@ -596,7 +596,7 @@ For Dtau values [0.05 0.1  0.15] the measured energies are:
     \end{center}
     { \hspace*{\fill} \\}
     
-    \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+    \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
 \hypertarget{exercises}{%
 \subsection{Exercises}\label{exercises}}
@@ -609,7 +609,7 @@ For Dtau values [0.05 0.1  0.15] the measured energies are:
   \texttt{Symm} settings in order to observe their effect on the output
   and run time. Reference: Sec. 2.3.2 - Symmetric Trotter decomposition
   - of the
-  \href{https://git.physik.uni-wuerzburg.de/ALF/ALF_code/-/blob/master/Documentation/ALF_v1.0.pdf}{ALF
+  \href{https://git.physik.uni-wuerzburg.de/ALF/ALF/-/blob/master/Documentation/doc.pdf}{ALF
   documentation}, especially Fig. 2.
 \end{enumerate}
 
