@@ -1,0 +1,75 @@
+This is BibTeX, Version 0.99d (TeX Live 2017/Debian)
+Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
+The top-level auxiliary file: doc.aux
+The style file: ./prXsty.bst
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Database file #1: ./fassaad.bib
+Database file #2: ./doc.bib
+Warning--Warning: volume missing in entry Li15a.
+Warning--Warning: pages missing in entry Li15a.
+Warning--Warning: volume missing in entry Bluemer08.
+Warning--Warning: pages missing in entry Bluemer08.
+Warning--Missing address in entry Gardiner.
+Warning--We don't use thesis titles in Phys. Rev, see \cite{Beyl_thesis}
+Warning--Warning: volume missing in entry WangZ20.
+Warning--Warning: pages missing in entry WangZ20.
+Warning--Warning: date missing in entry WangZ20.
+Warning--Missing address in entry Krauth2006.
+Warning--Warning: journal missing in entry neal1993.
+Warning--Warning: volume missing in entry neal1993.
+Warning--Warning: pages missing in entry neal1993.
+Warning--Warning: volume missing in entry Thompson2010.
+Warning--Warning: pages missing in entry Thompson2010.
+Warning--Warning: volume missing in entry Beach04a.
+Warning--Warning: pages missing in entry Beach04a.
+Warning--Warning: volume missing in entry Xu16a.
+Warning--Warning: pages missing in entry Xu16a.
+Warning--Warning: volume missing in entry Brower12.
+Warning--Warning: pages missing in entry Brower12.
+Warning--Warning: date missing in entry Brower12.
+Warning--Warning: volume missing in entry Xu16.
+Warning--Warning: pages missing in entry Xu16.
+Warning--Warning: volume missing in entry Gazit19.
+You've used 95 entries,
+            1909 wiz_defined-function locations,
+            1121 strings with 19809 characters,
+and the built_in function-call counts, 22214 in all, are:
+= -- 782
+> -- 1237
+< -- 0
++ -- 385
+- -- 290
+* -- 2164
+:= -- 2790
+add.period$ -- 95
+call.type$ -- 95
+change.case$ -- 4
+chr.to.int$ -- 0
+cite$ -- 120
+duplicate$ -- 966
+empty$ -- 2083
+format.name$ -- 389
+if$ -- 5299
+int.to.chr$ -- 0
+int.to.str$ -- 95
+missing$ -- 0
+newline$ -- 288
+num.names$ -- 99
+pop$ -- 597
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 1594
+stack$ -- 0
+substring$ -- 1357
+swap$ -- 634
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 60
+warning$ -- 25
+while$ -- 193
+width$ -- 97
+write$ -- 475
+(There were 25 warnings)

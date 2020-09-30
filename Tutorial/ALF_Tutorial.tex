@@ -421,27 +421,63 @@ with $J_{zz} = V $ and $J_{xx}  = 2t$. Hence when $V/t = 2$ we reproduce the Hei
 
 \exercise{Adding a new observable}
 
-\red{[Stub]}
+This exercise illustrates the modifications that are required to implement a new observable, the correlation function of the bond-hopping in the 1-dimensional Hubbard chain. This observable is interesting in many different setups. For example, the model studied here exhibits an emergent $SO(4)$ symmetry that relates the anti-ferromagnetic order parameter and the bond dimerization (I. Affleck, PRL 55, 1355 (1985); I. Affleck and F. D. M. Haldane, PRB 36, 5291 (1987)). Another example, where this quantity is useful to investigate, is the 1-dimensional Su-Schrieffer-Heger model describing an electron-phonon system.
 
-Here the task if to define a new observable, the kinetic energy correlation, given by
+
+\exerciseitem{Applying Wick's theorem}
+
+Here the task is to define a new equal-time observable, the kinetic energy correlation, given by
 \begin{align}
-&\left\langle \hat{O}_{i,\delta} \hat{O}_{j,\delta'} \right\rangle  -  \left\langle \hat{O}_{i,\delta} \right\rangle \left\langle \hat{O}_{j,\delta'} \right\rangle  =  S_O\big(i-j,\delta,\delta'\big)
+&\left\langle \hat{O}_{i,\delta} \hat{O}_{j,\delta'} \right\rangle  -  \left\langle \hat{O}_{i,\delta} \right\rangle \left\langle \hat{O}_{j,\delta'} \right\rangle  =  S_O\big(i-j,\delta,\delta'\big) \label{eq:new_obs}
 \end{align}
-where
+where $i,j$ refer to the unit cells and $\delta$ encodes the bond label. Since we a working in 1D, there is only on bond per unit cell and $\delta=ax$ such that
 \begin{align}
 &\hat{O}_{i,x} = \sum_{\sigma}\left( \hat{c}^\dagger_{i,\sigma}\hat{c}^{\phantom\dagger}_{i+ax,\sigma} +H.c. \right).
 \end{align}
 
-[...]\\
 
-In the 1-D Hubbard we have emergent $SO(4)$ symmetry:
+Note that the first term of Eq.~\ref{eq:new_obs} is of the generic form $\sum_{\sigma,\sigma'}\left\langle \hat{c}^\dagger_{i_1,\sigma}\hat{c}^{\phantom\dagger}_{i_2,\sigma} \hat{c}^\dagger_{j_1,\sigma'}\hat{c}^{\phantom\dagger}_{j_2,\sigma'} \right\rangle$. This expectation value can be readily decomposed into single particle Greens function by using Wick's theorem. It can be applied for a fixed field configuration $\Phi$ since the Hamiltonian $\hat{H}(\Phi)$ is then bi-linear in the fermion operators.
+
+
+\begin{align}
+\sum_{\sigma,\sigma'}\left\langle \hat{c}^\dagger_{i_1,\sigma}\hat{c}^{\phantom\dagger}_{i_2,\sigma} \hat{c}^\dagger_{j_1,\sigma'}\hat{c}^{\phantom\dagger}_{j_2,\sigma'} \right\rangle_\Phi & = 
+\sum_{\sigma,\sigma'}\left(\left\langle \hat{c}^\dagger_{i_1,\sigma}\hat{c}^{\phantom\dagger}_{i_2,\sigma}\right\rangle_\Phi
+\left\langle\hat{c}^\dagger_{j_1,\sigma'}\hat{c}^{\phantom\dagger}_{j_2,\sigma'} \right\rangle_\Phi
++\left\langle \hat{c}^\dagger_{i_1,\sigma}\hat{c}^{\phantom\dagger}_{j_2,\sigma'}\right\rangle_\Phi
+\left\langle\hat{c}^{\phantom\dagger}_{i_2,\sigma}\hat{c}^\dagger_{j_1,\sigma'} \right\rangle_\Phi
+\right)%\\
+%& = 
+%\mathtt{N\_SUN}^2 \left\langle \hat{c}^\dagger_{i_1,\uparrow}\hat{c}^{\phantom\dagger}_{i_2,\uparrow}\right\rangle_\Phi
+%\left\langle\hat{c}^\dagger_{j_1,\uparrow}\hat{c}^{\phantom\dagger}_{j_2,\uparrow} \right\rangle_\Phi
+%+\mathtt{N\_SUN}\left\langle \hat{c}^\dagger_{i_1,\uparrow}\hat{c}^{\phantom\dagger}_{j_2,\uparrow}\right\rangle_\Phi
+%\left\langle\hat{c}^{\phantom\dagger}_{i_2,\uparrow}\hat{c}^\dagger_{j_1,\uparrow} \right\rangle_\Phi
+\end{align}
+The second term of vanishes for $\sigma\neq\sigma'$ due to flavor symmetry (Mz-decoupling used here in the vanilla version) or due to the $SU(2)$ symmetry (density decoupling available in the generic implementation of Hubbard model). The single-particle Greens function are provided in the \texttt{Obser} routine, where all equal-time observables are measured, as
+\begin{align}
+GRC(i,j,\sigma) & = \left\langle \hat{c}^\dagger_{i,\sigma}\hat{c}^{\phantom\dagger}_{j,\sigma}\right\rangle_\Phi\\
+GR(i,j,\sigma) & = \left\langle \hat{c}^{\phantom\dagger}_{i,\sigma}\hat{c}^\dagger_{j,\sigma}\right\rangle_\Phi
+\end{align}
+
+\exerciseitem{Necessary code modifications}
+
+In the directory  \texttt{\$ALF\_DIR/Solutions/Exercise\_3} we have  duplicated the ALF and commented  the changes that have to be carried out to the file \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod.F90} found in \texttt{\$ALF\_DIR/Prog/Hamiltonians/}, which we here shorten to ``\texttt{Vanilla}''. The following are the essential steps to be carried out:
+\begin{itemize}
+	\item  Introduce the new observable and allocate the memory required to store the measurements. This is done in the subroutine \texttt{Alloc\_obs(Ltau)} by increasing the length of the array \texttt{Obs\_eq} appropriately and adding a new case to specify the filename in which the results are stored on disc. (You might want to revisit this section later on to add the time-displaced version of the correlation function by changing \texttt{Obs\_tau} in the same fashion.)
+	\item  The actual measurements are taken in the subroutine \texttt{Obser(GR,Phase,Ntau)}. While \texttt{GR} is passed to the subroutine, the first lines of code already implemented construct $\mathtt{GRC}=1-\mathtt{GR}^T$. (This section does not have to be modified, but it is useful to keep this in mind for future reference when you implement a new model from scratch.)
+	\item The measurement of a equal-time correlation function consists of two separate parts, the connected one given by the first term in Eq.~\ref{eq:new_obs}, and the background, the second term.
+	\item Implement the measurement of the connected part, stored as $\mathtt{Obs\_eq}(6)$ in this example, using the Wick decomposition sketched above.
+	\item Keep in mind that the background $\sum_i\left\langle \hat{O}_{i,\delta} \right\rangle\neq0$ is non-vanishing and has to be measured separately (you can compare with the density correlation function), and is stored in $\mathtt{Obs\_eq}(6)\%\mathtt{Obs\_Latt0}(1)$.
+	\item The analysis tool will then automatically combine both contributions and evaluate Eq.~\ref{eq:new_obs} using the jackknife method to estimate the mean and error or the correlation function.
+\end{itemize}
+
+The 1-D Hubbard exhibits an emergent $SO(4)$ symmetry:
 \begin{align}
 \left\langle \bar{S}(r)S(0) \right\rangle  &\sim  \frac{(-1)^r}{r}\ln^d(r)\\
 \left\langle \hat{O}_{r,x} \hat{O}_{0,x} \right\rangle  -  \left\langle \hat{O}_{r,x} \right\rangle \left\langle \hat{O}_{0,x} \right\rangle  &\sim   \frac{(-1)^r}{r}\ln^\beta(r)
 \end{align}
-where $d=??$ and $\beta=??$ \cite{references}.
+where $d=1/2$ and $\beta=-3/2$ (T. Sato, M. Hohenadler, et.al, ArXiv:2005.08996 (2020)) and this exercise provides all the tool required to study it. Be aware the large system sizes, and therefore long run times, are required to extract the logarithmic scaling corrections. More details are discussed in the appendix of above reference (ArXiv:2005.08996).
 
-[It should be added to the Predefined Structures.]\\
+Finally, it is straight forward to implement the time-displaced version of this correlation function, following essentially the same steps as described above. The observable is now stored in \texttt{Obs\_tau}, the measurements are taken in \texttt{ObserT}, and you can find the implementation in the solutions to this exercise as well.
 
 
 
