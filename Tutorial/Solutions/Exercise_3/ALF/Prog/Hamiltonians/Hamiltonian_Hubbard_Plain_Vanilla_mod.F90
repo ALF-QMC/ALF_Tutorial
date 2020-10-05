@@ -708,16 +708,16 @@
                 Zkin=0.0d0   !re-use Zkin for equal-time correlation function
                 Ix = Latt%nnlist(I,1,0)
                 Jx = Latt%nnlist(J,1,0)
-                !(i,i+1) - (j,j+1) contribiution
+                !(i,i+1) - (j,j+1) contribution
                 Zkin = Zkin + (GRC(I,Ix,1) + GRC(I,Ix,2)) * (GRC(J,Jx,1) + GRC(J,Jx,2)) + &
                             &  GRC(I,Jx,1) * GR(Ix,J,1)   +  GRC(I,Jx,2) * GR(Ix,J,2)
-                !(i,i+1) - (j+1,j) contribiution
+                !(i,i+1) - (j+1,j) contribution
                 Zkin = Zkin + (GRC(I,Ix,1) + GRC(I,Ix,2)) * (GRC(Jx,J,1) + GRC(Jx,J,2)) + &
                             &  GRC(I,J,1) * GR(Ix,Jx,1)   +  GRC(I,J,2) * GR(Ix,Jx,2)
-                !(i+1,i) - (j,j+1) contribiution
+                !(i+1,i) - (j,j+1) contribution
                 Zkin = Zkin + (GRC(Ix,I,1) + GRC(Ix,I,2)) * (GRC(J,Jx,1) + GRC(J,Jx,2)) + &
                             &  GRC(Ix,Jx,1) * GR(I,J,1)   +  GRC(Ix,Jx,2) * GR(I,J,2)
-                !(i+1,i) - (j+1,j) contribiution
+                !(i+1,i) - (j+1,j) contribution
                 Zkin = Zkin + (GRC(Ix,I,1) + GRC(Ix,I,2)) * (GRC(Jx,J,1) + GRC(Jx,J,2)) + &
                             &  GRC(Ix,J,1) * GR(I,Jx,1)   +  GRC(Ix,J,2) * GR(I,Jx,2)
                 Obs_eq(6)%Obs_Latt(imj,1,1,1) =  Obs_eq(6)%Obs_Latt(imj,1,1,1) +  ZKin * ZP * ZS
@@ -811,16 +811,16 @@
                 Zkin=0.0d0   !re-use Zkin for equal-time correlation function
                 Ix = Latt%nnlist(I,1,0)
                 Jx = Latt%nnlist(J,1,0)
-                !(i,i+1) - (j,j+1) contribiution
+                !(i,i+1) - (j,j+1) contribution
                 Zkin = Zkin + (GTT(I,Ix,1) + GTT(I,Ix,2)) * (G00(J,Jx,1) + G00(J,Jx,2)) - &
                             &  GT0(I,Jx,1) * G0T(J,Ix,1)   -  GT0(I,Jx,2) * G0T(J,Ix,2)
-                !(i,i+1) - (j+1,j) contribiution
+                !(i,i+1) - (j+1,j) contribution
                 Zkin = Zkin + (GTT(I,Ix,1) + GTT(I,Ix,2)) * (G00(Jx,J,1) + G00(Jx,J,2)) - &
                             &  GT0(I,J,1) * G0T(Jx,Ix,1)   -  GT0(I,J,2) * G0T(Jx,Ix,2)
-                !(i+1,i) - (j,j+1) contribiution
+                !(i+1,i) - (j,j+1) contribution
                 Zkin = Zkin + (GTT(Ix,I,1) + GTT(Ix,I,2)) * (G00(J,Jx,1) + G00(J,Jx,2)) - &
                             &  GT0(Ix,Jx,1) * G0T(J,I,1)   -  GT0(Ix,Jx,2) * G0T(J,I,2)
-                !(i+1,i) - (j+1,j) contribiution
+                !(i+1,i) - (j+1,j) contribution
                 Zkin = Zkin + (GTT(Ix,I,1) + GTT(Ix,I,2)) * (G00(Jx,J,1) + G00(Jx,J,2)) - &
                             &  GT0(Ix,J,1) * G0T(Jx,I,1)   -  GT0(Ix,J,2) * G0T(Jx,I,2)
                 Obs_tau(6)%Obs_Latt(imj,NT+1,1,1) =  Obs_tau(6)%Obs_Latt(imj,NT+1,1,1) +  ZKin * ZP * ZS
