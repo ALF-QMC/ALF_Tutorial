@@ -182,14 +182,14 @@ This document is intended to be self-contained, but the interested reader should
 %%%%%%%%%%%%%%%%%%%%
 \part{Just run it}
 
-What follows is a collection of self-explanatory Jupyter notebooks written in Python, each centered on a detailed example followed by a few simple exercises. The notebooks printed bellow can be found, together with the necessary files and an increasing number of additional notebooks exploring ALF's capabilities, in the \href{https://git.physik.uni-wuerzburg.de/ALF/pyALF}{pyALF repository}.
+What follows is a collection of self-explanatory Jupyter notebooks written in Python, each centered on a detailed example followed by a few simple exercises. The notebooks printed below can be found, together with the necessary files and an increasing number of additional notebooks exploring ALF's capabilities, in the \href{https://git.physik.uni-wuerzburg.de/ALF/pyALF}{pyALF repository}.
 
 
 \section*{Requirements}
 
 You can download pyALF from its repository linked above or, from the command line:
 \begin{lstlisting}[style=bash]
-git clone git@git.physik.uni-wuerzburg.de:ALF/pyALF.git
+git clone https://git.physik.uni-wuerzburg.de/ALF/pyALF.git
 \end{lstlisting}
 To run the notebooks you need the following installed in your machine:
 \begin{itemize}
@@ -228,7 +228,7 @@ jupyter notebook
 %\begin{lstlisting}[style=bash]
 %jupyter-notebook
 %\end{lstlisting}
-which opens the ``notebook dashboard'' in your default browser, where you can navigate through your file structure to the pyALF directory. There you will find the interface's core module, \texttt{py\_alf.py}, some auxiliary files, and notebooks such as the ones included bellow. Have fun. 
+which opens the ``notebook dashboard'' in your default browser, where you can navigate through your file structure to the pyALF directory. There you will find the interface's core module, \texttt{py\_alf.py}, some auxiliary files, and notebooks such as the ones included below. Have fun. 
 
 %We note that pyALF can also be used to start a simulation from the command line, without starting a Jupyter server. For instance:
 %\begin{lstlisting}[style=bash]
@@ -274,21 +274,39 @@ which opens the ``notebook dashboard'' in your default browser, where you can na
 A lot already comes implemented in ALF, but unavoidably, as one proceeds in their own investigations, a new model has to be implemented or a new observable defined -- and for that, one must grapple with the package's Fortran source code. 
 This second part of the tutorial consists in a set of guided exercises that exemplify how to make basic additions to the code, taking as starting point the template-like, relatively self-contained module \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod.F90}, which is also a good display of ALF's internal workings.
 
-These worked-out exercises, together with ALF's modularity provided by its Predefined Structures should make getting your hands dirty less daunting than it may sound.
+These worked-out exercises, together with ALF's modularity, boosted by its Predefined Structures, should make getting your hands dirty less daunting than it may sound.
 
 
-\section*{Downloading the code and tutorial}
+\section*{Downloading and using the code and tutorial}
 One can use the ALF package downloaded automatically by the Python script in the first part of this tutorial, or manually, by typing
 \begin{lstlisting}[style=bash]
-git clone  git@git.physik.uni-wuerzburg.de:ALF/ALF.git
+git clone https://git.physik.uni-wuerzburg.de/ALF/ALF.git
 \end{lstlisting}
-in a shell. The necessary environment variables and the directives for compiling the code are set by the script \texttt{configure.sh}: \lstinline[style=bash]|source configure.sh GNU|, followed by the command  \lstinline[style=bash,morekeywords={make}]|make|. Details and further options are described in the package's documentation found in its repository.
-
-Similarly, to download the tutorial, including solutions, enter:
+in a shell. Similarly, to download the tutorial, including solutions, enter:
 \begin{lstlisting}[style=bash]
-git clone  git@git.physik.uni-wuerzburg.de:ALF/ALF_Tutorial.git
+git clone https://git.physik.uni-wuerzburg.de/ALF/ALF_Tutorial.git
 \end{lstlisting}
 
+The necessary environment variables and the directives for compiling the code are set by the script \texttt{configure.sh}: \lstinline[style=bash]|source configure.sh GNU|, followed by the command  \lstinline[style=bash,morekeywords={make}]|make|. Details and further options are described in the package's documentation found in its repository.
+
+A workflow you can adopt for solving the exercises -- or indeed using ALF in general -- is the following:
+\begin{enumerate}
+	\item Compile the modified Hamiltonian module, for instance:\\
+	\lstinline[style=bash,morekeywords={make}]{make Hubbard_Plain_Vanilla}
+	\item Create a data directory with the content of \texttt{Start}:\\
+	\lstinline[style=bash,morekeywords={cp}]{cp -r ./Start ./Run  &&  cd ./Run/}
+	\item Run its executable, e.g., serially:\\
+	\lstinline[style=bash]{$ALF_DIR/Prog/Hubbard_Plain_Vanilla.out} %$
+	\item Perform default analyses\footnote{The \texttt{analysis.sh} bash script from earlier versions of ALF, run without arguments, is still available in the \texttt{Start} directory.}:\\
+	\lstinline[style=bash]{$ALF_DIR/Analysis/ana.out *} %$
+\end{enumerate}
+The structure of the data files and details on the analysis output can be found in ALF's documentation.
+
+%Two common pitfalls are:
+%\begin{itemize}
+%	\item forgetting to run \texttt{configure.sh}, and
+%	\item not using different \texttt{Run} data directories for independent runs.
+%\end{itemize}
 
 
 \exercise{Dimensional crossover}
@@ -296,7 +314,7 @@ git clone  git@git.physik.uni-wuerzburg.de:ALF/ALF_Tutorial.git
 Here we will modify the code  so as to allow  for different hopping matrix elements along the $x$ and $y$ directions of a square lattice.
 
 \exerciseitem{Modifying the hopping}
-To do so we start from the module \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod.F90} found in \texttt{\$ALF\_DIR/Prog/Hamiltonians/}, which we here shorten to ``\texttt{Vanilla}'', and then: 
+To do so we start from the module \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod.F90}, which we here shorten to ``\texttt{Vanilla}'', found in \texttt{\$ALF\_DIR/Prog/Hamiltonians/}, proceeding as follows: 
 \begin{itemize}
 	\item Add \texttt{Ham\_Ty} to the \texttt{VAR\_Hubbard\_Plain\_Vanilla} name space in the parameter file \texttt{parameters}.
 	\item Declare a new variable, \texttt{Ham\_Ty}, in the module's specification (just search for the declaration of \texttt{Ham\_T} in \texttt{Vanilla}).
@@ -321,12 +339,11 @@ Do I = 1,Latt%N
 Enddo
 \end{lstlisting} 
 \end{itemize}
-Note: If you'd like to run the simulation using MPI, you should also add the broadcasting call for \texttt{Ham\_Ty} to \texttt{Ham\_Set}. It is a good idea as well to include the new variable to the simulation parameters written into the file \texttt{info}, also in \texttt{Ham\_Set}.
+Note: If you'd like to run the simulation using MPI, you should also add the broadcasting call for \texttt{Ham\_Ty} to \texttt{Ham\_Set}. It is a good idea as well to get the new simulation parameter written into the file \texttt{info}, also a change in \texttt{Ham\_Set}.
 
-In the directory \texttt{Solutions/Exercise\_1} we have duplicated ALF's code and commented  the changes that have to be carried out to the file \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod.F90} in the \texttt{Prog} directory. The solution directory also includes reference data and the necessary \texttt{Start} directory (remember to copy its contents to every new \texttt{Run} directory, and to have a different \texttt{Run} directory for each simulation).
+In the directory \texttt{Solutions/Exercise\_1} we have duplicated ALF's code and commented the changes that have to be carried out to the file \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod.F90}, found in the \texttt{Prog/Hamiltonians} directory. The solution directory also includes the modified and original modules, as well as reference data and the necessary \texttt{Start} directory (remember to copy its contents to every new \texttt{Run} directory, and to have a different \texttt{Run} directory for each simulation).
 
-\noindent
-As an application of this code, we can once again consider a ladder system (e.g, a 2-leg ladder with \texttt{L1=14} and \texttt{L2=2}), for different values of \texttt{Ham\_Ty}. The results you should obtain are summarized in Fig.~\ref{fig:ladder}.
+As an application of this code, we can once again consider a ladder system (e.g, a 2-leg ladder with \texttt{L1=14} and \texttt{L2=2}), for different values of \texttt{Ham\_Ty}. The results you should obtain for the total spin correlation function (file \texttt{SpinT\_eqJR}) are summarized in Fig.~\ref{fig:ladder}.
 
 \begin{figure}[h]
 	\begin{center}
@@ -347,7 +364,7 @@ The SU(2) Hubbard-Stratonovich decomposition couples to the density and conserve
 \exercise{Defining a new model: The one-dimensional t-V model}
 
 
-In this section, one  we will show  what modifications have to be carried out for computing the physics of the  one dimensional t-V model of spinless fermions.  
+In this section, we will show what modifications have to be carried out for computing the physics of the  one dimensional t-V model of spinless fermions.  
 \begin{equation}
 \hat{H} =  -t \sum_{i} \left( \hat{c}^{\dagger}_{i}  \hat{c}^{\phantom\dagger}_{i+a}      + \hat{c}^{\dagger}_{i+a}  \hat{c}^{\phantom\dagger}_{i} \right) - \frac{V}{2} \sum_{i}  \left( \hat{c}^{\dagger}_{i}  \hat{c}^{\phantom\dagger}_{i+a}      + \hat{c}^{\dagger}_{i+a}  \hat{c}^{\phantom\dagger}_{i} \right)^2 .
 \end{equation}
@@ -361,7 +378,7 @@ Note that the t-V model is already implemented in ALF in the module \texttt{Hami
 
 \exerciseitem{Define new model}
 
-In the directory  \texttt{\$ALF\_DIR/Solutions/Exercise\_2} we have  duplicated the ALF and commented  the changes that have to be carried out to the file \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod.F90} found in \texttt{\$ALF\_DIR/Prog/Hamiltonians/}, which we here shorten to ``\texttt{Vanilla}''. The following are the essential steps to be carried out:
+In the directory  \texttt{\$ALF\_DIR/Solutions/Exercise\_2} we have  duplicated the ALF and commented  the changes that have to be carried out to the file \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod.F90}, which we here shorten to ``\texttt{Vanilla}'', found in \texttt{\$ALF\_DIR/Prog/Hamiltonians/}. The following are the essential steps to be carried out:
 \begin{itemize}
 \item  Add the \texttt{VAR\_t\_V} name space in the file \texttt{parameters} and set the necessary variables -- or simply rename the \texttt{VAR\_Hubbard\_Plain\_Vanilla} name space to \texttt{VAR\_t\_V} and, within it, \texttt{Ham\_U} to \texttt{Ham\_Vint}. (Ignore the name space \texttt{VAR\_tV}, which is used by the general implementation mentioned above.)
 \item  Declare a new variable, \texttt{Ham\_Vint}, in \texttt{Vanilla}'s specification.
@@ -373,43 +390,77 @@ e^{\Delta \tau \frac{V}{2} \left( \hat{c}^{\dagger}_{i}  \hat{c}^{\phantom\dagge
 \sum_{l= \pm1, \pm 2} \gamma_l e^{ \sqrt{\Delta \tau \frac{V}{2}}  \eta_l   \left( \hat{c}^{\dagger}_{i}  \hat{c}^{\phantom\dagger}_{i+a}      + \hat{c}^{\dagger}_{i+a}  \hat{c}^{\phantom\dagger}_{i} \right) } =  \sum_{l= \pm1, \pm 2} \gamma_l e^{ g  \eta_l   \left( \hat{c}^{\dagger}_{i},  \hat{c}^{\dagger}_{i+a}  \right)  O 
     \left(\hat{c}^{\phantom\dagger}_{i},  \hat{c}^{\phantom\dagger}_{i+a} \right)^{T} }.
 \end{equation}
- Here is  how this translates in the code. 
+ Here is  how this translates in the code (the new integer variable, \texttt{i2}, should be declared): 
  
  
 \begin{lstlisting}[style=fortran]
-  
- Allocate(Op_V(Latt%N,N_FL))
+Allocate(Op_V(Ndim,N_FL))
  do nf = 1,N_FL
-    do i  =  1, N_coord*Ndim
+    do i  =  1, Ndim
        call Op_make(Op_V(i,nf),2)
     enddo
  enddo
- Do nc = 1, Latt%N  ! Runs over bonds = # of lattice sites in one-dimension. 
-    I1 = nc
-    I2 = Latt%nnlist(I1,1,0)  
-    Op_V(nc,1)%P(1) = I1
-    Op_V(nc,1)%P(2) = I2
-    Op_V(nc,1)%O(1,2) = cmplx(1.d0 ,0.d0, kind(0.D0)) 
-    Op_V(nc,1)%O(2,1) = cmplx(1.d0 ,0.d0, kind(0.D0)) 
-    Op_V(nc,1)%g      = SQRT(CMPLX( DTAU*Ham_Vint/2.d0, 0.D0, kind(0.D0)))  
-    Op_V(nc,1)%alpha  = cmplx(0d0,0.d0, kind(0.D0)) 
-    Op_V(nc,1)%type =2
-    Call Op_set( Op_V(nc,1) )
+ Do i = 1, Ndim  ! Runs over bonds = # of lattice sites in one-dimension. 
+    i2                = Latt%nnlist(i,1,0)
+    Op_V(i,nf)%P(1)   = i
+    Op_V(i,nf)%P(2)   = i2
+    Op_V(i,nf)%O(1,2) = cmplx(1.d0 ,0.d0, kind(0.d0))
+    Op_V(i,nf)%O(2,1) = cmplx(1.d0 ,0.d0, kind(0.d0)) 
+    Op_V(i,nf)%g      = sqrt(cmplx(Dtau*Ham_Vint/2.d0, 0.d0, kind(0.d0)))  
+    Op_V(i,nf)%alpha  = cmplx(0d0  ,0.d0, kind(0.d0))
+    Op_V(i,nf)%type   = 2
+    Call Op_set( Op_V(i,nf) )
  enddo
 \end{lstlisting}
-\item  Finally you will have to update the  \texttt{Obser} and  \texttt{ObserT} routines for  the calculation of the equal and time  displaced correlations.  For the \texttt{t\_V}  model you can essentially use the same observables as for the \texttt{Hubbard\_SU(2)}  model.  
+\item  Finally, you have to update the \texttt{Obser} and \texttt{ObserT} routines for the calculation of equal- and time-displaced correlations. For the \texttt{t\_V} model you can essentially use the same observables as for the \texttt{Hubbard\_SU(2)} model in 1D -- a step which requires a number of changes with respect to the \texttt{Vanilla} base, such as:
+\begin{lstlisting}[style=fortran]
+!!!!! Modifications for Exercise 2
+ !Zpot = Zpot*ham_U                       ! Vanilla
+ Zpot = Zpot*Ham_Vint                     ! t-V
+ !!!!!
+\end{lstlisting}
+and
+\begin{lstlisting}[style=fortran]
+!Zrho = Zrho + Grc(i,i,1) +  Grc(i,i,2)  ! Vanilla
+ Zrho = Zrho + Grc(i,i,1)                 ! t-V
+\end{lstlisting}
+with the observables being coded in the routine \texttt{Obser} as
+\begin{lstlisting}[style=fortran]
+Z = cmplx(dble(N_SUN), 0.d0, kind(0.D0))
+ Do I1 = 1,Ndim
+    I = I1
+    no_I = 1
+    Do J1 = 1,Ndim
+       J = J1
+       no_J = 1
+       imj = latt%imj(I,J)
+       Obs_eq(1)%Obs_Latt(imj,1,no_I,no_J) =  Obs_eq(1)%Obs_Latt(imj,1,no_I,no_J) + &
+       &               Z * GRC(I1,J1,1) * ZP*ZS  ! Green
+       Obs_eq(2)%Obs_Latt(imj,1,no_I,no_J) =  Obs_eq(2)%Obs_Latt(imj,1,no_I,no_J) + &
+       &               Z * GRC(I1,J1,1) * GR(I1,J1,1) * ZP*ZS  ! SpinZ
+       Obs_eq(3)%Obs_Latt(imj,1,no_I,no_J) =  Obs_eq(3)%Obs_Latt(imj,1,no_I,no_J) + &
+       &               ( GRC(I1,I1,1) * GRC(J1,J1,1) * Z + &
+       &                 GRC(I1,J1,1) * GR(I1,J1,1 )       ) * Z * ZP*ZS  ! Den
+    enddo
+    Obs_eq(3)%Obs_Latt0(no_I) =  Obs_eq(3)%Obs_Latt0(no_I) + Z * GRC(I1,I1,1) * ZP * ZS
+ enddo
+\end{lstlisting}
+among other changes - with similar ones in the \texttt{ObserT} routine.
+
+All necessary changes are implemented and clearly indicated in the solution provided in \texttt{Solutions/Exercise\_2/Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod-Exercise\_2.F90}.
 \end{itemize}
+
+In the directory \texttt{Solutions/Exercise\_2} we have duplicated ALF's code and commented the changes that have to be carried out to the file \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod.F90} in the \texttt{Prog/Hamiltonians} directory. The solution directory also includes reference data and the necessary \texttt{Start} directory (remember to copy its contents to every new \texttt{Run} directory, and to have a different \texttt{Run} directory for each simulation).
 
 You can now run the code for  various values of $V/t$. A Jordan-Wigner transformation  will map the  \texttt{t\_V}  model onto the XXZ  chain:
 \begin{equation}
-\hat{H} = J_{xx} \sum_{i}   \hat{S}^{x}_i \hat{S}^{x}_{i+a} +   \hat{S}^{y}_i \hat{S}^{y}_{i+a}  + J_{zz}  \sum_{i}\hat{S}^{z}_i \hat{S}^{z}_{i +a}  
+\hat{H} = J_{xx} \sum_{i}   \hat{S}^{x}_i \hat{S}^{x}_{i+a} +   \hat{S}^{y}_i \hat{S}^{y}_{i+a}  + J_{zz}  \sum_{i}\hat{S}^{z}_i \hat{S}^{z}_{i +a}\quad,
 \end{equation}
-with $J_{zz} = V $ and $J_{xx}  = 2t$. Hence when $V/t = 2$ we reproduce the Heisenberg model.   For $V/t > 2$  the model is in the Ising  regime with long-range charge density wave order and is an insulator. In the regime  $ -2 < V/t < 2$   the model  is metallic and corresponds to a Luttinger liquid. Finally, at $ V/t < - 2$   phase separation between hole rich and electron rich phases occur.   Fig.~\ref{tV.fig}  shows typical results. 
+with $J_{zz} = V $ and $J_{xx}  = 2t$. Hence, when $V/t = 2$ we reproduce the Heisenberg model.   For $V/t > 2$  the model is in the Ising  regime with long-range charge density wave order and is an insulator. In the regime  $ -2 < V/t < 2$   the model  is metallic and corresponds to a Luttinger liquid. Finally, at $ V/t < - 2$   phase separation between hole rich and electron rich phases occur.   Fig.~\ref{tV.fig}  shows typical results for the density-density correlation function (file \texttt{Den\_eqJR}). 
 \begin{figure}[htb]
 	\begin{center}
-   	\includegraphics[scale=.8]{tV.pdf}
-    \caption{Density-Density correlation functions  of the t-V model. In the Luttinger liquid phase,  $-2 < V/t < 2$   it is known   that the density -density correlations  decay as 
-    $    \langle n(r) n(0)\rangle   \propto \cos(\pi r) r^{-\left(1+K_\rho \right) }   $  with $\left(1+K_\rho \right)^{-1}= \frac{1}{2} + \frac{1}{\pi}  \arcsin \left( \frac{V}{2 | t | }\right)  $
+   	\includegraphics[width=0.6\columnwidth]{tV.pdf}
+    \caption{Density-Density correlation functions  of the t-V model. In the Luttinger liquid phase, $-2 < V/t < 2$, it is known that the density-density correlations decay as $ \langle n(r) n(0)\rangle   \propto \cos(\pi r) r^{-\left(1+K_\rho \right) } $  with $\left(1+K_\rho \right)^{-1}= \frac{1}{2} + \frac{1}{\pi}  \arcsin \left( \frac{V}{2 | t | }\right) $
    (A. Luther and I. Peschel, Calculation of critical exponents in two dimensions from quantum field theory in one dimension, Phys. Rev. B 12 (1975), 3908.)  The interested reader can try to reproduce this result.}
    \label{tV.fig} 
    \end{center}
@@ -421,27 +472,63 @@ with $J_{zz} = V $ and $J_{xx}  = 2t$. Hence when $V/t = 2$ we reproduce the Hei
 
 \exercise{Adding a new observable}
 
-\red{[Stub]}
+This exercise illustrates the modifications that are required to implement a new observable, the correlation function of the bond-hopping in the 1-dimensional Hubbard chain. This observable is interesting in many different setups. For example, the model studied here exhibits an emergent $SO(4)$ symmetry that relates the anti-ferromagnetic order parameter and the bond dimerization (I. Affleck, PRL 55, 1355 (1985); I. Affleck and F. D. M. Haldane, PRB 36, 5291 (1987)). Another example where this quantity is useful to investigate is the 1-dimensional Su-Schrieffer-Heger model describing an electron-phonon system.
 
-Here the task if to define a new observable, the kinetic energy correlation, given by
+
+\exerciseitem{Applying Wick's theorem}
+
+Here the task is to define a new equal-time observable, the kinetic energy correlation, given by
 \begin{align}
-&\left\langle \hat{O}_{i,\delta} \hat{O}_{j,\delta'} \right\rangle  -  \left\langle \hat{O}_{i,\delta} \right\rangle \left\langle \hat{O}_{j,\delta'} \right\rangle  =  S_O\big(i-j,\delta,\delta'\big)
+&\left\langle \hat{O}_{i,\delta} \hat{O}_{j,\delta'} \right\rangle  -  \left\langle \hat{O}_{i,\delta} \right\rangle \left\langle \hat{O}_{j,\delta'} \right\rangle  =  S_O\big(i-j,\delta,\delta'\big) \label{eq:new_obs}
 \end{align}
-where
+where $i,j$ refer to the unit cells and $\delta$ encodes the bond label. Since we are working in 1D, there is only one bond per unit cell and $\delta=ax$ such that
 \begin{align}
 &\hat{O}_{i,x} = \sum_{\sigma}\left( \hat{c}^\dagger_{i,\sigma}\hat{c}^{\phantom\dagger}_{i+ax,\sigma} +H.c. \right).
 \end{align}
 
-[...]\\
 
-In the 1-D Hubbard we have emergent $SO(4)$ symmetry:
+Note that the first term of Eq.~\ref{eq:new_obs} is of the generic form $\sum_{\sigma,\sigma'}\left\langle \hat{c}^\dagger_{i_1,\sigma}\hat{c}^{\phantom\dagger}_{i_2,\sigma} \hat{c}^\dagger_{j_1,\sigma'}\hat{c}^{\phantom\dagger}_{j_2,\sigma'} \right\rangle$. This expectation value can be readily decomposed into single-particle Green functions by using Wick's theorem. It can be applied for a fixed field configuration $\Phi$ since the Hamiltonian $\hat{H}(\Phi)$ is then bi-linear in the fermion operators.
+
+
+\begin{align}
+\sum_{\sigma,\sigma'}\left\langle \hat{c}^\dagger_{i_1,\sigma}\hat{c}^{\phantom\dagger}_{i_2,\sigma} \hat{c}^\dagger_{j_1,\sigma'}\hat{c}^{\phantom\dagger}_{j_2,\sigma'} \right\rangle_\Phi & = 
+\sum_{\sigma,\sigma'}\left(\left\langle \hat{c}^\dagger_{i_1,\sigma}\hat{c}^{\phantom\dagger}_{i_2,\sigma}\right\rangle_\Phi
+\left\langle\hat{c}^\dagger_{j_1,\sigma'}\hat{c}^{\phantom\dagger}_{j_2,\sigma'} \right\rangle_\Phi
++\left\langle \hat{c}^\dagger_{i_1,\sigma}\hat{c}^{\phantom\dagger}_{j_2,\sigma'}\right\rangle_\Phi
+\left\langle\hat{c}^{\phantom\dagger}_{i_2,\sigma}\hat{c}^\dagger_{j_1,\sigma'} \right\rangle_\Phi
+\right)%\\
+%& = 
+%\mathtt{N\_SUN}^2 \left\langle \hat{c}^\dagger_{i_1,\uparrow}\hat{c}^{\phantom\dagger}_{i_2,\uparrow}\right\rangle_\Phi
+%\left\langle\hat{c}^\dagger_{j_1,\uparrow}\hat{c}^{\phantom\dagger}_{j_2,\uparrow} \right\rangle_\Phi
+%+\mathtt{N\_SUN}\left\langle \hat{c}^\dagger_{i_1,\uparrow}\hat{c}^{\phantom\dagger}_{j_2,\uparrow}\right\rangle_\Phi
+%\left\langle\hat{c}^{\phantom\dagger}_{i_2,\uparrow}\hat{c}^\dagger_{j_1,\uparrow} \right\rangle_\Phi
+\end{align}
+The second term of vanishes for $\sigma\neq\sigma'$ due to flavor symmetry (Mz-decoupling used here in the vanilla version) or due to the $SU(2)$ symmetry (density decoupling available in the generic implementation of Hubbard model). The single-particle Green functions are provided in the \texttt{Obser} routine, where all equal-time observables are measured, as
+\begin{align}
+GRC(i,j,\sigma) & = \left\langle \hat{c}^\dagger_{i,\sigma}\hat{c}^{\phantom\dagger}_{j,\sigma}\right\rangle_\Phi\\
+GR(i,j,\sigma) & = \left\langle \hat{c}^{\phantom\dagger}_{i,\sigma}\hat{c}^\dagger_{j,\sigma}\right\rangle_\Phi .
+\end{align}
+
+\exerciseitem{Necessary code modifications}
+
+In the directory  \texttt{\$ALF\_DIR/Solutions/Exercise\_3} we have  duplicated the ALF and commented  the changes that have to be carried out to the file \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod.F90} found in \texttt{\$ALF\_DIR/Prog/Hamiltonians/}, which we here shorten to ``\texttt{Vanilla}''. The following are the essential steps to be carried out:
+\begin{itemize}
+	\item  Introduce the new observable and allocate the memory required to store the measurements. This is done in the subroutine \texttt{Alloc\_obs(Ltau)} by increasing the length of the array \texttt{Obs\_eq} appropriately and adding a new case to specify the filename in which the results are stored on disc. (You might want to revisit this section later on to add the time-displaced version of the correlation function by changing \texttt{Obs\_tau} in the same fashion.)
+	\item  The actual measurements are taken in the subroutine \texttt{Obser(GR,Phase,Ntau)}. While \texttt{GR} is passed to the subroutine, the first lines of code already implement the construct $\mathtt{GRC}=1-\mathtt{GR}^T$. (This section does not have to be modified, but it is useful to keep this in mind for future reference when you implement a new model from scratch.)
+	\item The measurement of an equal-time correlation function consists of two separate parts: the connected one given by the first term in Eq.~\ref{eq:new_obs}, and the background, given by the second term.
+	\item Implement the measurement of the connected part, stored as $\mathtt{Obs\_eq}(6)$ in this example, using the Wick decomposition sketched above.
+	\item Keep in mind that the background $\sum_i\left\langle \hat{O}_{i,\delta} \right\rangle\neq0$ is non-vanishing and has to be measured separately (you can compare with the density correlation function), and is stored in $\mathtt{Obs\_eq}(6)\%\mathtt{Obs\_Latt0}(1)$.
+	\item The analysis tool will then automatically combine both contributions and evaluate Eq.~\ref{eq:new_obs} using the jackknife method to estimate the mean and error or the correlation function.
+\end{itemize}
+
+The 1-D Hubbard exhibits an emergent $SO(4)$ symmetry:
 \begin{align}
 \left\langle \bar{S}(r)S(0) \right\rangle  &\sim  \frac{(-1)^r}{r}\ln^d(r)\\
 \left\langle \hat{O}_{r,x} \hat{O}_{0,x} \right\rangle  -  \left\langle \hat{O}_{r,x} \right\rangle \left\langle \hat{O}_{0,x} \right\rangle  &\sim   \frac{(-1)^r}{r}\ln^\beta(r)
 \end{align}
-where $d=??$ and $\beta=??$ \cite{references}.
+where $d=1/2$ and $\beta=-3/2$ (T. Sato, M. Hohenadler, et.al, ArXiv:2005.08996 (2020)) and this exercise provides all the tools required to study it. Beware of the large system sizes, and therefore long run times, that are required to extract the logarithmic scaling corrections. More details are discussed in the appendix of above reference (ArXiv:2005.08996).
 
-[It should be added to the Predefined Structures.]\\
+Finally, it is straightforward to implement the time-displaced version of this correlation function, following essentially the same steps as described above. The observable is now stored in \texttt{Obs\_tau}, the measurements are taken in \texttt{ObserT}, and you can find the implementation in the solution to this exercise as well.
 
 
 
