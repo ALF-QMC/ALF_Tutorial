@@ -1,0 +1,10 @@
+https://scholar.google.com/scholar?hl=en&as_sdt=2005&sciodt=0,5&cites=12604965965544777542&scipsc=&q=&scisbd=1
+
+https://tex.stackexchange.com/questions/460245/is-there-a-easy-way-to-put-bibliography-in-a-table
+https://tex.stackexchange.com/questions/398538/cite-only-first-author-and-year
+https://tex.stackexchange.com/questions/245525/show-first-author-only-with-cite-with-exceptions-maxcitenames-ignored-for-s
+https://tex.stackexchange.com/questions/368031/cite-only-first-author-surname-with-biblatex
+
+http://mirrors.ibiblio.org/CTAN/macros/latex/contrib/biblatex/doc/biblatex.pdf
+
+https://tex.stackexchange.com/questions/483095/create-table-based-on-bibtex-entries

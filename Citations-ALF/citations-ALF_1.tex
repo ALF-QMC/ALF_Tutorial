@@ -1,0 +1,74 @@
+\documentclass[9pt]{article}
+\usepackage[margin=20mm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{csquotes}
+\usepackage{amssymb}
+\usepackage[sorting=none, backend=biber]{biblatex}
+\usepackage{biblatex-ext-tabular}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{booktabs}
+
+%-----------------------------------------------
+% Solution below for a table (instead of list) of references based on https://tex.stackexchange.com/a/460246/105662
+\newcolumntype{L}[1]{%
+  >{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}p{#1}}
+\newcolumntype{C}[1]{%
+  >{\centering\let\newline\\\arraybackslash\hspace{0pt}}p{#1}}
+
+\defbibtabular{bibtabular}
+  {\setlength{\LTpre}{0pt}%
+   \setlength{\LTpost}{0pt}%
+   \renewcommand*{\arraystretch}{1.2}%
+   \begin{longtable}{%
+                     @{}
+                     L{\dimexpr0.25\textwidth-\tabcolsep\relax}
+                     L{\dimexpr0.6\textwidth-2\tabcolsep\relax}
+                     L{\dimexpr0.15\textwidth-\tabcolsep\relax}
+                     @{}}
+     \toprule
+     \textbf{Reference} & \textbf{Title} & \textbf{ALF role}\\
+     \midrule  \endhead}
+  {\bottomrule
+   \end{longtable}}
+  {\anchorlang{%
+     \printtext[labelnumberwidth]{\small%
+       \printfield{labelprefix}%
+       \printfield{labelnumber}} \plainlang{\small\printnames{labelname}}~\printtext{(\printfield{year}})   }
+   & \plainlang{\small\usebibmacro{title}}%
+   & \plainlang{\small\usebibmacro{annotation}} \\}
+%-----------------------------------------------
+
+
+\addbibresource{citations-ALF.bib}
+
+%===============================================
+\begin{document}
+	
+\title{ALF Citations}
+\author{Jefferson S. E. Portela}
+\date{Institut f\"ur Theoretische Physik und Astrophysik, Universit\"at W\"urzburg\\  \vspace{1mm} \today}
+\maketitle
+
+\noindent Just a collection of some list of publications citing \textbf{ALF}:
+\begin{description}
+	\item[ALF 1.0] Martin Bercx, Florian Goth, Johannes S. Hofmann, Fakher F. Assaad. ``The ALF (Algorithms for Lattice Fermions) project release 1.0. Documentation for the auxiliary field quantum Monte Carlo code''. SciPost Phys. 3, 013 (2017).
+	\item[ALF 2.0] Martin Bercx,  Florian Goth,  Johannes S. Hofmann, Jefferson S. E. Portela, Jonas Schwab, Fakher F. Assaad. ``The ALF (Algorithms for Lattice Fermions) project release 2.0''. \emph{Draft}
+\end{description}
+either for context (\textbf{Literature}), for reference data (\textbf{Benchmark}), or for obtaining results (\textbf{Main tool}).\\
+
+\nocite{*}
+
+\printbibtabular[title={How ALF 1.0 is cited}, keyword=ALF1]
+
+\vspace{10mm}
+\printbibtabular[title={Citations with no ALF Team member participation}, notkeyword={ALFgroup}, notkeyword={ALFmember}]
+
+\vspace{10mm}
+\printbibtabular[title={Citations from \emph{papers} with no ALF Team member participation}, notkeyword={ALFgroup}, notkeyword={ALFmember}, type=article]
+
+\vspace{10mm}
+\printbibliography[title={Full Bibliography}]
+
+\end{document}
