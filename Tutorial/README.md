@@ -1,5 +1,5 @@
 # ALF Tutorial
-This is a tutorial for using ALF intended to get you started from zero up to your own first 
+This is a tutorial for using [ALF 2.0](https://git.physik.uni-wuerzburg.de/ALF/ALF/-/tree/ALF-2.0) intended to get you started from zero up to your own first 
 projects.
 
 ## Installation.
