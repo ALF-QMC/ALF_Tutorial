@@ -375,10 +375,11 @@
 ring}\label{testing-against-ed---hubbard-on-a-ring}}
 
     In this example we use the
-\href{https://git.physik.uni-wuerzburg.de/ALF/pyALF}{pyALF} interface to
-run ALF with the Mz choice of Hubbard Stratonovitch transformation on a
-four site ring, at \(U/t=4\) and inverse temperature \(\beta t = 2\).
-For this set of parameters, the exact internal energy reads:\\
+\href{https://git.physik.uni-wuerzburg.de/ALF/pyALF/-/tree/ALF-2.0}{pyALF}
+interface to run ALF with the Mz choice of Hubbard Stratonovitch
+transformation on a four site ring, at \(U/t=4\) and inverse temperature
+\(\beta t = 2\). For this set of parameters, the exact internal energy
+reads:\\
 \[
  \left\langle -t \sum_{\langle i,j\rangle, \sigma} \hat{c}_{i,\sigma}^{\dagger} \hat{c}_{j,\sigma}^{\phantom\dagger}   +  U  \sum_{i=1}^{N} \hat{n}_{i,\uparrow}\hat{n}_{j,\downarrow}  \right\rangle  =   -1.47261997 t 
 \]
@@ -418,11 +419,11 @@ necessary parameters, in particular the different \(\Delta \tau\)
 values:
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{19}{\boxspacing}
+\prompt{In}{incolor}{2}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
 \PY{n}{sims} \PY{o}{=} \PY{p}{[}\PY{p}{]}                                \PY{c+c1}{\PYZsh{} Vector of Simulation instances}
 \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{dtau values used:}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
-\PY{k}{for} \PY{n}{dtau} \PY{o+ow}{in} \PY{p}{[}\PY{l+m+mf}{0.05}\PY{p}{,} \PY{l+m+mf}{0.1}\PY{p}{,} \PY{l+m+mf}{0.2}\PY{p}{]}\PY{p}{:}           \PY{c+c1}{\PYZsh{} Values of dtau}
+\PY{k}{for} \PY{n}{dtau} \PY{o+ow}{in} \PY{p}{[}\PY{l+m+mf}{0.05}\PY{p}{,} \PY{l+m+mf}{0.1}\PY{p}{,} \PY{l+m+mf}{0.2}\PY{p}{]}\PY{p}{:}            \PY{c+c1}{\PYZsh{} Values of dtau}
     \PY{n+nb}{print}\PY{p}{(}\PY{n}{dtau}\PY{p}{)}
     \PY{n}{sim} \PY{o}{=} \PY{n}{Simulation}\PY{p}{(}
         \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Hubbard}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}                       \PY{c+c1}{\PYZsh{} Hamiltonian}
@@ -468,6 +469,7 @@ may take a few minutes:
 \end{tcolorbox}
 
     \begin{Verbatim}[commandchars=\\\{\}]
+Checking out branch ALF-2.0
 Compiling ALF{\ldots} Done.
     \end{Verbatim}
 
@@ -475,7 +477,7 @@ Compiling ALF{\ldots} Done.
 \texttt{sim}:
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{20}{\boxspacing}
+\prompt{In}{incolor}{4}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
 \PY{k}{for} \PY{n}{i}\PY{p}{,} \PY{n}{sim} \PY{o+ow}{in} \PY{n+nb}{enumerate}\PY{p}{(}\PY{n}{sims}\PY{p}{)}\PY{p}{:}
     \PY{n}{sim}\PY{o}{.}\PY{n}{run}\PY{p}{(}\PY{p}{)}                            \PY{c+c1}{\PYZsh{} Perform the actual simulation in ALF}
@@ -487,23 +489,23 @@ Prepare directory "/home/stafusa/ALF/pyALF/Notebooks/ALF\_data/Hubbard\_N\_leg\_
 er\_L1=4\_L2=1\_Checkerboard=False\_Symm=True\_T=1.0\_U=4.0\_Tperp=0.0\_beta=2.0\_Dtau=0.
 05\_Mz=True" for Monte Carlo run.
 Create new directory.
-Run /home/stafusa/ALF/ALF/Prog/Hubbard.out
+Run /home/stafusa/ALF/pyALF/Notebooks/ALF/Prog/Hubbard.out
 Prepare directory "/home/stafusa/ALF/pyALF/Notebooks/ALF\_data/Hubbard\_N\_leg\_ladd
 er\_L1=4\_L2=1\_Checkerboard=False\_Symm=True\_T=1.0\_U=4.0\_Tperp=0.0\_beta=2.0\_Dtau=0.
 1\_Mz=True" for Monte Carlo run.
 Create new directory.
-Run /home/stafusa/ALF/ALF/Prog/Hubbard.out
+Run /home/stafusa/ALF/pyALF/Notebooks/ALF/Prog/Hubbard.out
 Prepare directory "/home/stafusa/ALF/pyALF/Notebooks/ALF\_data/Hubbard\_N\_leg\_ladd
 er\_L1=4\_L2=1\_Checkerboard=False\_Symm=True\_T=1.0\_U=4.0\_Tperp=0.0\_beta=2.0\_Dtau=0.
 2\_Mz=True" for Monte Carlo run.
 Create new directory.
-Run /home/stafusa/ALF/ALF/Prog/Hubbard.out
+Run /home/stafusa/ALF/pyALF/Notebooks/ALF/Prog/Hubbard.out
     \end{Verbatim}
 
     \textbf{5.} Calculate the internal energies:
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{21}{\boxspacing}
+\prompt{In}{incolor}{5}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
 \PY{n}{ener} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{empty}\PY{p}{(}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{sims}\PY{p}{)}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}          \PY{c+c1}{\PYZsh{} Matrix for storing energy values}
 \PY{n}{dtaus} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{empty}\PY{p}{(}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{sims}\PY{p}{)}\PY{p}{,}\PY{p}{)}\PY{p}{)}           \PY{c+c1}{\PYZsh{} Matrix for Dtau values, for plotting}
@@ -561,7 +563,7 @@ J 1
     \end{Verbatim}
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{22}{\boxspacing}
+\prompt{In}{incolor}{6}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
 \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{For Dtau values}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{dtaus}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{the measured energies are:}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{ener}\PY{p}{)}
 \end{Verbatim}
@@ -575,7 +577,7 @@ For Dtau values [0.05 0.1  0.2 ] the measured energies are:
     \end{Verbatim}
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{23}{\boxspacing}
+\prompt{In}{incolor}{7}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
 \PY{n}{plt}\PY{o}{.}\PY{n}{errorbar}\PY{p}{(}\PY{n}{dtaus}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{ener}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{ener}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}
 
@@ -596,7 +598,7 @@ For Dtau values [0.05 0.1  0.2 ] the measured energies are:
     \end{Verbatim}
 
             \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
-\prompt{Out}{outcolor}{23}{\boxspacing}
+\prompt{Out}{outcolor}{7}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
 <ErrorbarContainer object of 3 artists>
 \end{Verbatim}

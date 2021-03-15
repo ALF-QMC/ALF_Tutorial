@@ -7,11 +7,11 @@
 lattice}\label{trotter-systematic-error---hubbard-on-the-square-lattice}}
 
     In this example we use the
-\href{https://git.physik.uni-wuerzburg.de/ALF/pyALF}{pyALF} interface to
-run ALF with the Mz choice of Hubbard-Stratonovich transformation (i.e.,
-coupled to the \(z\)-component of the spin) on a \(6\times 6\) site
-square lattice, at \(U/t=4\) half-band filling, and inverse temperature
-\(\beta t = 5\).
+\href{https://git.physik.uni-wuerzburg.de/ALF/pyALF/-/tree/ALF-2.0}{pyALF}
+interface to run ALF with the Mz choice of Hubbard-Stratonovich
+transformation (i.e., coupled to the \(z\)-component of the spin) on a
+\(6\times 6\) site square lattice, at \(U/t=4\) half-band filling, and
+inverse temperature \(\beta t = 5\).
 
 We carry out a systematic \(\Delta \tau t\) extrapolation keeping
 \(\Delta \tau t L_\text{Trotter} = 2\) constant. Recall that the
@@ -24,7 +24,7 @@ e^{ -\Delta \tau \left( \hat{A} + \hat{B} \right) }  =  e^{ -\Delta \tau \hat{A}
 Bellow we go through the steps for performing this extrapolation:
 setting the simulation parameters, running it and analysing the data. A
 reference plot for this analyses is found in
-\href{https://git.physik.uni-wuerzburg.de/ALF/ALF/-/blob/master/Documentation/doc.pdf}{ALF
+\href{https://git.physik.uni-wuerzburg.de/ALF/ALF/-/blob/5a887441c8dca138ef2c9b643948d4eccee808ae/Documentation/doc.pdf}{ALF
 documentation}, Sec. 2.3.2 (Symmetric Trotter decomposition).
 
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
@@ -50,7 +50,7 @@ necessary parameters, in particular the different \(\Delta \tau\)
 values:
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{8}{\boxspacing}
+\prompt{In}{incolor}{2}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
 \PY{n}{sims} \PY{o}{=} \PY{p}{[}\PY{p}{]}                                \PY{c+c1}{\PYZsh{} Vector of Simulation instances}
 \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{dtau values used:}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
@@ -100,6 +100,7 @@ may take a few minutes:
 \end{tcolorbox}
 
     \begin{Verbatim}[commandchars=\\\{\}]
+Checking out branch ALF-2.0
 Compiling ALF{\ldots} Done.
     \end{Verbatim}
 
@@ -107,7 +108,7 @@ Compiling ALF{\ldots} Done.
 \texttt{sim}:
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{9}{\boxspacing}
+\prompt{In}{incolor}{4}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
 \PY{k}{for} \PY{n}{i}\PY{p}{,} \PY{n}{sim} \PY{o+ow}{in} \PY{n+nb}{enumerate}\PY{p}{(}\PY{n}{sims}\PY{p}{)}\PY{p}{:}
     \PY{n}{sim}\PY{o}{.}\PY{n}{run}\PY{p}{(}\PY{p}{)}                            \PY{c+c1}{\PYZsh{} Perform the actual simulation in ALF}
@@ -119,23 +120,23 @@ Prepare directory "/home/stafusa/ALF/pyALF/Notebooks/ALF\_data/Hubbard\_Square\_
 6\_L2=6\_Checkerboard=False\_Symm=True\_T=1.0\_U=4.0\_Tperp=0.0\_beta=5.0\_Dtau=0.05\_Mz=
 True" for Monte Carlo run.
 Create new directory.
-Run /home/stafusa/ALF/ALF/Prog/Hubbard.out
+Run /home/stafusa/ALF/pyALF/Notebooks/ALF/Prog/Hubbard.out
 Prepare directory "/home/stafusa/ALF/pyALF/Notebooks/ALF\_data/Hubbard\_Square\_L1=
 6\_L2=6\_Checkerboard=False\_Symm=True\_T=1.0\_U=4.0\_Tperp=0.0\_beta=5.0\_Dtau=0.1\_Mz=T
 rue" for Monte Carlo run.
 Create new directory.
-Run /home/stafusa/ALF/ALF/Prog/Hubbard.out
+Run /home/stafusa/ALF/pyALF/Notebooks/ALF/Prog/Hubbard.out
 Prepare directory "/home/stafusa/ALF/pyALF/Notebooks/ALF\_data/Hubbard\_Square\_L1=
 6\_L2=6\_Checkerboard=False\_Symm=True\_T=1.0\_U=4.0\_Tperp=0.0\_beta=5.0\_Dtau=0.2\_Mz=T
 rue" for Monte Carlo run.
 Create new directory.
-Run /home/stafusa/ALF/ALF/Prog/Hubbard.out
+Run /home/stafusa/ALF/pyALF/Notebooks/ALF/Prog/Hubbard.out
     \end{Verbatim}
 
     \textbf{5.} Calculate the internal energies:
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{10}{\boxspacing}
+\prompt{In}{incolor}{5}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
 \PY{n}{ener} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{empty}\PY{p}{(}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{sims}\PY{p}{)}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}          \PY{c+c1}{\PYZsh{} Matrix for storing energy values}
 \PY{n}{dtaus} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{empty}\PY{p}{(}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{sims}\PY{p}{)}\PY{p}{,}\PY{p}{)}\PY{p}{)}           \PY{c+c1}{\PYZsh{} Matrix for Dtau values, for plotting}
@@ -190,7 +191,7 @@ Analysing SpinT\_eq
     \end{Verbatim}
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{11}{\boxspacing}
+\prompt{In}{incolor}{6}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
 \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{For Dtau values}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{dtaus}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{the measured energies are:}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{ener}\PY{p}{)}
 \end{Verbatim}
@@ -200,11 +201,11 @@ Analysing SpinT\_eq
 For Dtau values [0.05 0.1  0.2 ] the measured energies are:
  [[-29.743579   0.058593]
  [-29.76641    0.047186]
- [-29.84635    0.057173]]
+ [-29.828613   0.041642]]
     \end{Verbatim}
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{12}{\boxspacing}
+\prompt{In}{incolor}{7}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
 \PY{n}{plt}\PY{o}{.}\PY{n}{errorbar}\PY{p}{(}\PY{n}{dtaus}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{ener}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{ener}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}
 
@@ -221,11 +222,11 @@ For Dtau values [0.05 0.1  0.2 ] the measured energies are:
 \end{tcolorbox}
 
     \begin{Verbatim}[commandchars=\\\{\}]
-[-29.73817034  -2.71266175] [0.04573724 2.02039198]
+[-29.74167763  -2.18462308] [0.04509651 1.66224071]
     \end{Verbatim}
 
             \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
-\prompt{Out}{outcolor}{12}{\boxspacing}
+\prompt{Out}{outcolor}{7}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
 <ErrorbarContainer object of 3 artists>
 \end{Verbatim}
@@ -249,7 +250,7 @@ For Dtau values [0.05 0.1  0.2 ] the measured energies are:
   \texttt{Symm} settings in order to observe their effect on the output
   and run time. Reference: Sec. 2.3.2 - Symmetric Trotter decomposition
   - of the
-  \href{https://git.physik.uni-wuerzburg.de/ALF/ALF/-/blob/master/Documentation/doc.pdf}{ALF
+  \href{https://git.physik.uni-wuerzburg.de/ALF/ALF/-/blob/5a887441c8dca138ef2c9b643948d4eccee808ae/Documentation/doc.pdf}{ALF
   documentation}, especially Fig. 2.
 \end{enumerate}
 
