@@ -1,4 +1,9 @@
-Currently, each notebook pdf is created in two steps:
+
+
+  DEPRECATED: using tex instead of pdf files.
+
+
+Each notebook pdf is created in two steps:
 
 1) Download as html from the jupyter notebook menu: File > Download as > HTML
 2) convert to pdf using the command-line tool wkhtmltopdf, e.g.:
