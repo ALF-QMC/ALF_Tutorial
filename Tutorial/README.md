@@ -1,11 +1,8 @@
 # ALF Tutorial
-This is a tutorial for using [ALF 2.0](https://git.physik.uni-wuerzburg.de/ALF/ALF/-/tree/ALF-2.0) intended to get you started from zero up to your own first 
-projects.
+This is a tutorial for using [ALF](https://git.physik.uni-wuerzburg.de/ALF/ALF/) intended to get you started from zero up to your own first projects.
 
 ## Installation.
-ALF is pretty self-contained, you only need a LAPACK and a BLAS implementation
-as external libraries. For compiling the source code you need make and a
-Fortran 2003 compatible Compiler.
+ALF is pretty self-contained, you only need a LAPACK and a BLAS implementation as external libraries. For compiling the source code you need make and a Fortran 2003 compatible Compiler.
 
 pyALF, the Python interface for ALF, also demands only Python, Jupiter and a few basic Python packages: SciPy, NumPy and matplotlib.
 
@@ -50,7 +47,7 @@ ALF.
   - You can now use the installed Cygwin packages by starting the Cygwin terminal. It is a UNIX terminal which, by default, starts in the home diretory "/home/<username>" of the UNIX-system emulated by Cygwin, where "/" is the root directory of Cygwin. For example, if you have installed Cygwin in "C:\cygwin64\", then the home Directory of Cygwin ca be found at "C:\cygwin64\home\<username>", in the Windows system.
 
 ### Building
-After you have obtained the source code of [ALF 2.0](https://git.physik.uni-wuerzburg.de/ALF/ALF/-/tree/ALF-2.0) and the correspondent [pyALF](https://git.physik.uni-wuerzburg.de/ALF/pyALF/-/tree/ALF-2.0), and have set up the build environment, you need to build the source files. Executing `make` in the ALF's root directory does the job, and you can check the tutorial for more details.
+After you have obtained the source code of [ALF 2.0](https://git.physik.uni-wuerzburg.de/ALF/ALF/) and [pyALF](https://git.physik.uni-wuerzburg.de/ALF/pyALF/), and have set up the build environment, you need to build the source files. Executing `make` in the ALF's root directory does the job, and you can check the tutorial for more details.
 
 ## Editors
 For the coding parts of the exercises we recommend to use a text editor. Linux usually have one installed like kwrite, kate or gedit(emacs and VI work great, too) and for the Windows users we recommend Notepad++. Jupyter notebooks of course can be edited in a browser.
