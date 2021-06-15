@@ -14,7 +14,7 @@ In the following we give hints on how to install relevant packages.
 - sudo apt-get install gfortran liblapack-dev make
 
 #### Red Hat/Fedora/CentOS
-- sudo yum install gcc-gfortran make liblapack-devel
+- sudo dnf install gcc-gfortran make liblapack-devel
 
 #### OpenSuSE / SLES
 - sudo zypper install gcc-gfortran make lapack-devel
