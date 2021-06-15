@@ -21,7 +21,7 @@ Anaconda is recommended due to its convenience, but the system's package managem
 * **Linux**   
   To install the relevant ALF packages.
   - **Debian/Ubuntu/Linux Mint**:  `sudo apt-get install gfortran liblapack-dev make`
-  - **Red Hat/Fedora/CentOS**:  `sudo yum install gcc-gfortran make liblapack-devel`
+  - **Red Hat/Fedora/CentOS**:  `sudo dnf install gcc-gfortran make liblapack-devel`
   - **OpenSuSE/SLES**:  `sudo zypper install gcc-gfortran make lapack-devel`
   - **Arch Linux**:  `pacman -S make gcc-fortran lapack`
 
