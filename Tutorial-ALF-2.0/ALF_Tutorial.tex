@@ -118,6 +118,10 @@
 \newcommand{\mycomment}[1]{{\color{red} #1}}
 \newcommand{\FAcomment}[1]{{\color{red} #1}}
 
+\newcommand{\ALFver}{2.0}    % version of ALF the tutorial uses
+\newcommand{\pyALFver}{2.0}  % version of pyALF the tutorial uses
+\newcommand{\tutALFver}{2.0} % version of the tutorial - normally should be the same as \ALFver
+
 %%%%%%%%%%%%%%%  -- uses package titlesec --  %%%%%%%%%%%%%%%
 
 %%% tweaking the form of Part
@@ -157,9 +161,9 @@
 \makeindex
 \begin{document}
 %---------------------------------------------------------------------------------------------------------
-%\title{ ALF Tutorial \\  \smaller\smaller The \emph{ALF} (\emph{A}lgorithms for \emph{L}attice \emph{F}ermions) project release 2.0 tutorial}
+%\title{ ALF Tutorial \\  \smaller\smaller The \emph{ALF} (\emph{A}lgorithms for \emph{L}attice \emph{F}ermions) project release \tutALFver{} tutorial}
 \title{ ALF Tutorial }
-\subtitle{The \emph{ALF} (\emph{A}lgorithms for \emph{L}attice \emph{F}ermions) project release 2.0 tutorial} % only for the scrartcl class
+\subtitle{The \emph{ALF} (\emph{A}lgorithms for \emph{L}attice \emph{F}ermions) project release \tutALFver{} tutorial} % only for the scrartcl class
 \author{Florian Goth,  Johannes S. Hofmann,  Jonas Schwab,\\  Jefferson S. E. Portela,  Fakher F. Assaad }
 %---------------------------------------------------------------------------------------------------------
 \maketitle
@@ -173,20 +177,20 @@ The ALF package provides a general code for auxiliary-field Quantum Monte Carlo 
 \item[Part II.] The second part is independent of the first and aimed at more advanced users who want to simulate their own systems. It guides the user on how to modify the package's Fortran source code and presents the resources implemented to facilitate this task.
 \end{description}
 
-This document is intended to be self-contained, but the interested reader should check \href{https://git.physik.uni-wuerzburg.de/ALF/ALF/-/blob/ALF-2.0/Documentation/doc.pdf}{ALF's documentation}, which contains a thorough, systematic description of the package in its 2.0 version.
+This document is intended to be self-contained, but the interested reader should check \href{https://git.physik.uni-wuerzburg.de/ALF/ALF/-/blob/ALF-\ALFver/Documentation/doc.pdf}{ALF's documentation}, which contains a thorough, systematic description of the package in its \ALFver{} version.
 
 
 %%%%%%%%%%%%%%%%%%%%
 \part{Just run it}
 
-What follows is a collection of self-explanatory Jupyter notebooks written in Python, each centered on a detailed example followed by a few simple exercises. The notebooks printed below can be found, together with the necessary files and an increasing number of additional notebooks exploring ALF's capabilities, in the \href{https://git.physik.uni-wuerzburg.de/ALF/pyALF/-/tree/ALF-2.0}{pyALF repository}, branch ALF-2.0.
+What follows is a collection of self-explanatory Jupyter notebooks written in Python, each centered on a detailed example followed by a few simple exercises. The notebooks printed below can be found, together with the necessary files and an increasing number of additional notebooks exploring ALF's capabilities, in the \href{https://git.physik.uni-wuerzburg.de/ALF/pyALF/-/tree/ALF-\pyALFver}{pyALF repository}, branch ALF-\pyALFver{}.
 
 
 \section*{Requirements}
 
 You can download pyALF from its repository linked above or, from the command line:
-\begin{lstlisting}[style=bash]
-git clone -b ALF-2.0 https://git.physik.uni-wuerzburg.de/ALF/pyALF.git
+\begin{lstlisting}[style=bash,escapechar=\%]
+git clone -b ALF-%\pyALFver{}%https://git.physik.uni-wuerzburg.de/ALF/pyALF.git
 \end{lstlisting}
 To run the notebooks you need the following installed in your machine:
 \begin{itemize}
@@ -195,7 +199,7 @@ To run the notebooks you need the following installed in your machine:
 	\item the libraries Lapack and Blas
 	\item a Fortran compiler, such as \texttt{gfortran} or \texttt{ifort},
 \end{itemize}
-where the last two are required by the main package \href{https://git.physik.uni-wuerzburg.de/ALF/ALF/-/tree/ALF-2.0}{ALF}. %, which is automatically handled by pyALF.
+where the last two are required by the main package \href{https://git.physik.uni-wuerzburg.de/ALF/ALF/-/tree/ALF-\ALFver}{ALF}. %, which is automatically handled by pyALF.
 Also, add pyALF's path to your environment variable \texttt{PYTHONPATH}. In Linux, this can be achieved, e.g., by adding the following line to \texttt{.bashrc}:
 \begin{lstlisting}[style=bash]
 export PYTHONPATH="/local/path/to/pyALF:$PYTHONPATH"
@@ -213,7 +217,7 @@ sudo apt-get install  gfortran liblapack-dev make
 \end{lstlisting}
 In MacOS, gfortran can be found at \url{https://gcc.gnu.org/wiki/GFortranBinaries#MacOS}, where detailed instructions \href{https://gcc.gnu.org/wiki/GFortranBinariesMacOS}{are available}. You will need to have Xcode as well as the Apple developer tools installed.
 
-For Windows and other Linuxes and Unixes, please check the Tutorials' repository \href{https://git.physik.uni-wuerzburg.de/ALF/ALF_Tutorial/-/blob/0a6c0b6a9967b3bdfa6521ac2689e26c6d467fad/Tutorial-ALF-2.0/README.md}{README}.
+For Windows and other Linuxes and Unixes, please check the Tutorials' repository \href{https://git.physik.uni-wuerzburg.de/ALF/ALF_Tutorial/-/blob/master/Tutorial-ALF-\tutALFver/README.md}{README}.
 
 \section*{Starting}
 
@@ -276,14 +280,14 @@ These worked-out exercises, together with ALF's modularity, boosted by its Prede
 
 \section*{Downloading and using the code and tutorial}
 One can use the ALF package downloaded automatically by the Python script in the first part of this tutorial, or manually, by typing
-\begin{lstlisting}[style=bash]
-git clone -b ALF-2.0 https://git.physik.uni-wuerzburg.de/ALF/pyALF.git
+\begin{lstlisting}[style=bash,escapechar=\%]
+git clone -b ALF-%\ALFver%https://git.physik.uni-wuerzburg.de/ALF/ALF.git
 \end{lstlisting}
 in a shell. Similarly, to download the tutorial, including solutions, enter:
 \begin{lstlisting}[style=bash]
 git clone https://git.physik.uni-wuerzburg.de/ALF/ALF_Tutorial.git
 \end{lstlisting}
-This document is found in the directory \texttt{Tutorial-ALF-2.0}.
+This document is found in the directory \texttt{Tutorial-ALF-\tutALFver{}}.
 
 The necessary environment variables and the directives for compiling the code are set by the script \texttt{configure.sh}: \lstinline[style=bash]|source configure.sh GNU|, followed by the command  \lstinline[style=bash,morekeywords={make}]|make|. Details and further options are described in the package's documentation found in its repository.
 
@@ -292,7 +296,7 @@ A workflow you can adopt for solving the exercises -- or indeed using ALF in gen
 	\item Compile the modified Hamiltonian module, for instance:\\
 	\lstinline[style=bash,morekeywords={make}]{make Hubbard_Plain_Vanilla}
 	\item Create a data directory with the content of \texttt{Start}:\\
-	\lstinline[style=bash,morekeywords={cp}]{cp -r ./Start ./Run  &&  cd ./Run/}
+	\lstinline[style=bash,morekeywords={cp}]{cp -r ./Scripts_and_Parameters_files/Start ./Run  &&  cd ./Run/}
 	\item Run its executable, e.g., serially:\\
 	\lstinline[style=bash]{$ALF_DIR/Prog/Hubbard_Plain_Vanilla.out} %$
 	\item Perform default analyses\footnote{The \texttt{analysis.sh} bash script from earlier versions of ALF, run without arguments, is still available in the \texttt{Start} directory.}:\\
