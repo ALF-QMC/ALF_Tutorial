@@ -357,7 +357,7 @@ As an application of this code, we can once again consider a ladder system (e.g,
 	\begin{center}
 		\includegraphics[width=0.6\columnwidth]{Figures/ladder.pdf}
 	\end{center}
-	\caption{Spin correlation functions along one leg for the Hubbard ladder.   As $t_y$ grows the spin gap becomes large enough so as to detect the  exponential decal of the spin correlation function on this small lattice size. The underlying physics of odd-even  ladder systems is introduced in the article: Elbio Dagotto and T. M. Rice, Surprises on the way from one- to two-dimensional quantum magnets: The ladder materials, Science 271 (1996), no. 5249, 618--623.}
+	\caption{Spin correlation functions along one leg for the Hubbard ladder.   As $t_y$ grows the spin gap becomes large enough so as to detect the  exponential decal of the spin correlation function on this small lattice size. The underlying physics of odd-even  ladder systems is introduced in the article: Elbio Dagotto and T. M. Rice, ``Surprises on the way from one- to two-dimensional quantum magnets: The ladder materials'', Science \textbf{271}, 5249 (1996) pp.~618--623.}
 	\label{fig:ladder}
 \end{figure}
 
@@ -381,7 +381,7 @@ The above form is  readily included in the ALF since  the interaction is written
 \hat{H} =  -t \sum_{i} \left( \hat{c}^{\dagger}_{i}  \hat{c}^{\phantom\dagger}_{i+a}      + \hat{c}^{\dagger}_{i+a}  \hat{c}^{\phantom\dagger}_{i} \right)  + V  \sum_{i}  \left( \hat{n}_{i} - 1/2 \right)  \left( \hat{n}_{i+a} - 1/2 \right).
 \end{equation}
 
-Note that the t-V model is already implemented in ALF in the module \texttt{Hamiltonian\_tV\_mod.F90} found in  \texttt{Prog/Hamiltonians/}. While it can be used for checking your own results\footnote{A short simulation of the t-V model can be conveniently run using its Jupyter notebook available in pyALF.}, you are not supposed to reproduce that implementation -- which is more general and makes use of predefined structures -- but instead to write a simpler one, based on the module \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod.F90} as detailed below.
+Note that the t-V model is already implemented in ALF in the module \texttt{Hamiltonian\_tV\_smod.F90} found in  \texttt{Prog/Hamiltonians/}. While it can be used for checking your own results\footnote{A short simulation of the t-V model can be conveniently run using its Jupyter notebook available in pyALF.}, you are not supposed to reproduce that implementation -- which is more general and makes use of predefined structures -- but instead to write a simpler one, based on the module \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_smod.F90} as detailed below.
 
 
 \exerciseitem{Define new model}
@@ -455,10 +455,10 @@ Z = cmplx(dble(N_SUN), 0.d0, kind(0.D0))
 \end{lstlisting}
 among other changes - with similar ones in the \texttt{ObserT} routine.
 
-All necessary changes are implemented and clearly indicated in the solution provided in \texttt{Solutions/Exercise\_2/Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod-Exercise\_2.F90}.
+All necessary changes are implemented and clearly indicated in the solution provided in \texttt{Solutions/Exercise\_2/Hamiltonian\_Hubbard\_Plain\_Vanilla\_smod-Exercise\_2.F90}.
 \end{itemize}
 
-In the directory \texttt{Solutions/Exercise\_2} we have duplicated ALF's code and commented the changes that have to be carried out to the file \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod.F90} in the \texttt{Prog/Hamiltonians} directory. The solution directory also includes reference data and the necessary \texttt{Start} directory (remember to copy its contents to every new \texttt{Run} directory, and to have a different \texttt{Run} directory for each simulation).
+In the directory \texttt{Solutions/Exercise\_2} we have the modified and original submodules, as well as reference data and the necessary \texttt{Start} directory (remember to copy its contents to every new \texttt{Run} directory, and to have a different \texttt{Run} directory for each simulation).
 
 You can now run the code for  various values of $V/t$. A Jordan-Wigner transformation  will map the  \texttt{t\_V}  model onto the XXZ  chain:
 \begin{equation}
