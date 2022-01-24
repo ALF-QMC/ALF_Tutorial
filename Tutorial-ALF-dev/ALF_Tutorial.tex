@@ -386,7 +386,7 @@ Note that the t-V model is already implemented in ALF in the module \texttt{Hami
 
 \exerciseitem{Define new model}
 
-In the directory  \texttt{\$ALF\_DIR/Solutions/Exercise\_2} we have  duplicated the ALF and commented  the changes that have to be carried out to the file \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod.F90}, which we here shorten to ``\texttt{Vanilla}'', found in \texttt{\$ALF\_DIR/Prog/Hamiltonians/}. The following are the essential steps to be carried out:
+In the directory  \texttt{\$ALF\_DIR/Solutions/Exercise\_2} we have  duplicated the ALF and commented  the changes that have to be carried out to the file \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_smod.F90}, which we here shorten to ``\texttt{Vanilla}'', found in \texttt{\$ALF\_DIR/Prog/Hamiltonians/}. The following are the essential steps to be carried out:
 \begin{itemize}
 \item  Add the \texttt{VAR\_t\_V} name space in the file \texttt{parameters} and set the necessary variables -- or simply rename the \texttt{VAR\_Hubbard\_Plain\_Vanilla} name space to \texttt{VAR\_t\_V} and, within it, \texttt{Ham\_U} to \texttt{Ham\_Vint}. (Ignore the name space \texttt{VAR\_tV}, which is used by the general implementation mentioned above.)
 \item  Declare a new variable, \texttt{Ham\_Vint}, in \texttt{Vanilla}'s specification.
