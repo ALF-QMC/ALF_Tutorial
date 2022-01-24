@@ -2,14 +2,14 @@
 !  Input variables for a general ALF run
 !---------------------------------------------------------------------------------------
 &VAR_ham_name
-ham_name = "Hubbard_Plain_Vanilla"
+ham_name = "Hubbard"
 /
 
 &VAR_lattice               !! Parameters defining the specific lattice and base model
 L1           = 6            ! Length in direction a_1
 L2           = 6            ! Length in direction a_2
 Lattice_type = "Square"     ! Sets a_1 = (1,0), a_2=(0,1), Norb=1, N_coord=2
-Model        = "Hubbard_Plain_Vanilla" ! Sets the Hubbard Plain Vanilla model
+Model        = "Hubbard"    ! Sets the Hubbard model, to be specified in &VAR_Hubbard
 /
 
 &VAR_Model_Generic         !! Common model parameters
@@ -30,12 +30,12 @@ Theta        = 10.d0        ! Projection parameter
 &VAR_QMC                   !! Variables for the QMC run
 Nwrap                = 10   ! Stabilization. Green functions will be computed from 
                             ! scratch after each time interval Nwrap*Dtau
-NSweep               = 100   ! Number of sweeps
-NBin                 = 10   ! Number of bins
+NSweep               = 20   ! Number of sweeps
+NBin                 = 5    ! Number of bins
 Ltau                 = 1    ! 1 to calculate time-displaced Green functions; 0 otherwise
 LOBS_ST              = 0    ! Start measurements at time slice LOBS_ST
 LOBS_EN              = 0    ! End measurements at time slice LOBS_EN
-CPU_MAX              = 0.03 ! Code stops after CPU_MAX hours, if 0 or not
+CPU_MAX              = 0.0  ! Code stops after CPU_MAX hours, if 0 or not
                             ! specified, the code stops after Nbin bins
 Propose_S0           = .F.  ! Proposes single spin flip moves with probability exp(-S0) 
 Global_moves         = .F.  ! Allows for global moves in space and time 
@@ -107,7 +107,7 @@ ham_T     = 1.d0            ! Hopping parameter
 ham_chem  = 0.d0            ! Chemical potential
 ham_U     = 4.d0            ! Hubbard interaction
 Dtau      = 0.1d0           ! Thereby Ltrot=Beta/dtau
-Beta      = 20.d0            ! Inverse temperature
+Beta      = 5.d0            ! Inverse temperature
 Projector = .F.             ! Whether the projective algorithm is used
 Theta     = 10.d0           ! Projection parameter
 Symm      = .T.             ! Whether symmetrization takes place
