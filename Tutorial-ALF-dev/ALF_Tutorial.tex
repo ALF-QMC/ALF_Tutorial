@@ -460,6 +460,8 @@ All necessary changes are implemented and clearly indicated in the solution prov
 
 In the directory \texttt{Solutions/Exercise\_2} we have the modified and original submodules, as well as reference data and the necessary \texttt{Start} directory (remember to copy its contents to every new \texttt{Run} directory, and to have a different \texttt{Run} directory for each simulation).
 
+\exerciseitem{Phase transition}
+
 You can now run the code for  various values of $V/t$. A Jordan-Wigner transformation  will map the  \texttt{t\_V}  model onto the XXZ  chain:
 \begin{equation}
 \hat{H} = J_{xx} \sum_{i}   \hat{S}^{x}_i \hat{S}^{x}_{i+a} +   \hat{S}^{y}_i \hat{S}^{y}_{i+a}  + J_{zz}  \sum_{i}\hat{S}^{z}_i \hat{S}^{z}_{i +a}\quad,
@@ -519,7 +521,7 @@ GR(i,j,\sigma) & = \left\langle \hat{c}^{\phantom\dagger}_{i,\sigma}\hat{c}^\dag
 
 \exerciseitem{Necessary code modifications}
 
-In the directory  \texttt{\$ALF\_DIR/Solutions/Exercise\_3} we have  duplicated the ALF and commented  the changes that have to be carried out to the file \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_mod.F90} found in \texttt{\$ALF\_DIR/Prog/Hamiltonians/}, which we here shorten to ``\texttt{Vanilla}''. The following are the essential steps to be carried out:
+In the directory  \texttt{\$ALF\_DIR/Solutions/Exercise\_3} we have the modified and original submodule \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_smod.F90} found in \texttt{\$ALF\_DIR/Prog/Hamiltonians} (which we here shorten to ``\texttt{Vanilla}''), as well as reference data and the necessary \texttt{Start} directory (remember to copy its contents to every new \texttt{Run} directory, and to have a different \texttt{Run} directory for each simulation). The following are the essential steps to be carried out:
 \begin{itemize}
 	\item  Introduce the new observable and allocate the memory required to store the measurements. This is done in the subroutine \texttt{Alloc\_obs(Ltau)} by increasing the length of the array \texttt{Obs\_eq} appropriately and adding a new case to specify the filename in which the results are stored on disc. (You might want to revisit this section later on to add the time-displaced version of the correlation function by changing \texttt{Obs\_tau} in the same fashion.)
 	\item  The actual measurements are taken in the subroutine \texttt{Obser(GR,Phase,Ntau)}. While \texttt{GR} is passed to the subroutine, the first lines of code already implement the construct $\mathtt{GRC}=1-\mathtt{GR}^T$. (This section does not have to be modified, but it is useful to keep this in mind for future reference when you implement a new model from scratch.)
