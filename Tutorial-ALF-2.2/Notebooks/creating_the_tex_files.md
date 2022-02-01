@@ -19,7 +19,7 @@ mv output_12_2.png example01-output_12_2.png
 ```
 get_content_from_notebook_latex.sh example01.tex
 ```
-which outputs a file called `example01-content.tex` with only the lines of `example01.tex` found between `\maketitle` and `\end{document}`. It also changes `{example.png}` to `{example01-example.png}`, since different downloaded latex notebooks may have figures with the same name.
+which outputs a file called `example01-content.tex` with only the lines of `example01.tex` found between `\maketitle` and `\end{document}`. It also changes `{example.png}` to `{example01-example.png}`, since different downloaded latex notebooks may have figures with the same name, and changes the size of the figure in the tex file from 0.9 to 0.6.
 
 
 ---
@@ -57,6 +57,7 @@ newfile="${file%.tex}-content.tex"              # "file" minus ".tex" extension 
 sed -e '/maketitle/,/end{document}/!d'        \
     -e '/maketitle/d;/end{document}/d'        \
     -e "s/{\([^{]*.png}\)/{${file%.tex}-\1/g" \
+    -e 's/adjustimage{max size={0.9/adjustimage{max size={0.6/g' \
     $file  >  $newfile                          # Where: 
                                                 # 1st: delete lines NOT in the range between expressions
                                                 # 2nd: delete lines containing the expressions
@@ -64,5 +65,6 @@ sed -e '/maketitle/,/end{document}/!d'        \
                                                 #      \1 refers to the previous subexpression enclosed by
                                                 #      \( \), and [^{]* matches the longest sequence of
                                                 #      characters not including {
+                                                # 4th: change image max size from 0.9 to 0.6
 
 ```
