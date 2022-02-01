@@ -118,19 +118,11 @@
 \newcommand{\mycomment}[1]{{\color{red} #1}}
 \newcommand{\FAcomment}[1]{{\color{red} #1}}
 
-
-\newcommand{\ALFver}{dev.}          %{2.2}{dev.} version of ALF the tutorial uses
-\newcommand{\ALFbranch}{master}   %{ALF-2.2}{master} corresponding ALF branch
-\newcommand{\pyALFver}{dev.}        %{2.2}{dev.} version of pyALF the tutorial uses
-\newcommand{\pyALFbranch}{master} %{ALF-2.2}{master} corresponding pyALF branch
-\newcommand{\tutALFver}{dev}       %{2.2}{dev} version of the tutorial - normally should be the same as \ALFver (ex.: 2.2, dev [no period after "dev", since it's also used in paths])
-
-%\newcommand{\ALFver}{2.3}          %{2.2}{dev.} version of ALF the tutorial uses
-%\newcommand{\ALFbranch}{ALF-2.3}   %{ALF-2.2}{master} corresponding ALF branch
-%\newcommand{\pyALFver}{2.3}        %{2.2}{dev.} version of pyALF the tutorial uses
-%\newcommand{\pyALFbranch}{ALF-2.3} %{ALF-2.2}{master} corresponding pyALF branch
-%\newcommand{\tutALFver}{2.3}       %{2.2}{dev} version of the tutorial - normally should be the same as \ALFver (ex.: 2.2, dev [no period after "dev", since it's also used in paths])
-
+\newcommand{\ALFver}{2.2}          %{2.2}{dev.} version of ALF the tutorial uses
+\newcommand{\ALFbranch}{ALF-2.2}   %{ALF-2.2}{master} corresponding ALF branch
+\newcommand{\pyALFver}{2.2}        %{2.2}{dev.} version of pyALF the tutorial uses
+\newcommand{\pyALFbranch}{ALF-2.2} %{ALF-2.2}{master} corresponding pyALF branch
+\newcommand{\tutALFver}{2.2}       %{2.2}{dev} version of the tutorial - normally should be the same as \ALFver (ex.: 2.2, dev [no period after "dev", since it's also used in paths])
 
 %%%%%%%%%%%%%%%  -- uses package titlesec --  %%%%%%%%%%%%%%%
 
@@ -172,7 +164,7 @@
 \begin{document}
 %---------------------------------------------------------------------------------------------------------
 %\title{ ALF Tutorial \\  \smaller\smaller The \emph{ALF} (\emph{A}lgorithms for \emph{L}attice \emph{F}ermions) project release \tutALFver{} tutorial}
-\title{ ALF Tutorial -- \tutALFver{} }
+\title{ ALF Tutorial -- \tutALFver{}}
 \subtitle{Examples and exercises for the \emph{ALF} (\emph{A}lgorithms for \emph{L}attice \emph{F}ermions) package} % only for the scrartcl class
 \author{Florian Goth,  Johannes S. Hofmann,  Jonas Schwab,\\  Jefferson S. E. Portela,  Fakher F. Assaad }
 %---------------------------------------------------------------------------------------------------------
@@ -189,11 +181,6 @@ The ALF package provides a general code for auxiliary-field Quantum Monte Carlo 
 
 This document is intended to be self-contained, but the interested reader should check \href{https://git.physik.uni-wuerzburg.de/ALF/ALF/-/blob/\ALFbranch/Documentation/doc.pdf}{ALF's documentation}, which contains a thorough, systematic description of the package in its \ALFver{} version (or \href{https://git.physik.uni-wuerzburg.de/ALF/ALF/-/blob/master/Documentation/doc.pdf}{here} for its latest (development) version).
 
-%
-%%%%%%%%%%%%%%%  ONLY FOR THE DEV VERSION OF THE TUTORIAL  %%%%%%%%%%%%%%%
-\textbf{\textcolor{red}{Notice}} that the latest stable release of ALF is ALF 2.2 -- the correspondent tutorial can be found at \href{https://git.physik.uni-wuerzburg.de/ALF/ALF_Tutorial/-/tree/master/Tutorial-ALF-2.2}{https://git.physik.uni-wuerzburg.de/ALF/ALF\_Tutorial/-/tree/master/Tutorial-ALF-2.2} .
-%%%%%%%%%%%%%%%                                            %%%%%%%%%%%%%%%
-%
 
 %%%%%%%%%%%%%%%%%%%%
 \part{Just run it}
@@ -238,7 +225,7 @@ For Windows and other Linuxes and Unixes, please check the Tutorials' repository
 
 Jupyter notebooks \href{https://jupyter.readthedocs.io/en/latest/running.html}{are run} through a Jupyter server\footnote{Note that pyALF can also be used to start a simulation from the command line, without starting a Jupyter server or using a notebook. For instance: \texttt{python3.7 Run.py -R  --alfdir /home/debian/ALF-1.2/ --config "Intel"  --executable\_R Hubbard --mpi True} starts a parallel run of the Hubbard model, using ALF compiled with \texttt{ifort}.  Notice that \texttt{Run.py} requires a configuration file  \texttt{Sims}, which defines the simulation parameters. An entry of \texttt{Sims} might read as: \texttt{ {"Model": "Hubbard", "Lattice\_type": "Square", "L1": 4, "L2": 4, "NBin": 5, "ham\_T": 0.0, "Nsweep" : 2000, "Beta": 1.0, "ham\_chem": -1.0} } } started, e.g., from the command line:
 \begin{lstlisting}[style=bash]
-jupyterlab notebook
+jupyter notebook
 \end{lstlisting}
 (or, depending on the installation, \texttt{jupyter-notebook})
 %\begin{lstlisting}[style=bash]
@@ -259,7 +246,6 @@ which opens the ``notebook dashboard'' in your default browser, where you can na
 
 .\\
 \textbf{TO BE UPDATED}\\
-
 
 \section*{Notebooks}
 
