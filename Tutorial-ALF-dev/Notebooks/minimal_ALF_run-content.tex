@@ -6,65 +6,79 @@
 \section{A minimal ALF run}\label{a-minimal-alf-run}}
 
     In this bare-bones example we use the
-\href{https://git.physik.uni-wuerzburg.de/ALF/pyALF}{pyALF} interface to
-run the canonical Hubbard model on a default configuration: a
-\(6\times6\) square grid, with interaction strength \(U=4\) and inverse
-temperature \(\beta = 5\).
+\href{https://git.physik.uni-wuerzburg.de/ALF/pyALF/-/tree/master/}{pyALF}
+interface to run the canonical Hubbard model on a default configuration:
+a \(6\times6\) square grid, with interaction strength \(U=4\) and
+inverse temperature \(\beta = 5\).
 
 Bellow we go through the steps for performing the simulation and
 outputting observables.
 
-\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
-\textbf{1.} Import \texttt{Simulation} class from the \texttt{py\_alf}
-python module, which provides the interface with ALF:
+\textbf{1.} Import \texttt{ALF\_source} and \texttt{Simulation} classes
+from the \texttt{py\_alf} python module, which provide the interface
+with ALF:
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
 \prompt{In}{incolor}{1}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
-\PY{k+kn}{import} \PY{n+nn}{os}
-\PY{k+kn}{from} \PY{n+nn}{py\PYZus{}alf} \PY{k}{import} \PY{n}{Simulation}              \PY{c+c1}{\PYZsh{} Interface with ALF}
+\PY{k+kn}{from} \PY{n+nn}{py\PYZus{}alf} \PY{k+kn}{import} \PY{n}{ALF\PYZus{}source}\PY{p}{,} \PY{n}{Simulation}  \PY{c+c1}{\PYZsh{} Interface with ALF}
 \end{Verbatim}
 \end{tcolorbox}
 
-    \textbf{2.} Create an instance of \texttt{Simulation}, setting
-parameters as desired:
+    \textbf{2.} Create an instance of \texttt{ALF\_source}, downloading the
+ALF source code from the
+\href{https://git.physik.uni-wuerzburg.de/ALF/ALF/-/tree/master/}{ALF
+repository}, if \texttt{alf\_dir} does not exist. Gets alf\_dir from
+environment variable \texttt{\$ALF\_DIR}, or defaults to ``./ALF'', if
+not present:
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
 \prompt{In}{incolor}{2}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
-\PY{n}{sim} \PY{o}{=} \PY{n}{Simulation}\PY{p}{(}
-    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Hubbard}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}                             \PY{c+c1}{\PYZsh{} Hamiltonian}
-    \PY{p}{\PYZob{}}                                      \PY{c+c1}{\PYZsh{} Model and simulation parameters for each Simulation instance}
-    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Model}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Hubbard}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}                    \PY{c+c1}{\PYZsh{} Base model}
-    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Lattice\PYZus{}type}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Square}\PY{l+s+s2}{\PYZdq{}}\PY{p}{\PYZcb{}}\PY{p}{,}             \PY{c+c1}{\PYZsh{} Lattice type}
-    \PY{n}{alf\PYZus{}dir}\PY{o}{=}\PY{n}{os}\PY{o}{.}\PY{n}{getenv}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ALF\PYZus{}DIR}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{./ALF}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{,} \PY{c+c1}{\PYZsh{} Directory with ALF source code. Gets it from }
-                                           \PY{c+c1}{\PYZsh{} environment variable ALF\PYZus{}DIR, if present}
-\PY{p}{)}
+\PY{n}{alf\PYZus{}src} \PY{o}{=} \PY{n}{ALF\PYZus{}source}\PY{p}{(}\PY{p}{)}
 \end{Verbatim}
 \end{tcolorbox}
 
-    \textbf{3.} Compile ALF, downloading it first from the
-\href{https://git.physik.uni-wuerzburg.de:ALF}{ALF repository} if not
-found locally. This may take a few minutes:
+    \textbf{3.} Create an instance of \texttt{Simulation}, overwriting
+default parameters as desired:
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
 \prompt{In}{incolor}{3}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
-\PY{n}{sim}\PY{o}{.}\PY{n}{compile}\PY{p}{(}\PY{p}{)}                              \PY{c+c1}{\PYZsh{} Compilation needs to be performed only once}
+\PY{n}{sim} \PY{o}{=} \PY{n}{Simulation}\PY{p}{(}
+    \PY{n}{alf\PYZus{}src}\PY{p}{,}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Hubbard}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}                    \PY{c+c1}{\PYZsh{} Name of Hamiltonian}
+    \PY{p}{\PYZob{}}                             \PY{c+c1}{\PYZsh{} Dictionary overwriting default parameters}
+        \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Lattice\PYZus{}type}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Square}\PY{l+s+s2}{\PYZdq{}}
+    \PY{p}{\PYZcb{}}\PY{p}{,}
+    \PY{n}{machine}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{GNU}\PY{l+s+s1}{\PYZsq{}}  \PY{c+c1}{\PYZsh{} Change to \PYZdq{}intel\PYZdq{}, or \PYZdq{}PGI\PYZdq{} if gfortran is not installed}
+\PY{p}{)}
 \end{Verbatim}
 \end{tcolorbox}
 
-    \begin{Verbatim}[commandchars=\\\{\}]
-Compiling ALF{\ldots} Done.
-    \end{Verbatim}
-
-    \textbf{4.} Perform the simulation as specified in \texttt{sim}:
+    \textbf{4.} Compile ALF. The first time it will also download and
+compile HDF5, which could take \(\sim15\) minutes.
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
 \prompt{In}{incolor}{4}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
-\PY{n}{sim}\PY{o}{.}\PY{n}{run}\PY{p}{(}\PY{p}{)}                                  \PY{c+c1}{\PYZsh{} Perform the actual simulation in ALF}
+\PY{n}{sim}\PY{o}{.}\PY{n}{compile}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Compiling ALF{\ldots}
+Done.
+    \end{Verbatim}
+
+    \textbf{5.} Perform the simulation as specified in \texttt{sim}:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{sim}\PY{o}{.}\PY{n}{run}\PY{p}{(}\PY{p}{)}
 \end{Verbatim}
 \end{tcolorbox}
 
@@ -72,81 +86,156 @@ Compiling ALF{\ldots} Done.
 Prepare directory "/home/stafusa/ALF/pyALF/Notebooks/ALF\_data/Hubbard\_Square"
 for Monte Carlo run.
 Create new directory.
-Run /home/stafusa/ALF/ALF/Prog/Hubbard.out
+Run /home/stafusa/ALF/ALF/Prog/ALF.out
     \end{Verbatim}
 
-    \textbf{5.} Perform some simple analyses:
-
-    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{5}{\boxspacing}
-\begin{Verbatim}[commandchars=\\\{\}]
-\PY{n}{sim}\PY{o}{.}\PY{n}{analysis}\PY{p}{(}\PY{p}{)}                             \PY{c+c1}{\PYZsh{} Perform default analysis; list observables}
-\end{Verbatim}
-\end{tcolorbox}
-
-    \begin{Verbatim}[commandchars=\\\{\}]
-Analysing Ener\_scal
-Analysing Part\_scal
-Analysing Pot\_scal
-Analysing Kin\_scal
-Analysing Den\_eq
-Analysing SpinZ\_eq
-Analysing Green\_eq
-Analysing SpinXY\_eq
-Analysing SpinT\_eq
-Analysing SpinXY\_tau
-Analysing SpinZ\_tau
-Analysing Den\_tau
-Analysing Green\_tau
-Analysing SpinT\_tau
-    \end{Verbatim}
-
-    \textbf{6.} Store computed observables list:
+    \textbf{6.} Perform some simple analysis:
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
 \prompt{In}{incolor}{6}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
-\PY{n}{obs} \PY{o}{=} \PY{n}{sim}\PY{o}{.}\PY{n}{get\PYZus{}obs}\PY{p}{(}\PY{p}{)}                        \PY{c+c1}{\PYZsh{} Dictionary for the observables}
+\PY{n}{sim}\PY{o}{.}\PY{n}{analysis}\PY{p}{(}\PY{p}{)}
 \end{Verbatim}
 \end{tcolorbox}
 
     \begin{Verbatim}[commandchars=\\\{\}]
-/home/stafusa/ALF/pyALF/Notebooks/ALF\_data/Hubbard\_Square/Kin\_scalJ 1
-/home/stafusa/ALF/pyALF/Notebooks/ALF\_data/Hubbard\_Square/Part\_scalJ 1
-/home/stafusa/ALF/pyALF/Notebooks/ALF\_data/Hubbard\_Square/Ener\_scalJ 1
-/home/stafusa/ALF/pyALF/Notebooks/ALF\_data/Hubbard\_Square/Pot\_scalJ 1
+\#\#\# Analyzing /home/stafusa/ALF/pyALF/Notebooks/ALF\_data/Hubbard\_Square \#\#\#
+/home/stafusa/ALF/pyALF/Notebooks
+Custom observables:
+Scalar observables:
+Ener\_scal
+Kin\_scal
+Part\_scal
+Pot\_scal
+Histogram observables:
+Equal time observables:
+Den\_eq
+Green\_eq
+SpinT\_eq
+SpinXY\_eq
+SpinZ\_eq
+Time displaced observables:
+Den\_tau
+Green\_tau
+SpinT\_tau
+SpinXY\_tau
+SpinZ\_tau
     \end{Verbatim}
 
-    which are available for further analyses. For instance, the internal
-energy of the system (and its error) is accessed by:
+    \textbf{7.} Read analysis results into a Pandas Dataframe with one row
+per simulation, containing parameters and observables:
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
 \prompt{In}{incolor}{7}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
-\PY{n}{obs}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Ener\PYZus{}scalJ}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{obs}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\PY{n}{obs} \PY{o}{=} \PY{n}{sim}\PY{o}{.}\PY{n}{get\PYZus{}obs}\PY{p}{(}\PY{p}{)}
 \end{Verbatim}
 \end{tcolorbox}
 
-            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
-\prompt{Out}{outcolor}{7}{\boxspacing}
-\begin{Verbatim}[commandchars=\\\{\}]
-array([[-29.893866,   0.109235]])
-\end{Verbatim}
-\end{tcolorbox}
-        
-    \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
-
-\textbf{7.} Running again: The simulation can be resumed to increase the
-precision of the results.
+    \begin{Verbatim}[commandchars=\\\{\}]
+/home/stafusa/ALF/pyALF/Notebooks/ALF\_data/Hubbard\_Square
+    \end{Verbatim}
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
 \prompt{In}{incolor}{8}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{obs}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{8}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+                                                    ham\_t  ham\_chem  ham\_u  \textbackslash{}
+/home/stafusa/ALF/pyALF/Notebooks/ALF\_data/Hubb{\ldots}    1.0       0.0    0.1
+
+                                                    ham\_t2  ham\_u2  ham\_tperp  \textbackslash{}
+/home/stafusa/ALF/pyALF/Notebooks/ALF\_data/Hubb{\ldots}     1.0     0.1        1.0
+
+                                                    mz  continuous  \textbackslash{}
+/home/stafusa/ALF/pyALF/Notebooks/ALF\_data/Hubb{\ldots}   1           0
+
+                                                         model lattice\_type  \textbackslash{}
+/home/stafusa/ALF/pyALF/Notebooks/ALF\_data/Hubb{\ldots}  b'Hubbard'    b'Square'
+
+                                                    {\ldots}  \textbackslash{}
+/home/stafusa/ALF/pyALF/Notebooks/ALF\_data/Hubb{\ldots}  {\ldots}
+
+          SpinXY\_tauK  \textbackslash{}
+/home/stafusa/ALF/pyALF/Notebooks/ALF\_data/Hubb{\ldots}  [[0.5081765927159027,
+0.37862810791968693, 0.5{\ldots}
+
+      SpinXY\_tauK\_err  \textbackslash{}
+/home/stafusa/ALF/pyALF/Notebooks/ALF\_data/Hubb{\ldots}  [[0.00013766551930538375,
+0.000107300494800938{\ldots}
+
+          SpinXY\_tauR  \textbackslash{}
+/home/stafusa/ALF/pyALF/Notebooks/ALF\_data/Hubb{\ldots}  [[0.0007216230187712235,
+-0.07124366825946105,{\ldots}
+
+      SpinXY\_tauR\_err  \textbackslash{}
+/home/stafusa/ALF/pyALF/Notebooks/ALF\_data/Hubb{\ldots}  [[1.7167017023222387e-05,
+6.709661466359632e-0{\ldots}
+
+   SpinXY\_tau\_lattice  \textbackslash{}
+/home/stafusa/ALF/pyALF/Notebooks/ALF\_data/Hubb{\ldots}  \{'L1': [4.0, 0.0], 'L2':
+[0.0, 4.0], 'a1': [1{\ldots}
+
+           SpinZ\_tauK  \textbackslash{}
+/home/stafusa/ALF/pyALF/Notebooks/ALF\_data/Hubb{\ldots}  [[0.508040649079463,
+0.37881927179713126, 0.50{\ldots}
+
+       SpinZ\_tauK\_err  \textbackslash{}
+/home/stafusa/ALF/pyALF/Notebooks/ALF\_data/Hubb{\ldots}  [[0.0017636045356165923,
+0.0002240298516522355{\ldots}
+
+           SpinZ\_tauR  \textbackslash{}
+/home/stafusa/ALF/pyALF/Notebooks/ALF\_data/Hubb{\ldots}  [[0.0008087478953266395,
+-0.07129703130271973,{\ldots}
+
+       SpinZ\_tauR\_err  \textbackslash{}
+/home/stafusa/ALF/pyALF/Notebooks/ALF\_data/Hubb{\ldots}  [[0.0003924858556099979,
+0.0001948803830615219{\ldots}
+
+    SpinZ\_tau\_lattice
+/home/stafusa/ALF/pyALF/Notebooks/ALF\_data/Hubb{\ldots}  \{'L1': [4.0, 0.0], 'L2':
+[0.0, 4.0], 'a1': [1{\ldots}
+
+[1 rows x 110 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \(\bullet\) The internal energy of the system (and its error) are
+accessed by:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{9}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{obs}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Ener\PYZus{}scal0}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Ener\PYZus{}scal0\PYZus{}err}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Ener\PYZus{}scal\PYZus{}sign}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Ener\PYZus{}scal\PYZus{}sign\PYZus{}err}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{9}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+Ener\_scal0           -23.600856
+Ener\_scal0\_err         0.000865
+Ener\_scal\_sign              1.0
+Ener\_scal\_sign\_err          0.0
+Name: /home/stafusa/ALF/pyALF/Notebooks/ALF\_data/Hubbard\_Square, dtype: object
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \(\bullet\) The simulation can be resumed by calling \texttt{sim.run()}
+again, increasing the precision of results:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{10}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
 \PY{n}{sim}\PY{o}{.}\PY{n}{run}\PY{p}{(}\PY{p}{)}
 \PY{n}{sim}\PY{o}{.}\PY{n}{analysis}\PY{p}{(}\PY{p}{)}
 \PY{n}{obs2} \PY{o}{=} \PY{n}{sim}\PY{o}{.}\PY{n}{get\PYZus{}obs}\PY{p}{(}\PY{p}{)}
-\PY{n+nb}{print}\PY{p}{(}\PY{n}{obs2}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Ener\PYZus{}scalJ}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{obs}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
-\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{Running again reduced the error from }\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{obs}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Ener\PYZus{}scalJ}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{obs}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ to }\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{obs2}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Ener\PYZus{}scalJ}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{obs}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{.}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{obs2}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Ener\PYZus{}scal0}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Ener\PYZus{}scal0\PYZus{}err}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Ener\PYZus{}scal\PYZus{}sign}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Ener\PYZus{}scal\PYZus{}sign\PYZus{}err}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}
 \end{Verbatim}
 \end{tcolorbox}
 
@@ -154,35 +243,64 @@ precision of the results.
 Prepare directory "/home/stafusa/ALF/pyALF/Notebooks/ALF\_data/Hubbard\_Square"
 for Monte Carlo run.
 Resuming previous run.
-Run /home/stafusa/ALF/ALF/Prog/Hubbard.out
-Analysing Ener\_scal
-Analysing Part\_scal
-Analysing Pot\_scal
-Analysing Kin\_scal
-Analysing Den\_eq
-Analysing SpinZ\_eq
-Analysing Green\_eq
-Analysing SpinXY\_eq
-Analysing SpinT\_eq
-Analysing SpinXY\_tau
-Analysing SpinZ\_tau
-Analysing Den\_tau
-Analysing Green\_tau
-Analysing SpinT\_tau
-/home/stafusa/ALF/pyALF/Notebooks/ALF\_data/Hubbard\_Square/Kin\_scalJ 1
-/home/stafusa/ALF/pyALF/Notebooks/ALF\_data/Hubbard\_Square/Part\_scalJ 1
-/home/stafusa/ALF/pyALF/Notebooks/ALF\_data/Hubbard\_Square/Ener\_scalJ 1
-/home/stafusa/ALF/pyALF/Notebooks/ALF\_data/Hubbard\_Square/Pot\_scalJ 1
-[[-29.839345   0.049995]]
+Run /home/stafusa/ALF/ALF/Prog/ALF.out
+\#\#\# Analyzing /home/stafusa/ALF/pyALF/Notebooks/ALF\_data/Hubbard\_Square \#\#\#
+/home/stafusa/ALF/pyALF/Notebooks
+Custom observables:
+Scalar observables:
+Ener\_scal
+Kin\_scal
+Part\_scal
+Pot\_scal
+Histogram observables:
+Equal time observables:
+Den\_eq
+Green\_eq
+SpinT\_eq
+SpinXY\_eq
+SpinZ\_eq
+Time displaced observables:
+Den\_tau
+Green\_tau
+SpinT\_tau
+SpinXY\_tau
+SpinZ\_tau
+/home/stafusa/ALF/pyALF/Notebooks/ALF\_data/Hubbard\_Square
+    \end{Verbatim}
 
-Running again reduced the error from  0.109235  to  0.049995 .
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{10}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+Ener\_scal0           -23.60119
+Ener\_scal0\_err        0.000646
+Ener\_scal\_sign             1.0
+Ener\_scal\_sign\_err         0.0
+Name: /home/stafusa/ALF/pyALF/Notebooks/ALF\_data/Hubbard\_Square, dtype: object
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{11}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{Running again reduced the error from}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{obs}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Ener\PYZus{}scal0\PYZus{}err}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{to}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{obs2}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Ener\PYZus{}scal0\PYZus{}err}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+Running again reduced the error from
+ Ener\_scal0\_err    0.000865
+Name: /home/stafusa/ALF/pyALF/Notebooks/ALF\_data/Hubbard\_Square, dtype: object
+to
+ Ener\_scal0\_err    0.000646
+Name: /home/stafusa/ALF/pyALF/Notebooks/ALF\_data/Hubbard\_Square, dtype: object
     \end{Verbatim}
 
     \textbf{Note}: To run a fresh simulation - instead of performing a
 refinement over previous run(s) - the Monte Carlo run directory should
 be deleted before rerunning.
 
-    \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+    \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
 \hypertarget{exercises}{%
 \subsection{Exercises}\label{exercises}}
@@ -191,14 +309,19 @@ be deleted before rerunning.
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
+  Check info/help commands such as \texttt{help(alf\_src)},
+  \texttt{alf\_src.get\_ham\_names()}, and
+  \texttt{alf\_src.get\_default\_params(\textquotesingle{}Hubbard\textquotesingle{})}.
+\item
   Rerun once again and check the new improvement in precision.
 \item
   Look at a few other observables (\texttt{sim.analysis()} outputs the
   names of those available).
 \item
-  Change the lattice size by adding, e.g., \texttt{"L1":\ 4,} and
-  \texttt{"L2":\ 1,} to the simulation parameters definitions of
-  \texttt{sim} (step 2).
+  Change the lattice size by adding, e.g.,
+  \texttt{\textbackslash{}"L1\textbackslash{}":\ 4,} and
+  \texttt{\textbackslash{}"L2\textbackslash{}":\ 1,} to the simulation
+  parameters definitions of \texttt{sim} (step 2).
 \end{enumerate}
 
 
