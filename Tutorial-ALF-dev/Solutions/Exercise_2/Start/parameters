@@ -7,14 +7,10 @@ ham_name = "Hubbard_Plain_Vanilla"
 
 &VAR_lattice               !! Parameters defining the specific lattice and base model
 !!!!!! Modifications for Exercise 2
-!L1           = 6            ! Length in direction a_1
-!L2           = 6            ! Length in direction a_2
-!Lattice_type = "Square"     ! Sets a_1 = (1,0), a_2=(0,1), Norb=1, N_coord=2
-!Model        = "Hubbard"    ! Sets the Hubbard model, to be specified in &VAR_Hubbard
 L1           = 28           ! Length in direction a_1
 L2           = 1            ! Length in direction a_2
 Lattice_type = "Square"     ! Sets a_1 = (1,0), a_2=(0,1), Norb=1, N_coord=2
-Model        = "Hubbard_Plain_Vanilla" ! Sets (after modified) the t-V model, to be specified in &VAR_t_V
+Model        = "Hubbard_Plain_Vanilla" ! Sets (after modified) the t-V model
 !!!!!!
 /
 
@@ -108,11 +104,10 @@ ham_U2     = 4.d0           ! For bilayer systems
 ham_Tperp  = 1.d0           ! For bilayer systems
 /
 
-!!!!!! Modifications for Exercise 2
-!&VAR_Hubbard_Plain_Vanilla !! Variables for the specific model
-&VAR_t_V                   !! Variables for the specific model
+&VAR_Hubbard_Plain_Vanilla !! Variables for the specific model
 ham_T     = 1.d0            ! Hopping parameter
 ham_chem  = 0.d0            ! Chemical potential
+!!!!!! Modifications for Exercise 2
 !ham_U     = 4.d0            ! Hubbard interaction
 Ham_Vint  = 2.d0            ! Hubbard interaction
 !!!!!!
