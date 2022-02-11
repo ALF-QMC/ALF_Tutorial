@@ -1,6 +1,18 @@
+==== Debian/Ubuntu/Linux Mint ====
 sudo apt install make gfortran libblas-dev liblapack-dev \
-           python3 libopenmpi-dev g++ curl libghc-zlib-dev \
-           git ca-certificates cmake
+       python3 libopenmpi-dev g++ curl libghc-zlib-dev \
+       git ca-certificates cmake
+
+==== Red Hat/Fedora/CentOS ====
+sudo yum install make gfortran libblas-devel liblapack-devel \
+           python3 libopenmpi-dev g++ curl zlib git
+
+==== OpenSuSE/SLES ====
+sudo zypper install make gcc-fortran lapack-devel \
+       python3 libopenmpi-devel gcc-c++ curl zlib-devel git
+
+==== Arch Linux ====
+sudo pacman -S make gcc-fortran lapack python3 openmpi curl zlib git
 
 git clone https://git.physik.uni-wuerzburg.de/ALF/ALF.git
 source configure.sh GNU nompi hdf5  # Downloads and compiles HDF5 on the first time, takes several minutes
