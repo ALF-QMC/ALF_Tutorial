@@ -7,7 +7,7 @@ source configure.sh GNU nompi hdf5  # Downloads and compiles HDF5 on the first t
 make
 
 cp -r $ALF_DIR/Scripts_and_Parameters_files/Start ./Run && cd ./Run/
-$ALF_DIR/Prog/Hubbard_Plain_Vanilla.out
+$ALF_DIR/Prog/ALF.out
 $ALF_DIR/Analysis/ana.out *
 
 sudo apt install python3-pip python3-tk
