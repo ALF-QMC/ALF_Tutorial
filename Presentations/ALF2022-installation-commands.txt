@@ -1,0 +1,22 @@
+sudo apt install make gfortran libblas-dev liblapack-dev \
+           python3 libopenmpi-dev g++ curl libghc-zlib-dev \
+           git ca-certificates cmake
+
+git clone https://git.physik.uni-wuerzburg.de/ALF/ALF.git
+source configure.sh GNU nompi hdf5  # Downloads and compiles HDF5 on the first time, takes several minutes
+make
+
+cp -r $ALF_DIR/Scripts_and_Parameters_files/Start ./Run && cd ./Run/
+$ALF_DIR/Prog/Hubbard_Plain_Vanilla.out
+$ALF_DIR/Analysis/ana.out *
+
+sudo apt install python3-pip python3-tk
+pip install h5py numpy pandas matplotlib numba scipy jupyterlab ipywidgets ipympl f90nml
+
+git clone https://git.physik.uni-wuerzburg.de/ALF/pyALF.git
+export PYTHONPATH="/local/path/to/pyALF:$PYTHONPATH"
+export PATH="/local/path/to/pyALF/py_alf/cli:$PATH"
+export ALF_DIR="/local/path/to/ALF"
+
+minimal_ALF_run.py
+
