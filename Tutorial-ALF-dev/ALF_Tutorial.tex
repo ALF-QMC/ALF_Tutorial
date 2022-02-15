@@ -209,7 +209,7 @@ git clone -b %\pyALFbranch{}%https://git.physik.uni-wuerzburg.de/ALF/pyALF.git
 \end{lstlisting}
 To run the notebooks you need the following installed in your machine:
 \begin{itemize}
-	\item Python and packages SciPy, NumPy, matplotlib and f90nml
+	\item Python and its packages SciPy, NumPy, matplotlib, f90nml, h5py, pandas, numba, tkinter, ipywidgets and ipympl
 	\item Jupyter
 	\item the libraries Lapack and Blas
 	\item a Fortran compiler, such as \texttt{gfortran} or \texttt{ifort},
@@ -222,7 +222,7 @@ export PYTHONPATH="/local/path/to/pyALF:$PYTHONPATH"
 
 Python and its packages can be easily installed on a variety of platforms using the Anaconda distribution -- check its \href{https://docs.anaconda.com/anaconda/install/}{installation instructions} for your system. Then, from Anaconda, you can issue the command
 \begin{lstlisting}[style=bash]
-conda install -c anaconda  ipython jupyterlab scipy numpy matplotlib f90nml
+conda install -c anaconda  ipython jupyterlab scipy numpy matplotlib h5py pandas numba tkinter ipywidgets ipympl f90nml
 \end{lstlisting}
 Anaconda is recommended due to its convenience, but the system's package management (e.g., apt-get) or Python's own package management, pip3, can be used instead if preferred -- see, for instance, SciPy \href{https://www.scipy.org/install.html}{installation instructions}.
 
