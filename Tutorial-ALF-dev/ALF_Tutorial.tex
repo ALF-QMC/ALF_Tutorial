@@ -238,9 +238,9 @@ For Windows and other Linuxes and Unixes, please check the Tutorials' repository
 
 Jupyter notebooks \href{https://jupyter.readthedocs.io/en/latest/running.html}{are run} through a Jupyter server\footnote{Note that pyALF can also be used to start a simulation from the command line, without starting a Jupyter server or using a notebook. For instance: \texttt{python3.7 Run.py -R  --alfdir /home/debian/ALF-1.2/ --config "Intel"  --executable\_R Hubbard --mpi True} starts a parallel run of the Hubbard model, using ALF compiled with \texttt{ifort}.  Notice that \texttt{Run.py} requires a configuration file  \texttt{Sims}, which defines the simulation parameters. An entry of \texttt{Sims} might read as: \texttt{ {"Model": "Hubbard", "Lattice\_type": "Square", "L1": 4, "L2": 4, "NBin": 5, "ham\_T": 0.0, "Nsweep" : 2000, "Beta": 1.0, "ham\_chem": -1.0} } } started, e.g., from the command line:
 \begin{lstlisting}[style=bash]
-jupyterlab notebook
+jupyter-lab
 \end{lstlisting}
-(or, depending on the installation, \texttt{jupyter-notebook})
+(or, depending on the installation, \texttt{jupyter lab}, or \texttt{jupyter-notebook} or \texttt{jupyter notebook})
 %\begin{lstlisting}[style=bash]
 %jupyter-notebook
 %\end{lstlisting}
