@@ -352,7 +352,8 @@ Do I = 1,Latt%N
 Enddo
 \end{lstlisting} 
 \end{itemize}
-Note: If you'd like to run the simulation using MPI, you should also add the broadcasting call for \texttt{Ham\_Ty} to \texttt{Ham\_Set}. It is a good idea as well to get the new simulation parameter written into the file \texttt{info}, also a change in \texttt{Ham\_Set}.
+%Note: If you'd like to run the simulation using MPI, you should also add the broadcasting call for \texttt{Ham\_Ty} to \texttt{Ham\_Set}. % outdated to the subroutine read_parameters
+It is a good idea as well to get the new simulation parameter written into the file \texttt{info}, also a change in \texttt{Ham\_Set}.
 
 In the directory \texttt{Solutions/Exercise\_1} we have the modified and original submodules, as well as reference data and the necessary \texttt{Start} directory (remember to copy its contents to every new \texttt{Run} directory, and to have a different \texttt{Run} directory for each simulation).
 
@@ -396,7 +397,9 @@ In the directory  \texttt{Solutions/Exercise\_2} we have  duplicated the ALF and
 \item  Add the \texttt{VAR\_t\_V} name space in the file \texttt{parameters} and set the necessary variables -- or simply rename the \texttt{VAR\_Hubbard\_Plain\_Vanilla} name space to \texttt{VAR\_t\_V} and, within it, \texttt{Ham\_U} to \texttt{Ham\_Vint}. (Ignore the name space \texttt{VAR\_tV}, which is used by the general implementation mentioned above.)
 \item  Declare a new variable, \texttt{Ham\_Vint}, in \texttt{Vanilla}'s specification.
 \item Add the \texttt{VAR\_t\_V} name space (\texttt{namelist}) declaration at the \texttt{Ham\_Set} subroutine of \texttt{Vanilla}, containing the same variables the name space contains in \texttt{parameters}, and read it in.
-\item  Still in the  \texttt{Ham\_set} subroutine of \texttt{Vanilla}: set \texttt{NF=1}, since we are working with spinless fermions; change the MPI broadcast call for \texttt{Ham\_U} to broadcast \texttt{Ham\_Vint} instead; and change similarly the output to the info file.
+\item  Still in the  \texttt{Ham\_set} subroutine of \texttt{Vanilla}: set \texttt{NF=1}, since we are working with spinless fermions; change the
+% MPI broadcast call for \texttt{Ham\_U} to broadcast \texttt{Ham\_Vint} instead; and change similarly the % outdated due to the subroutine read_parameters
+output to the info file.
 \item  In the \texttt{Ham\_V} subroutine you have to add the new interaction. For a given bond at a given time slice, we need to decouple the interaction: 
 \begin{equation}
 e^{\Delta \tau \frac{V}{2} \left( \hat{c}^{\dagger}_{i}  \hat{c}^{\phantom\dagger}_{i+a}      + \hat{c}^{\dagger}_{i+a}  \hat{c}^{\phantom\dagger}_{i} \right)^2} = 
