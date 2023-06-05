@@ -1,0 +1,342 @@
+    
+    
+
+    
+    \hypertarget{testing-against-ed---hubbard-on-a-ring}{%
+\section{Testing against ED - Hubbard on a
+ring}\label{testing-against-ed---hubbard-on-a-ring}}
+
+    In this example we use the
+\href{https://git.physik.uni-wuerzburg.de/ALF/pyALF/-/tree/master/}{pyALF}
+interface to run ALF with the Mz choice of Hubbard Stratonovitch
+transformation on a four site ring, at \(U/t=4\) and inverse temperature
+\(\beta t = 2\). For this set of parameters, the exact internal energy
+reads:\\
+\[
+ \left\langle -t \sum_{\langle i,j\rangle, \sigma} \hat{c}_{i,\sigma}^{\dagger} \hat{c}_{j,\sigma}^{\phantom\dagger}   +  U  \sum_{i=1}^{N} \hat{n}_{i,\uparrow}\hat{n}_{j,\downarrow}  \right\rangle  =   -1.47261997 t 
+\]
+
+To reproduce this result we will have to carry out a systematic
+\(\Delta \tau t\) extrapolation keeping
+\(\Delta \tau t L_\text{Trotter} = 2\) constant.\\
+Recall that the formulation of the auxiliary field QMC approach is based
+on the Trotter decomposition \[
+e^{ -\Delta \tau \left( \hat{A} + \hat{B} \right) }  =  e^{ -\Delta \tau \hat{A}/2}  e^{ -\Delta \tau  \hat{B}  }   e^{ -\Delta \tau \hat{A}/2}  +  \mathcal{O} \left (\Delta  \tau^3\right)
+\] The overall error produced by this approximation is of the order
+\(\Delta \tau^2\).
+
+Bellow we go through the steps for performing this extrapolation:
+setting the simulation parameters, running it and analyzing the data.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\textbf{1.} Import \texttt{Simulation} class from the \texttt{py\_alf}
+python module, which provides the interface with ALF, as well as
+mathematics and plotting packages:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{py\PYZus{}alf} \PY{k+kn}{import} \PY{n}{Simulation}\PY{p}{,} \PY{n}{ALF\PYZus{}source} \PY{c+c1}{\PYZsh{} Interface with ALF}
+\PY{c+c1}{\PYZsh{} }
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}                        \PY{c+c1}{\PYZsh{} Numerical library}
+\PY{k+kn}{from} \PY{n+nn}{scipy}\PY{n+nn}{.}\PY{n+nn}{optimize} \PY{k+kn}{import} \PY{n}{curve\PYZus{}fit}      \PY{c+c1}{\PYZsh{} Numerical library}
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}           \PY{c+c1}{\PYZsh{} Plotting library}
+\PY{n}{alf\PYZus{}src} \PY{o}{=} \PY{n}{ALF\PYZus{}source}\PY{p}{(}\PY{n}{branch}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{master}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}    \PY{c+c1}{\PYZsh{} Obtain ALF source code}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Checking out branch master
+Your branch is up to date with 'origin/master'.
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Already on 'master'
+    \end{Verbatim}
+
+    \textbf{2.} Create instances of \texttt{Simulation}, specifying the
+necessary parameters, in particular the different \(\Delta \tau\)
+values:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{sims} \PY{o}{=} \PY{p}{[}\PY{p}{]}                                \PY{c+c1}{\PYZsh{} Vector of Simulation instances}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{dtau values used:}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{k}{for} \PY{n}{dtau} \PY{o+ow}{in} \PY{p}{[}\PY{l+m+mf}{0.05}\PY{p}{,} \PY{l+m+mf}{0.1}\PY{p}{,} \PY{l+m+mf}{0.2}\PY{p}{]}\PY{p}{:}            \PY{c+c1}{\PYZsh{} Values of dtau}
+    \PY{n+nb}{print}\PY{p}{(}\PY{n}{dtau}\PY{p}{)}
+    \PY{n}{sim} \PY{o}{=} \PY{n}{Simulation}\PY{p}{(}
+        \PY{n}{alf\PYZus{}src}\PY{p}{,}
+        \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Hubbard}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}                       \PY{c+c1}{\PYZsh{} Hamiltonian}
+        \PY{p}{\PYZob{}}                                \PY{c+c1}{\PYZsh{} Model and simulation parameters for each Simulation instance}
+        \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Lattice\PYZus{}type}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{N\PYZus{}leg\PYZus{}ladder}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}  \PY{c+c1}{\PYZsh{}    Lattice type}
+        \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{L1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+m+mi}{4}\PY{p}{,}                         \PY{c+c1}{\PYZsh{}    Lattice length in the first unit vector direction}
+        \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{L2}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+m+mi}{1}\PY{p}{,}                         \PY{c+c1}{\PYZsh{}    Lattice length in the second unit vector direction}
+        \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Checkerboard}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{k+kc}{False}\PY{p}{,}           \PY{c+c1}{\PYZsh{}    Whether checkerboard decomposition is used or not}
+        \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Symm}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{k+kc}{True}\PY{p}{,}                    \PY{c+c1}{\PYZsh{}    Whether symmetrization takes place}
+        \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ham\PYZus{}T}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+m+mf}{1.0}\PY{p}{,}                    \PY{c+c1}{\PYZsh{}    Hopping parameter}
+        \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ham\PYZus{}U}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+m+mf}{4.0}\PY{p}{,}                    \PY{c+c1}{\PYZsh{}    Hubbard interaction}
+        \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ham\PYZus{}Tperp}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+m+mf}{0.0}\PY{p}{,}                \PY{c+c1}{\PYZsh{}    For bilayer systems}
+        \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{beta}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+m+mf}{2.0}\PY{p}{,}                     \PY{c+c1}{\PYZsh{}    Inverse temperature}
+        \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Ltau}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+m+mi}{0}\PY{p}{,}                       \PY{c+c1}{\PYZsh{}    \PYZsq{}1\PYZsq{} for time\PYZhy{}displaced Green functions; \PYZsq{}0\PYZsq{} otherwise }
+        \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{NSweep}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+m+mi}{1000}\PY{p}{,}                  \PY{c+c1}{\PYZsh{}    Number of sweeps per bin}
+        \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{NBin}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+m+mi}{100}\PY{p}{,}                     \PY{c+c1}{\PYZsh{}    Number of bins}
+        \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Dtau}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{n}{dtau}\PY{p}{,}                    \PY{c+c1}{\PYZsh{}    Only dtau varies between simulations, Ltrot=beta/Dtau}
+        \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Mz}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{k+kc}{True}\PY{p}{,}                      \PY{c+c1}{\PYZsh{}    If true, sets the M\PYZus{}z\PYZhy{}Hubbard model: Nf=2, N\PYZus{}sum=1,}
+        \PY{p}{\PYZcb{}}\PY{p}{,}                               \PY{c+c1}{\PYZsh{}             HS field couples to z\PYZhy{}component of magnetization}
+    \PY{p}{)}
+    \PY{n}{sims}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{sim}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+dtau values used:
+0.05
+0.1
+0.2
+    \end{Verbatim}
+
+    \textbf{3.} Compile ALF, downloading it first if not found locally. This
+may take a few minutes:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{sims}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{compile}\PY{p}{(}\PY{p}{)}                        \PY{c+c1}{\PYZsh{} Compilation needs to be performed only once}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Compiling ALF{\ldots}
+Cleaning up Prog/
+Cleaning up Libraries/
+Cleaning up Analysis/
+Compiling Libraries
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+entanglement\_mod.F90:35:2:
+
+   35 | \#warning "You are compiling entanglement without MPI. No results
+possible"
+      |  1\textasciitilde{}\textasciitilde{}\textasciitilde{}\textasciitilde{}\textasciitilde{}\textasciitilde{}
+Warning: \#warning "You are compiling entanglement without MPI. No results
+possible" [-Wcpp]
+ar: creating modules\_90.a
+ar: creating libqrref.a
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Compiling Analysis
+Compiling Program
+Parsing Hamiltonian parameters
+filename: Hamiltonians/Hamiltonian\_Kondo\_smod.F90
+filename: Hamiltonians/Hamiltonian\_Hubbard\_smod.F90
+filename: Hamiltonians/Hamiltonian\_Hubbard\_Plain\_Vanilla\_smod.F90
+filename: Hamiltonians/Hamiltonian\_tV\_smod.F90
+filename: Hamiltonians/Hamiltonian\_LRC\_smod.F90
+filename: Hamiltonians/Hamiltonian\_Z2\_Matter\_smod.F90
+Compiling program modules
+Link program
+Done.
+    \end{Verbatim}
+
+    \textbf{4.} Perform the simulations, as specified in each element of
+\texttt{sim}:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{for} \PY{n}{i}\PY{p}{,} \PY{n}{sim} \PY{o+ow}{in} \PY{n+nb}{enumerate}\PY{p}{(}\PY{n}{sims}\PY{p}{)}\PY{p}{:}
+    \PY{n}{sim}\PY{o}{.}\PY{n}{run}\PY{p}{(}\PY{p}{)}                            \PY{c+c1}{\PYZsh{} Perform the actual simulation in ALF}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Prepare directory "/home/jonas/Programs/pyALF/Notebooks/ALF\_data/Hubbard\_N\_leg\_l
+adder\_L1=4\_L2=1\_Checkerboard=False\_Symm=True\_T=1.0\_U=4.0\_Tperp=0.0\_beta=2.0\_Dtau
+=0.05\_Mz=True" for Monte Carlo run.
+Create new directory.
+Run /home/jonas/Programs/ALF/Prog/ALF.out
+ ALF Copyright (C) 2016 - 2021 The ALF project contributors
+ This Program comes with ABSOLUTELY NO WARRANTY; for details see license.GPL
+ This is free software, and you are welcome to redistribute it under certain
+conditions.
+ No initial configuration
+Prepare directory "/home/jonas/Programs/pyALF/Notebooks/ALF\_data/Hubbard\_N\_leg\_l
+adder\_L1=4\_L2=1\_Checkerboard=False\_Symm=True\_T=1.0\_U=4.0\_Tperp=0.0\_beta=2.0\_Dtau
+=0.1\_Mz=True" for Monte Carlo run.
+Create new directory.
+Run /home/jonas/Programs/ALF/Prog/ALF.out
+ ALF Copyright (C) 2016 - 2021 The ALF project contributors
+ This Program comes with ABSOLUTELY NO WARRANTY; for details see license.GPL
+ This is free software, and you are welcome to redistribute it under certain
+conditions.
+ No initial configuration
+Prepare directory "/home/jonas/Programs/pyALF/Notebooks/ALF\_data/Hubbard\_N\_leg\_l
+adder\_L1=4\_L2=1\_Checkerboard=False\_Symm=True\_T=1.0\_U=4.0\_Tperp=0.0\_beta=2.0\_Dtau
+=0.2\_Mz=True" for Monte Carlo run.
+Create new directory.
+Run /home/jonas/Programs/ALF/Prog/ALF.out
+ ALF Copyright (C) 2016 - 2021 The ALF project contributors
+ This Program comes with ABSOLUTELY NO WARRANTY; for details see license.GPL
+ This is free software, and you are welcome to redistribute it under certain
+conditions.
+ No initial configuration
+    \end{Verbatim}
+
+    \textbf{5.} Calculate the internal energies:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{ener} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{empty}\PY{p}{(}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{sims}\PY{p}{)}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}          \PY{c+c1}{\PYZsh{} Matrix for storing energy values}
+\PY{n}{dtaus} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{empty}\PY{p}{(}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{sims}\PY{p}{)}\PY{p}{,}\PY{p}{)}\PY{p}{)}           \PY{c+c1}{\PYZsh{} Matrix for Dtau values, for plotting}
+\PY{k}{for} \PY{n}{i}\PY{p}{,} \PY{n}{sim} \PY{o+ow}{in} \PY{n+nb}{enumerate}\PY{p}{(}\PY{n}{sims}\PY{p}{)}\PY{p}{:}
+    \PY{n+nb}{print}\PY{p}{(}\PY{n}{sim}\PY{o}{.}\PY{n}{sim\PYZus{}dir}\PY{p}{)}                   \PY{c+c1}{\PYZsh{} Directory containing the simulation output}
+    \PY{n}{sim}\PY{o}{.}\PY{n}{analysis}\PY{p}{(}\PY{p}{)}                       \PY{c+c1}{\PYZsh{} Perform default analysis}
+    \PY{n}{dtaus}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{=} \PY{n}{sim}\PY{o}{.}\PY{n}{sim\PYZus{}dict}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Dtau}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}                          \PY{c+c1}{\PYZsh{} Store Dtau value}
+    \PY{n}{obs} \PY{o}{=} \PY{n}{sim}\PY{o}{.}\PY{n}{get\PYZus{}obs}\PY{p}{(}\PY{p}{)}
+    \PY{n}{ener}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{=} \PY{n}{obs}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Ener\PYZus{}scal0}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Ener\PYZus{}scal0\PYZus{}err}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}  \PY{c+c1}{\PYZsh{} Store energy value}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+/home/jonas/Programs/pyALF/Notebooks/ALF\_data/Hubbard\_N\_leg\_ladder\_L1=4\_L2=1\_Che
+ckerboard=False\_Symm=True\_T=1.0\_U=4.0\_Tperp=0.0\_beta=2.0\_Dtau=0.05\_Mz=True
+\#\#\# Analyzing /home/jonas/Programs/pyALF/Notebooks/ALF\_data/Hubbard\_N\_leg\_ladder
+\_L1=4\_L2=1\_Checkerboard=False\_Symm=True\_T=1.0\_U=4.0\_Tperp=0.0\_beta=2.0\_Dtau=0.05
+\_Mz=True \#\#\#
+/home/jonas/Programs/pyALF/Notebooks
+Scalar observables:
+Ener\_scal
+Kin\_scal
+Part\_scal
+Pot\_scal
+Histogram observables:
+Equal time observables:
+Den\_eq
+Green\_eq
+SpinT\_eq
+SpinXY\_eq
+SpinZ\_eq
+Time displaced observables:
+/home/jonas/Programs/pyALF/Notebooks/ALF\_data/Hubbard\_N\_leg\_ladder\_L1=4\_L2=1\_Che
+ckerboard=False\_Symm=True\_T=1.0\_U=4.0\_Tperp=0.0\_beta=2.0\_Dtau=0.05\_Mz=True
+No orbital locations saved.
+/home/jonas/Programs/pyALF/Notebooks/ALF\_data/Hubbard\_N\_leg\_ladder\_L1=4\_L2=1\_Che
+ckerboard=False\_Symm=True\_T=1.0\_U=4.0\_Tperp=0.0\_beta=2.0\_Dtau=0.1\_Mz=True
+\#\#\# Analyzing /home/jonas/Programs/pyALF/Notebooks/ALF\_data/Hubbard\_N\_leg\_ladder
+\_L1=4\_L2=1\_Checkerboard=False\_Symm=True\_T=1.0\_U=4.0\_Tperp=0.0\_beta=2.0\_Dtau=0.1\_
+Mz=True \#\#\#
+/home/jonas/Programs/pyALF/Notebooks
+Scalar observables:
+Ener\_scal
+Kin\_scal
+Part\_scal
+Pot\_scal
+Histogram observables:
+Equal time observables:
+Den\_eq
+Green\_eq
+SpinT\_eq
+SpinXY\_eq
+SpinZ\_eq
+Time displaced observables:
+/home/jonas/Programs/pyALF/Notebooks/ALF\_data/Hubbard\_N\_leg\_ladder\_L1=4\_L2=1\_Che
+ckerboard=False\_Symm=True\_T=1.0\_U=4.0\_Tperp=0.0\_beta=2.0\_Dtau=0.1\_Mz=True
+No orbital locations saved.
+/home/jonas/Programs/pyALF/Notebooks/ALF\_data/Hubbard\_N\_leg\_ladder\_L1=4\_L2=1\_Che
+ckerboard=False\_Symm=True\_T=1.0\_U=4.0\_Tperp=0.0\_beta=2.0\_Dtau=0.2\_Mz=True
+\#\#\# Analyzing /home/jonas/Programs/pyALF/Notebooks/ALF\_data/Hubbard\_N\_leg\_ladder
+\_L1=4\_L2=1\_Checkerboard=False\_Symm=True\_T=1.0\_U=4.0\_Tperp=0.0\_beta=2.0\_Dtau=0.2\_
+Mz=True \#\#\#
+/home/jonas/Programs/pyALF/Notebooks
+Scalar observables:
+Ener\_scal
+Kin\_scal
+Part\_scal
+Pot\_scal
+Histogram observables:
+Equal time observables:
+Den\_eq
+Green\_eq
+SpinT\_eq
+SpinXY\_eq
+SpinZ\_eq
+Time displaced observables:
+/home/jonas/Programs/pyALF/Notebooks/ALF\_data/Hubbard\_N\_leg\_ladder\_L1=4\_L2=1\_Che
+ckerboard=False\_Symm=True\_T=1.0\_U=4.0\_Tperp=0.0\_beta=2.0\_Dtau=0.2\_Mz=True
+No orbital locations saved.
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{6}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{For Dtau values}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{dtaus}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{the measured energies are:}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{ener}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+For Dtau values [0.05 0.1  0.2 ] the measured energies are:
+ [[-1.47188895  0.00256759]
+ [-1.47953032  0.00227281]
+ [-1.49103639  0.00250634]]
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZdl{}}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{Delta}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{tau\PYZca{}2\PYZdl{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Energy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{errorbar}\PY{p}{(}\PY{n}{dtaus}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{ener}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{ener}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{fmt}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{.}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Monte carlo results}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.47261997}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{x}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ED result}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+\PY{k}{def} \PY{n+nf}{func}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{y0}\PY{p}{,} \PY{n}{a}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{n}{y0} \PY{o}{+} \PY{n}{a}\PY{o}{*}\PY{n}{x}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}
+\PY{n}{popt}\PY{p}{,} \PY{n}{pcov} \PY{o}{=} \PY{n}{curve\PYZus{}fit}\PY{p}{(}\PY{n}{func}\PY{p}{,} \PY{n}{dtaus}\PY{p}{,} \PY{n}{ener}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{sigma}\PY{o}{=}\PY{n}{ener}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{absolute\PYZus{}sigma}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{perr} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{diag}\PY{p}{(}\PY{n}{pcov}\PY{p}{)}\PY{p}{)}
+\PY{n}{xs} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{linspace}\PY{p}{(}\PY{l+m+mf}{0.}\PY{p}{,} \PY{n}{dtaus}\PY{o}{.}\PY{n}{max}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n}{p} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{xs}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{func}\PY{p}{(}\PY{n}{xs}\PY{p}{,} \PY{o}{*}\PY{n}{popt}\PY{p}{)}\PY{p}{)}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{errorbar}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{popt}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{perr}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Extrapolated value}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{n}{p}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{get\PYZus{}color}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<matplotlib.legend.Legend at 0x7f03c3fb5060>
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.6\linewidth}{0.9\paperheight}}{testing_against_ED-output_12_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\hypertarget{exercises}{%
+\subsection{Exercises}\label{exercises}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Redo the extrapolation for different values of \(\beta t\) (e.g., for
+  \(\beta t =\) 1, the internal energy is -0.62186692\(t\), and for
+  \(\beta t =\) 4, it is -1.90837196\(t\)).
+\item
+  Experiment with different settings for \texttt{Checkerboard} and
+  \texttt{Symm}.
+\end{enumerate}
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
