@@ -1,0 +1,301 @@
+    
+    
+
+    
+    \hypertarget{projective-algorithm}{%
+\section{Projective algorithm}\label{projective-algorithm}}
+
+    In this example we use the
+\href{https://git.physik.uni-wuerzburg.de/ALF/pyALF/-/tree/master/}{pyALF}
+interface to run ALF's projective algorithm with the Mz choice of
+Hubbard Stratonovich transformation on a 4-site ring.
+
+The projective approach is the method of choice if one is interested in
+ground-state properties. The starting point is a pair of trial wave
+functions, \(|\Psi_{T,L/R} \rangle\), that are not orthogonal to the
+ground state \(|\Psi_0 \rangle\): \[
+  \langle \Psi_{T,L/R}  | \Psi_0 \rangle  \neq 0. 
+\] The ground-state expectation value of any observable \(\hat{O}\) can
+then be computed by propagation along the imaginary time axis: \[
+     \frac{ \langle \Psi_0 | \hat{O} | \Psi_0 \rangle }{ \langle \Psi_0 | \Psi_0 \rangle}   = \lim_{\theta \rightarrow \infty}  
+     \frac{ \langle \Psi_{T,L} | e^{-\theta \hat{H}}  e^{-(\beta - \tau)\hat{H}  }\hat{O} e^{- \tau  \hat{H} }   e^{-\theta \hat{H}} | \Psi_{T,R} \rangle } 
+            { \langle \Psi_{T,L} | e^{-(2 \theta + \beta) \hat{H}  } | \Psi_{T,R} \rangle } ,
+\] where \(\beta\) defines the imaginary time range where observables
+(time displaced and equal time) are measured and \(\tau\) varies from
+\(0\) to \(\beta\) in the calculation of time-displace observables. For
+further details, see Sec. 3 of
+\href{https://git.physik.uni-wuerzburg.de/ALF/ALF/-/blob/master/Documentation/doc.pdf}{ALF
+documentation}.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\textbf{1.} Import \texttt{Simulation} class from the \texttt{py\_alf}
+python module, which provides the interface with ALF, as well as
+numerical and plotting packages:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{py\PYZus{}alf} \PY{k+kn}{import} \PY{n}{Simulation}\PY{p}{,} \PY{n}{ALF\PYZus{}source} \PY{c+c1}{\PYZsh{} Interface with ALF}
+\PY{c+c1}{\PYZsh{} }
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}                        \PY{c+c1}{\PYZsh{} Numerical library}
+\PY{k+kn}{from} \PY{n+nn}{scipy}\PY{n+nn}{.}\PY{n+nn}{optimize} \PY{k+kn}{import} \PY{n}{curve\PYZus{}fit}      \PY{c+c1}{\PYZsh{} Numerical library}
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}           \PY{c+c1}{\PYZsh{} Plotting library}
+\PY{n}{alf\PYZus{}src} \PY{o}{=} \PY{n}{ALF\PYZus{}source}\PY{p}{(}\PY{n}{branch}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{master}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}    \PY{c+c1}{\PYZsh{} Obtain ALF source code}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Checking out branch master
+Your branch is up to date with 'origin/master'.
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Already on 'master'
+    \end{Verbatim}
+
+    \textbf{2.} Create instances of \texttt{Simulation}, specifying the
+necessary parameters, in particular the \texttt{Projector} to
+\texttt{True}:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{sims} \PY{o}{=} \PY{p}{[}\PY{p}{]}                                \PY{c+c1}{\PYZsh{} Vector of Simulation instances}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Theta values used:}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{k}{for} \PY{n}{theta} \PY{o+ow}{in} \PY{p}{[}\PY{l+m+mf}{0.5}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mf}{1.5}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{]}\PY{p}{:}               \PY{c+c1}{\PYZsh{} Values of Theta}
+    \PY{n+nb}{print}\PY{p}{(}\PY{n}{theta}\PY{p}{)}
+    \PY{n}{sim} \PY{o}{=} \PY{n}{Simulation}\PY{p}{(}
+        \PY{n}{alf\PYZus{}src}\PY{p}{,}
+        \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Hubbard}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}                       \PY{c+c1}{\PYZsh{} Hamiltonian}
+        \PY{p}{\PYZob{}}                                \PY{c+c1}{\PYZsh{} Model and simulation parameters for each Simulation instance}
+        \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Model}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Hubbard}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}              \PY{c+c1}{\PYZsh{}    Base model}
+        \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Lattice\PYZus{}type}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{N\PYZus{}leg\PYZus{}ladder}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}  \PY{c+c1}{\PYZsh{}    Lattice type}
+        \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{L1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+m+mi}{4}\PY{p}{,}                         \PY{c+c1}{\PYZsh{}    Lattice length in the first unit vector direction}
+        \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{L2}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+m+mi}{1}\PY{p}{,}                         \PY{c+c1}{\PYZsh{}    Lattice length in the second unit vector direction}
+        \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Checkerboard}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{k+kc}{False}\PY{p}{,}           \PY{c+c1}{\PYZsh{}    Whether checkerboard decomposition is used or not}
+        \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Symm}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{k+kc}{True}\PY{p}{,}                    \PY{c+c1}{\PYZsh{}    Whether symmetrization takes place}
+        \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Projector}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{k+kc}{True}\PY{p}{,}               \PY{c+c1}{\PYZsh{}    Whether to use the projective algorithm}
+        \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Theta}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{n}{theta}\PY{p}{,}                  \PY{c+c1}{\PYZsh{}    Projector parameter}
+        \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ham\PYZus{}T}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+m+mf}{1.0}\PY{p}{,}                    \PY{c+c1}{\PYZsh{}    Hopping parameter}
+        \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ham\PYZus{}U}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+m+mf}{4.0}\PY{p}{,}                    \PY{c+c1}{\PYZsh{}    Hubbard interaction}
+        \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ham\PYZus{}Tperp}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+m+mf}{0.0}\PY{p}{,}                \PY{c+c1}{\PYZsh{}    For bilayer systems}
+        \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{beta}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+m+mf}{0.5}\PY{p}{,}                     \PY{c+c1}{\PYZsh{}    Inverse temperature}
+        \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Ltau}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+m+mi}{0}\PY{p}{,}                       \PY{c+c1}{\PYZsh{}    \PYZsq{}1\PYZsq{} for time\PYZhy{}displaced Green functions; \PYZsq{}0\PYZsq{} otherwise }
+        \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{NSweep}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+m+mi}{600}\PY{p}{,}                   \PY{c+c1}{\PYZsh{}    Number of sweeps per bin}
+        \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{NBin}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+m+mi}{50}\PY{p}{,}                      \PY{c+c1}{\PYZsh{}    Number of bins}
+        \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Dtau}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+m+mf}{0.05}\PY{p}{,}                    \PY{c+c1}{\PYZsh{}    Ltrot=beta/Dtau}
+        \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Mz}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{k+kc}{True}\PY{p}{,}                      \PY{c+c1}{\PYZsh{}    If true, sets the M\PYZus{}z\PYZhy{}Hubbard model: Nf=2, N\PYZus{}sum=1,}
+        \PY{p}{\PYZcb{}}\PY{p}{,}                               \PY{c+c1}{\PYZsh{}             HS field couples to z\PYZhy{}component of magnetization}
+    \PY{p}{)}
+    \PY{n}{sims}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{sim}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Theta values used:
+0.5
+1
+1.5
+3
+5
+10
+    \end{Verbatim}
+
+    \textbf{3.} Compile ALF, this may take a few minutes:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{sims}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{compile}\PY{p}{(}\PY{p}{)}                        \PY{c+c1}{\PYZsh{} Compilation needs to be performed only once}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Compiling ALF{\ldots}
+Cleaning up Prog/
+Cleaning up Libraries/
+Cleaning up Analysis/
+Compiling Libraries
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+entanglement\_mod.F90:35:2:
+
+   35 | \#warning "You are compiling entanglement without MPI. No results
+possible"
+      |  1\textasciitilde{}\textasciitilde{}\textasciitilde{}\textasciitilde{}\textasciitilde{}\textasciitilde{}
+Warning: \#warning "You are compiling entanglement without MPI. No results
+possible" [-Wcpp]
+ar: creating modules\_90.a
+ar: creating libqrref.a
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Compiling Analysis
+Compiling Program
+Parsing Hamiltonian parameters
+filename: Hamiltonians/Hamiltonian\_Kondo\_smod.F90
+filename: Hamiltonians/Hamiltonian\_Hubbard\_smod.F90
+filename: Hamiltonians/Hamiltonian\_Hubbard\_Plain\_Vanilla\_smod.F90
+filename: Hamiltonians/Hamiltonian\_tV\_smod.F90
+filename: Hamiltonians/Hamiltonian\_LRC\_smod.F90
+filename: Hamiltonians/Hamiltonian\_Z2\_Matter\_smod.F90
+Compiling program modules
+Link program
+Done.
+    \end{Verbatim}
+
+    \textbf{4.} Perform the simulations, as specified in each element of
+\texttt{sim}:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{for} \PY{n}{i}\PY{p}{,} \PY{n}{sim} \PY{o+ow}{in} \PY{n+nb}{enumerate}\PY{p}{(}\PY{n}{sims}\PY{p}{)}\PY{p}{:}
+    \PY{n}{sim}\PY{o}{.}\PY{n}{run}\PY{p}{(}\PY{p}{)}                            \PY{c+c1}{\PYZsh{} Perform the actual simulation in ALF}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Prepare directory "/home/jonas/Programs/pyALF/Notebooks/ALF\_data/Hubbard\_N\_leg\_l
+adder\_L1=4\_L2=1\_Checkerboard=False\_Symm=True\_Projector=True\_Theta=0.5\_T=1.0\_U=4.
+0\_Tperp=0.0\_beta=0.5\_Dtau=0.05\_Mz=True" for Monte Carlo run.
+Create new directory.
+Run /home/jonas/Programs/ALF/Prog/ALF.out
+ ALF Copyright (C) 2016 - 2021 The ALF project contributors
+ This Program comes with ABSOLUTELY NO WARRANTY; for details see license.GPL
+ This is free software, and you are welcome to redistribute it under certain
+conditions.
+ No initial configuration
+Prepare directory "/home/jonas/Programs/pyALF/Notebooks/ALF\_data/Hubbard\_N\_leg\_l
+adder\_L1=4\_L2=1\_Checkerboard=False\_Symm=True\_Projector=True\_Theta=1\_T=1.0\_U=4.0\_
+Tperp=0.0\_beta=0.5\_Dtau=0.05\_Mz=True" for Monte Carlo run.
+Create new directory.
+Run /home/jonas/Programs/ALF/Prog/ALF.out
+ ALF Copyright (C) 2016 - 2021 The ALF project contributors
+ This Program comes with ABSOLUTELY NO WARRANTY; for details see license.GPL
+ This is free software, and you are welcome to redistribute it under certain
+conditions.
+ No initial configuration
+Prepare directory "/home/jonas/Programs/pyALF/Notebooks/ALF\_data/Hubbard\_N\_leg\_l
+adder\_L1=4\_L2=1\_Checkerboard=False\_Symm=True\_Projector=True\_Theta=1.5\_T=1.0\_U=4.
+0\_Tperp=0.0\_beta=0.5\_Dtau=0.05\_Mz=True" for Monte Carlo run.
+Create new directory.
+Run /home/jonas/Programs/ALF/Prog/ALF.out
+ ALF Copyright (C) 2016 - 2021 The ALF project contributors
+ This Program comes with ABSOLUTELY NO WARRANTY; for details see license.GPL
+ This is free software, and you are welcome to redistribute it under certain
+conditions.
+ No initial configuration
+Prepare directory "/home/jonas/Programs/pyALF/Notebooks/ALF\_data/Hubbard\_N\_leg\_l
+adder\_L1=4\_L2=1\_Checkerboard=False\_Symm=True\_Projector=True\_Theta=3\_T=1.0\_U=4.0\_
+Tperp=0.0\_beta=0.5\_Dtau=0.05\_Mz=True" for Monte Carlo run.
+Create new directory.
+Run /home/jonas/Programs/ALF/Prog/ALF.out
+ ALF Copyright (C) 2016 - 2021 The ALF project contributors
+ This Program comes with ABSOLUTELY NO WARRANTY; for details see license.GPL
+ This is free software, and you are welcome to redistribute it under certain
+conditions.
+ No initial configuration
+Prepare directory "/home/jonas/Programs/pyALF/Notebooks/ALF\_data/Hubbard\_N\_leg\_l
+adder\_L1=4\_L2=1\_Checkerboard=False\_Symm=True\_Projector=True\_Theta=5\_T=1.0\_U=4.0\_
+Tperp=0.0\_beta=0.5\_Dtau=0.05\_Mz=True" for Monte Carlo run.
+Create new directory.
+Run /home/jonas/Programs/ALF/Prog/ALF.out
+ ALF Copyright (C) 2016 - 2021 The ALF project contributors
+ This Program comes with ABSOLUTELY NO WARRANTY; for details see license.GPL
+ This is free software, and you are welcome to redistribute it under certain
+conditions.
+ No initial configuration
+Prepare directory "/home/jonas/Programs/pyALF/Notebooks/ALF\_data/Hubbard\_N\_leg\_l
+adder\_L1=4\_L2=1\_Checkerboard=False\_Symm=True\_Projector=True\_Theta=10\_T=1.0\_U=4.0
+\_Tperp=0.0\_beta=0.5\_Dtau=0.05\_Mz=True" for Monte Carlo run.
+Create new directory.
+Run /home/jonas/Programs/ALF/Prog/ALF.out
+ ALF Copyright (C) 2016 - 2021 The ALF project contributors
+ This Program comes with ABSOLUTELY NO WARRANTY; for details see license.GPL
+ This is free software, and you are welcome to redistribute it under certain
+conditions.
+ No initial configuration
+    \end{Verbatim}
+
+    \textbf{5.} Calculate the internal energies:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}\PYZpc{}capture}
+\PY{n}{ener} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{empty}\PY{p}{(}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{sims}\PY{p}{)}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}          \PY{c+c1}{\PYZsh{} Matrix for storing energy values}
+\PY{n}{thetas} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{empty}\PY{p}{(}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{sims}\PY{p}{)}\PY{p}{,}\PY{p}{)}\PY{p}{)}          \PY{c+c1}{\PYZsh{} Matrix for Thetas values, for plotting}
+\PY{k}{for} \PY{n}{i}\PY{p}{,} \PY{n}{sim} \PY{o+ow}{in} \PY{n+nb}{enumerate}\PY{p}{(}\PY{n}{sims}\PY{p}{)}\PY{p}{:}
+    \PY{n+nb}{print}\PY{p}{(}\PY{n}{sim}\PY{o}{.}\PY{n}{sim\PYZus{}dir}\PY{p}{)}                   \PY{c+c1}{\PYZsh{} Directory containing the simulation output}
+    \PY{n}{sim}\PY{o}{.}\PY{n}{analysis}\PY{p}{(}\PY{p}{)}                       \PY{c+c1}{\PYZsh{} Perform default analysis}
+    \PY{n}{thetas}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{=} \PY{n}{sim}\PY{o}{.}\PY{n}{sim\PYZus{}dict}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Theta}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}                        \PY{c+c1}{\PYZsh{} Store Theta value}
+    \PY{n}{obs} \PY{o}{=} \PY{n}{sim}\PY{o}{.}\PY{n}{get\PYZus{}obs}\PY{p}{(}\PY{p}{)}
+    \PY{n}{ener}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{=} \PY{n}{obs}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Ener\PYZus{}scal0}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Ener\PYZus{}scal0\PYZus{}err}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}  \PY{c+c1}{\PYZsh{} Store energy value}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Where the \emph{cell magic} \texttt{\%\%capture} suppresses the output
+of \texttt{sim.analysis()}, which lists the data directories and
+observables.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{6}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{For Theta values}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{thetas}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{the measured energies are:}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{ener}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+For Theta values [ 0.5  1.   1.5  3.   5.  10. ] the measured energies are:
+ [[-2.05352132  0.00463096]
+ [-2.1085726   0.00680212]
+ [-2.09718603  0.00725172]
+ [-2.12211566  0.0074775 ]
+ [-2.0961295   0.00745434]
+ [-2.10306699  0.0091302 ]]
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZdl{}1/}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{Theta\PYZdl{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Energy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{errorbar}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{/}\PY{n}{thetas}\PY{p}{,} \PY{n}{ener}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{ener}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xlim}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mf}{2.02}\PY{p}{)}\PY{p}{;}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.6\linewidth}{0.9\paperheight}}{projective_algorithm-output_13_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\hypertarget{exercises}{%
+\subsection{Exercises}\label{exercises}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  A ladder system consists of chains assembled one next to the other,
+  for instance, setting \texttt{L1=14}, \texttt{L2=3} defines a 3-leg
+  ladder. It is a well-known result
+  (\href{https://doi.org/10.1126/science.271.5249.618}{Dagotto and Rice,
+  \emph{Science} \textbf{271}, 5249, (1996) pp.~618}) that spin
+  correlations in ladder systems decay as power laws (apart from
+  logarithmic corrections) for odd-leg ladders, and exponentially for
+  even-leg ladders. The paper presents numerical results for the
+  Heisenberg model. How do these correlations behave for the Hubbard
+  model at half-filling?
+\end{enumerate}
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
