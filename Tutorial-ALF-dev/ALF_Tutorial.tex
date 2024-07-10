@@ -14,7 +14,7 @@
 \usepackage[fleqn]{amsmath} 
 \usepackage{amssymb}
 \usepackage{wasysym}
-\usepackage{color}
+\usepackage{xcolor}
 \usepackage{soul}
 \usepackage{xspace}
 \usepackage{bm}
@@ -25,7 +25,6 @@
 \usepackage{dsfont}
 \usepackage{footnote}
 \usepackage{alltt}
-\usepackage{xcolor}
 \usepackage{lmodern}
 \usepackage{listings}
 \usepackage{url}
@@ -35,10 +34,19 @@
 %\usepackage{pdfpages,eso-pic,atbegshi,pdflscape} % including tex notebooks instead
 %\usepackage{titlesec} % incompatible with Koma
 \usepackage{relsize}
+\usepackage{tcolorbox}
 \graphicspath{{./Figures/}{./Notebooks/}}
 
-\usepackage[framemethod=default]{mdframed}
-\usepackage{showexpl}
+
+% \newmdenv[linecolor=red,
+% frametitlerule=true,
+% frametitlebackgroundcolor=red,
+% frametitlefont={\sffamily\textcolor{white}}
+% ]{tischAlertblock}
+
+\newtcolorbox{mybox}[1]{colback=red!5!white,
+colframe=red!75!black,fonttitle=\bfseries,
+title={#1}}
 
 \makeatletter
 \renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
@@ -95,6 +103,25 @@
   breaklines=true,
   postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space}
 }
+
+% %-------------------------
+% \definecolor{orang}{RGB}{255,155,0}
+
+% \newtcolorbox[auto counter,number within=section]{caja}[1][]{
+%   enhanced jigsaw,colback=white,colframe=orang,coltitle=orang,
+%   fonttitle=\bfseries\sffamily,
+%   sharp corners,
+%   detach title,
+%   leftrule=22mm,
+%   % What you need %%%%%%%%%%%%
+%   underlay unbroken and first={\node[below,text=black,anchor=east]
+%   at ([xshift=-22.5pt]interior.base west) {\Huge  \textbf{!}};},
+%   %%%%%%%%%%%%%%%%%%%%%%%%
+%   breakable,pad at break=1mm,
+%   #1,
+%   code={\ifdefempty{\tcbtitletext}{}{\tcbset{before upper={\tcbtitle\par\medskip}}}},
+% }
+% %----------------------
 
 \def\Tr{\mathop{\mathrm{Tr}}}
 \def\Trf{\mathop{\mathrm{Tr}_{\mathrm{F}}}}
@@ -187,49 +214,62 @@ The ALF package provides a general code for auxiliary-field Quantum Monte Carlo 
 \item[Part II.] The second part is independent of the first and aimed at more advanced users who want to simulate their own systems. It guides the user on how to modify the package's Fortran source code and presents the resources implemented to facilitate this task.
 \end{description}
 
-This document is intended to be self-contained, but the interested reader should check \href{https://git.physik.uni-wuerzburg.de/ALF/ALF/-/blob/\ALFbranch/Documentation/doc.pdf}{ALF's documentation}, which contains a thorough, systematic description of the package in its \ALFver{} version (or \href{https://git.physik.uni-wuerzburg.de/ALF/ALF/-/blob/master/Documentation/doc.pdf}{here} for its latest (development) version).
+This document is intended to be self-contained, but the interested reader should check \href{https://git.physik.uni-wuerzburg.de/ALF/ALF/-/jobs/artifacts/master/raw/Documentation/doc.pdf?job=create_doc}{ALF's documentation}, which contains a thorough, systematic description of the package.
 
-%
-%%%%%%%%%%%%%%%  ONLY FOR THE DEV VERSION OF THE TUTORIAL  %%%%%%%%%%%%%%%
-\textbf{\textcolor{red}{Notice}} that the latest stable release of ALF is ALF 2.2 -- the correspondent tutorial can be found at \href{https://git.physik.uni-wuerzburg.de/ALF/ALF_Tutorial/-/tree/master/Tutorial-ALF-2.2}{https://git.physik.uni-wuerzburg.de/ALF/ALF\_Tutorial/-/tree/master/Tutorial-ALF-2.2} .
-%%%%%%%%%%%%%%%                                            %%%%%%%%%%%%%%%
-%
+% %
+% %%%%%%%%%%%%%%%  ONLY FOR THE DEV VERSION OF THE TUTORIAL  %%%%%%%%%%%%%%%
+% \textbf{\textcolor{red}{Notice}} that the latest stable release of ALF is ALF 2.5 -- the correspondent tutorial can be found at \href{https://git.physik.uni-wuerzburg.de/ALF/ALF_Tutorial/-/tree/master/Tutorial-ALF-2.5}{https://git.physik.uni-wuerzburg.de/ALF/ALF\_Tutorial/-/tree/master/Tutorial-ALF-2.5} .
+% %%%%%%%%%%%%%%%                                            %%%%%%%%%%%%%%%
+% %
 
 %%%%%%%%%%%%%%%%%%%%
 \part{Just run it}
 
-What follows is a collection of self-explanatory Jupyter notebooks written in Python, each centered on a detailed example followed by a few simple exercises. The notebooks printed below can be found, together with the necessary files and an increasing number of additional notebooks exploring ALF's capabilities, in the \href{https://git.physik.uni-wuerzburg.de/ALF/pyALF/-/tree/\pyALFbranch}{pyALF repository}, branch \texttt{\pyALFbranch{}}.
+What follows is a collection of self-explanatory Jupyter notebooks written in Python, each centered on a detailed example followed by a few simple exercises. The notebooks printed below can be found, together with the necessary files and an increasing number of additional notebooks exploring ALF's capabilities, in the \href{https://git.physik.uni-wuerzburg.de/ALF/pyALF}{pyALF repository}.
 
 
 \section*{Requirements}
 
-You can download pyALF from its repository linked above or, from the command line\footnote{Avoid folder names containing spaces, they are not supported by the installation scripts.}:
+
+\begin{mybox}{Warning}
+   In previous versions of pyALF, the installation instructions asked the users to set the environment variable \texttt{PYTHONPATH}.
+This conflicts with the newer pip package, therefore you should remove definitions of this environment variable related to pyALF.
+\end{mybox}
+
+The easiest way to install pyALF with all its Python dependencies is via the
+Python package installer \href{https://pip.pypa.io}{pip}
+\footnote{It might make sense to use a dedicated Python environment using e.g.
+\href{https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/}{Python venv}
+or a
+\href{https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html}{conda environment}
+}:
 \begin{lstlisting}[style=bash,escapechar=\%]
-git clone -b %\pyALFbranch{}%https://git.physik.uni-wuerzburg.de/ALF/pyALF.git
+pip install pyALF
 \end{lstlisting}
-To run the notebooks you need the following installed in your machine:
+
+Additionally, you will need the dependencies of \href{https://git.physik.uni-wuerzburg.de/ALF/ALF/-/tree/\ALFbranch}{ALF} itself:
 \begin{itemize}
-	\item Python and its packages SciPy, NumPy, matplotlib, f90nml, h5py, pandas, numba, tkinter, ipywidgets and ipympl
-	\item Jupyter
-	\item the libraries Lapack and Blas
+   \item make
 	\item a Fortran compiler, such as \texttt{gfortran} or \texttt{ifort},
+	\item the libraries Lapack and Blas
+	\item Python3 (Already needed for pyALF)
+	\item MPI libraries (optional)
+	\item For HDF5 (optional, but pyALF uses it by default):
+	\begin{itemize}
+      \item C++ preprocessor (default: g++)
+      \item Curl
+      \item gzip development libraries
+   \end{itemize}
 \end{itemize}
-where the last two are required by the main package \href{https://git.physik.uni-wuerzburg.de/ALF/ALF/-/tree/\ALFbranch}{ALF}. %, which is automatically handled by pyALF.
-Also, add pyALF's path to your environment variable \texttt{PYTHONPATH}. In Linux, this can be achieved, e.g., by adding the following line to \texttt{.bashrc}:
+
+
+The ALF dependencies can be installed in a Debian-based Linux (Debian/Ubuntu/Linux Mint) via
 \begin{lstlisting}[style=bash]
-export PYTHONPATH="/local/path/to/pyALF:$PYTHONPATH"
+sudo apt-get install make gfortran libblas-dev liblapack-dev \
+         python3 libopenmpi-dev g++ curl libghc-zlib-dev git
 \end{lstlisting}
 
-Python and its packages can be easily installed on a variety of platforms using the Anaconda distribution -- check its \href{https://docs.anaconda.com/anaconda/install/}{installation instructions} for your system. Then, from Anaconda, you can issue the command
-\begin{lstlisting}[style=bash]
-conda install -c anaconda  ipython jupyterlab scipy numpy matplotlib h5py pandas numba tkinter ipywidgets ipympl f90nml
-\end{lstlisting}
-Anaconda is recommended due to its convenience, but the system's package management (e.g., apt-get) or Python's own package management, pip3, can be used instead if preferred -- see, for instance, SciPy \href{https://www.scipy.org/install.html}{installation instructions}.
 
-A Fortran compiler and the libraries needed for ALF can be installed in a Debian-based Linux via
-\begin{lstlisting}[style=bash]
-sudo apt-get install  gfortran liblapack-dev make
-\end{lstlisting}
 In MacOS, gfortran can be found at \url{https://gcc.gnu.org/wiki/GFortranBinaries#MacOS}, where detailed instructions \href{https://gcc.gnu.org/wiki/GFortranBinariesMacOS}{are available}. You will need to have Xcode as well as the Apple developer tools installed.
 
 For Windows and other Linuxes and Unixes, please check the Tutorials' repository \href{https://git.physik.uni-wuerzburg.de/ALF/ALF_Tutorial/-/blob/master/Tutorial-ALF-\tutALFver/README.md}{README}.
