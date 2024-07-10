@@ -146,10 +146,10 @@ title={#1}}
 \newcommand{\FAcomment}[1]{{\color{red} #1}}
 
 
-\newcommand{\ALFver}{dev.}          %{2.2}{dev.} version of ALF the tutorial uses
-\newcommand{\ALFbranch}{master}   %{ALF-2.2}{master} corresponding ALF branch
-\newcommand{\pyALFver}{dev.}        %{2.2}{dev.} version of pyALF the tutorial uses
-\newcommand{\pyALFbranch}{master} %{ALF-2.2}{master} corresponding pyALF branch
+% \newcommand{\ALFver}{dev.}          %{2.2}{dev.} version of ALF the tutorial uses
+% \newcommand{\ALFbranch}{master}   %{ALF-2.2}{master} corresponding ALF branch
+% \newcommand{\pyALFver}{dev.}        %{2.2}{dev.} version of pyALF the tutorial uses
+% \newcommand{\pyALFbranch}{master} %{ALF-2.2}{master} corresponding pyALF branch
 \newcommand{\tutALFver}{dev}       %{2.2}{dev} version of the tutorial - normally should be the same as \ALFver (ex.: 2.2, dev [no period after "dev", since it's also used in paths])
 
 %\newcommand{\ALFver}{2.5}          %{2.2}{dev.} version of ALF the tutorial uses
@@ -196,6 +196,7 @@ title={#1}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \makeindex
+\setcounter{section}{-1}
 \begin{document}
 %---------------------------------------------------------------------------------------------------------
 %\title{ ALF Tutorial \\  \smaller\smaller The \emph{ALF} (\emph{A}lgorithms for \emph{L}attice \emph{F}ermions) project release \tutALFver{} tutorial}
@@ -206,8 +207,6 @@ title={#1}}
 \maketitle
 
 
-%\section*{Introduction}
-
 The ALF package provides a general code for auxiliary-field Quantum Monte Carlo simulations and default analysis. In this tutorial we show how users from beginners to specialists can profit from ALF. This document is divided in two parts:
 \begin{description}
 \item[Part I.] The first, introductory part of the tutorial is based on ALF's python interface -- \texttt{pyALF} -- which greatly simplifies using the code, making it ideal for: \emph{obtaining benchmark} results for established models; \emph{getting started} with QMC and ALF; or just \emph{quickly running} a simulation.
@@ -216,23 +215,90 @@ The ALF package provides a general code for auxiliary-field Quantum Monte Carlo 
 
 This document is intended to be self-contained, but the interested reader should check \href{https://git.physik.uni-wuerzburg.de/ALF/ALF/-/jobs/artifacts/master/raw/Documentation/doc.pdf?job=create_doc}{ALF's documentation}, which contains a thorough, systematic description of the package.
 
-% %
-% %%%%%%%%%%%%%%%  ONLY FOR THE DEV VERSION OF THE TUTORIAL  %%%%%%%%%%%%%%%
-% \textbf{\textcolor{red}{Notice}} that the latest stable release of ALF is ALF 2.5 -- the correspondent tutorial can be found at \href{https://git.physik.uni-wuerzburg.de/ALF/ALF_Tutorial/-/tree/master/Tutorial-ALF-2.5}{https://git.physik.uni-wuerzburg.de/ALF/ALF\_Tutorial/-/tree/master/Tutorial-ALF-2.5} .
-% %%%%%%%%%%%%%%%                                            %%%%%%%%%%%%%%%
-% %
+\section{Install ALF+pyALF}
+\subsection{Install ALF Requirements}
 
-%%%%%%%%%%%%%%%%%%%%
-\part{Just run it}
+First, we will install the dependencies of \href{https://git.physik.uni-wuerzburg.de/ALF}{ALF} itself:
+\begin{itemize}
+   \item make
+	\item a Fortran compiler, such as \texttt{gfortran} or \texttt{ifort},
+	\item the libraries Lapack and Blas
+	\item Python3 (Already needed for pyALF)
+	\item MPI libraries (optional)
+	\item For HDF5 (optional, but pyALF uses it by default):
+	\begin{itemize}
+      \item C++ preprocessor (default: g++)
+      \item Curl or Wget
+      \item gzip development libraries
+   \end{itemize}
+\end{itemize}
 
-What follows is a collection of self-explanatory Jupyter notebooks written in Python, each centered on a detailed example followed by a few simple exercises. The notebooks printed below can be found, together with the necessary files and an increasing number of additional notebooks exploring ALF's capabilities, in the \href{https://git.physik.uni-wuerzburg.de/ALF/pyALF}{pyALF repository}.
 
+\subsection*{Linux}
+Instructions for installing the prerequisites for different Linux distributions
 
-\section*{Requirements}
+\textbf{Debian/Ubuntu/Linux Mint:}
+\begin{lstlisting}[style=bash]
+sudo apt install make gfortran libblas-dev liblapack-dev \
+         python3 libopenmpi-dev g++ curl libghc-zlib-dev git
+\end{lstlisting}
 
+\textbf{Red Hat/Fedora/CentOS:}
+\begin{lstlisting}[style=bash]
+sudo yum install make gfortran libblas-devel liblapack-devel \
+          python3 libopenmpi-dev g++ curl zlib git
+\end{lstlisting}
 
+\textbf{OpenSuSE/SLES:}
+\begin{lstlisting}[style=bash]
+sudo zypper install make gcc-fortran lapack-devel \
+             python3 libopenmpi-devel gcc-c++ curl zlib-devel git
+\end{lstlisting}
+
+\textbf{Arch Linux:}
+\begin{lstlisting}[style=bash]
+sudo pacman -S make gcc-fortran lapack python3 openmpi curl zlib git
+\end{lstlisting}
+
+\subsection*{Other Unixes}
+gfortran and the lapack implementation from netlib.org should be available for your system. Consult the documentation of your system on how to install the relevant packages. The package names from linux should give good starting points for your search.
+
+\subsection*{MacOS}
+gfortran for MacOS can be found at \url{https://gcc.gnu.org/wiki/GFortranBinaries#MacOS}.
+Athough the most convenient way to get gfortran and MPI libraries set up might be through \href{https://brew.sh/}{Homebrew}:
+\begin{lstlisting}[style=bash]
+brew install gfortran open-mpi 
+\end{lstlisting}
+Furthermore, you will need to have Xcode as well as the Apple developer tools installed.
+
+\subsection*{Windows}
+The easiest way to compile ALF in Windows is trough the \href{https://docs.microsoft.com/en-us/windows/wsl/about}{Windows Subsystem for Linux} (WSL). It allows to run Linux within Windows. You can install the WSL and follow the instructions for Linux.
+
+\subsection{Setting ALF directory through environment variable}
+Since pyALF can automatically clone ALF with git, it is not strictly necessary to download ALF manually,
+but pyALF will download ALF every time it does not find it.
+Therefore it is recommended to clone ALF once manually set its location in the environment variable
+\texttt{ALF\_DIR}. This way, pyALF will use the same ALF source code directory every time.
+
+ALF can be cloned with the Unix shell command
+
+\begin{lstlisting}[style=bash]
+git clone https://git.physik.uni-wuerzburg.de/ALF/ALF.git
+\end{lstlisting}
+
+this will create a folder called ALF in the current working directory of the terminal and download the repository there.
+
+The environment variable can the be set with the command
+
+\begin{lstlisting}[style=bash]
+export ALF_DIR="/path/to/ALF"
+\end{lstlisting}
+
+where \texttt{/path/to/ALF} is the location of the ALF code, for example \texttt{/home/someone/Programs/ALF}. To not have to repeat this command in every terminal session, it is advisable to add it to a file sourced when starting the shell, e.g. \verb|~/.bashrc| or \verb|~/.zshrc|.
+
+\subsection{Installing pyALF}
 \begin{mybox}{Warning}
-   In previous versions of pyALF, the installation instructions asked the users to set the environment variable \texttt{PYTHONPATH}.
+In previous versions of pyALF, the installation instructions asked the users to set the environment variable \texttt{PYTHONPATH}.
 This conflicts with the newer pip package, therefore you should remove definitions of this environment variable related to pyALF.
 \end{mybox}
 
@@ -243,40 +309,37 @@ Python package installer \href{https://pip.pypa.io}{pip}
 or a
 \href{https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html}{conda environment}
 }:
-\begin{lstlisting}[style=bash,escapechar=\%]
+\begin{lstlisting}[style=bash]
 pip install pyALF
 \end{lstlisting}
 
-Additionally, you will need the dependencies of \href{https://git.physik.uni-wuerzburg.de/ALF/ALF/-/tree/\ALFbranch}{ALF} itself:
-\begin{itemize}
-   \item make
-	\item a Fortran compiler, such as \texttt{gfortran} or \texttt{ifort},
-	\item the libraries Lapack and Blas
-	\item Python3 (Already needed for pyALF)
-	\item MPI libraries (optional)
-	\item For HDF5 (optional, but pyALF uses it by default):
-	\begin{itemize}
-      \item C++ preprocessor (default: g++)
-      \item Curl
-      \item gzip development libraries
-   \end{itemize}
-\end{itemize}
-
-
-The ALF dependencies can be installed in a Debian-based Linux (Debian/Ubuntu/Linux Mint) via
+To use the Jupyter Notebooks in the following 
 \begin{lstlisting}[style=bash]
-sudo apt-get install make gfortran libblas-dev liblapack-dev \
-         python3 libopenmpi-dev g++ curl libghc-zlib-dev git
+pip install jupyter
 \end{lstlisting}
 
+\subsection{Check installation}
 
-In MacOS, gfortran can be found at \url{https://gcc.gnu.org/wiki/GFortranBinaries#MacOS}, where detailed instructions \href{https://gcc.gnu.org/wiki/GFortranBinariesMacOS}{are available}. You will need to have Xcode as well as the Apple developer tools installed.
+To check if things have been set up correctly, the script \verb|minimal_ALF_run|, which has been installed with pyALF, can be used. It runs a very short simulation of the Hubbard model on a square lattice and calculates the energy.
+One should be able to run it by executing
+\begin{lstlisting}[style=bash]
+minimal_ALF_run
+\end{lstlisting}
+in the Unix shell. If it does clone the ALF repository, \verb|ALF_DIR| has not been set up correctly. Note that on the first compilation, ALF downloads and compiles HDF5\footnote{To avoid confusions with different compilers, ALF does (by default) not use system-provided HDF5-libraries, but instead compiles them itself on first usage.}, which can take up to $\sim$15 minutes and may print out many warnings. After successful execution, there should be a folder \verb|ALF_data|, containing the finished simulation.
 
-For Windows and other Linuxes and Unixes, please check the Tutorials' repository \href{https://git.physik.uni-wuerzburg.de/ALF/ALF_Tutorial/-/blob/master/Tutorial-ALF-\tutALFver/README.md}{README}.
+
+%%%%%%%%%%%%%%%%%%%%
+\part{Just run it}
+
+What follows is a collection of self-explanatory Jupyter notebooks written in Python, each centered on a detailed example followed by a few simple exercises. The notebooks printed below can be found, together with the necessary files and an increasing number of additional notebooks exploring ALF's capabilities, in the \href{https://git.physik.uni-wuerzburg.de/ALF/pyALF}{pyALF repository}.
+
+
 
 \section*{Starting}
 
-Jupyter notebooks \href{https://jupyter.readthedocs.io/en/latest/running.html}{are run} through a Jupyter server\footnote{Note that pyALF can also be used to start a simulation from the command line, without starting a Jupyter server or using a notebook. For instance: \texttt{python3.7 Run.py -R  --alfdir /home/debian/ALF-1.2/ --config "Intel"  --executable\_R Hubbard --mpi True} starts a parallel run of the Hubbard model, using ALF compiled with \texttt{ifort}.  Notice that \texttt{Run.py} requires a configuration file  \texttt{Sims}, which defines the simulation parameters. An entry of \texttt{Sims} might read as: \texttt{ {"Model": "Hubbard", "Lattice\_type": "Square", "L1": 4, "L2": 4, "NBin": 5, "ham\_T": 0.0, "Nsweep" : 2000, "Beta": 1.0, "ham\_chem": -1.0} } } started, e.g., from the command line:
+Jupyter notebooks \href{https://jupyter.readthedocs.io/en/latest/running.html}{are run} through a Jupyter server
+\footnote{Note that pyALF can also be used to start a simulation from the command line, without starting a Jupyter server or using a notebook. For instance: \texttt{alf\_run -R  --alfdir /home/debian/ALF --config "Intel"  --executable\_R Hubbard --mpi True} starts a parallel run of the Hubbard model, using ALF compiled with \texttt{ifort}.  Notice that \texttt{alf\_run} requires a configuration file  \texttt{Sims}, which defines the simulation parameters. An entry of \texttt{Sims} might read as: 
+\texttt{Hubbard, \{"Lattice\_type": "Square", "L1": 4 , "L2": 4, "NBin": 5, "ham\_T": 0.0, "Nsweep" : 2000, "Beta": 1.0, "ham\_chem": -1.0 \}}} started, e.g., from the command line:
 \begin{lstlisting}[style=bash]
 jupyter-lab
 \end{lstlisting}
@@ -286,31 +349,11 @@ jupyter-lab
 %\end{lstlisting}
 which opens the ``notebook dashboard'' in your default browser, where you can navigate through your file structure to the pyALF directory. There you will find the interface's core module, \texttt{py\_alf.py}, some auxiliary files, and notebooks such as the ones included below. Have fun. 
 
-%We note that pyALF can also be used to start a simulation from the command line, without starting a Jupyter server. For instance:
-%\begin{lstlisting}[style=bash]
-%python3.7 Run.py -R  --alfdir /home/debian/ALF-1.2/ --config "Intel"  --executable_R Hubbard --mpi True  &
-%\end{lstlisting}
-%starts a parallel run of the Hubbard model, using ALF compiled with \texttt{ifort}. 
-%Notice that \texttt{Run.py} requires a configuration file  \texttt{Sims}, which defines the simulation parameters. An entry of \texttt{Sims} might read as:
-%\begin{lstlisting}[style=bash]
-%{ "Model": "Hubbard", "Lattice_type": "Square", "L1": 4, "L2": 4, "NBin": 5, "ham_T": 0.0, "Nsweep" : 2000, "Beta": 1.0, "ham_chem": -1.0 }
-%\end{lstlisting}
-
-
 \section*{Notebooks}
 
 \input{Notebooks/minimal_ALF_run-content.tex}
 
-%\begin{figure}[h]
-%        \begin{center}
-%                \includegraphics[scale=.9]{Figures/Ener_B2.pdf}
-%        \end{center}
-%        \caption{ $\Delta \tau t $ extrapolation for the 4-site Hubbard ring. }
-%\end{figure}
-
 \input{Notebooks/trotter_error-content.tex}
-
-% ? Include Dtau figure ?
 
 \input{Notebooks/testing_against_ED-content.tex}
 
@@ -331,8 +374,8 @@ These worked-out exercises, together with ALF's modularity, boosted by its Prede
 
 \section*{Downloading and using the code and tutorial}
 One can use the ALF package downloaded automatically by the Python script in the first part of this tutorial, or manually, by typing
-\begin{lstlisting}[style=bash,escapechar=\%]
-git clone -b %\ALFbranch%https://git.physik.uni-wuerzburg.de/ALF/ALF.git
+\begin{lstlisting}[style=bash]
+git clone https://git.physik.uni-wuerzburg.de/ALF/ALF.git
 \end{lstlisting}
 in a shell. Similarly, to download the tutorial, including solutions, enter:
 \begin{lstlisting}[style=bash]
@@ -340,7 +383,11 @@ git clone https://git.physik.uni-wuerzburg.de/ALF/ALF_Tutorial.git
 \end{lstlisting}
 This document is found in the directory \texttt{Tutorial-ALF-\tutALFver{}}.
 
-The necessary environment variables and the directives for compiling the code are set by the script \texttt{configure.sh}: \lstinline[style=bash]|source configure.sh GNU|, followed by the command  \lstinline[style=bash,morekeywords={make}]|make|. Details and further options are described in the package's documentation found in its repository.
+The necessary environment variables and the directives for compiling the code are set by the script \texttt{configure.sh}:
+\begin{lstlisting}[style=bash]
+source configure.sh GNU noMPI
+\end{lstlisting}
+followed by the command \lstinline[style=bash,morekeywords={make}]|make|. Details and further options are described in the package's documentation found in its repository.
 
 A workflow you can adopt for solving the exercises -- or indeed using ALF in general -- is the following:
 \begin{enumerate}
@@ -370,8 +417,7 @@ Here we will modify the code  so as to allow  for different hopping matrix eleme
 To do so we start from the submodule \texttt{Hamiltonian\_Hubbard\_Plain\_Vanilla\_smod.F90}, which we here shorten to ``\texttt{Vanilla}'', found in \texttt{\$ALF\_DIR/Prog/Hamiltonians/}, proceeding as follows: 
 \begin{itemize}
 	\item Add \texttt{Ham\_Ty} to the \texttt{VAR\_Hubbard\_Plain\_Vanilla} name space in the parameter file \texttt{parameters}.
-	\item Declare a new variable, \texttt{Ham\_Ty}, in the module's specification (just search for the declaration of \texttt{Ham\_T} in \texttt{Vanilla}).
-	\item Add \texttt{Ham\_Ty} to the \texttt{VAR\_Hubbard\_Plain\_Vanilla} name space (\texttt{namelist}) declaration at the \texttt{Ham\_Set} subroutine of \texttt{Vanilla}.
+	\item Declare a new variable, \texttt{Ham\_Ty}, in the module's specification on a new line between \verb|!#PARAMETERS START# VAR_Hubbard_Plain_Vanilla| and the corresponding \verb|!#PARAMETERS END#|.
 	\item Modify the hopping matrix in the subroutine \texttt{Ham\_Hop} in \texttt{Vanilla}:
 \begin{lstlisting}[style=fortran]
 Do I = 1,Latt%N
