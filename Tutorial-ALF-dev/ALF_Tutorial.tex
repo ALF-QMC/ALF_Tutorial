@@ -245,14 +245,14 @@ sudo apt install make gfortran libblas-dev liblapack-dev \
 
 \textbf{Red Hat/Fedora/CentOS:}
 \begin{lstlisting}[style=bash]
-sudo yum install make gfortran libblas-devel liblapack-devel \
-          python3 libopenmpi-dev g++ curl zlib git
+sudo yum install make gfortran blas-devel lapack-devel \
+          python3 openmpi-devel g++ curl zlib-devel git
 \end{lstlisting}
 
 \textbf{OpenSuSE/SLES:}
 \begin{lstlisting}[style=bash]
 sudo zypper install make gcc-fortran lapack-devel \
-             python3 libopenmpi-devel gcc-c++ curl zlib-devel git
+             python3 openmpi-devel gcc-c++ curl zlib-devel git
 \end{lstlisting}
 
 \textbf{Arch Linux:}
@@ -264,12 +264,13 @@ sudo pacman -S make gcc-fortran lapack python3 openmpi curl zlib git
 gfortran and the lapack implementation from netlib.org should be available for your system. Consult the documentation of your system on how to install the relevant packages. The package names from linux should give good starting points for your search.
 
 \subsection*{MacOS}
+For MacOS, Xcode and the Apple developer tools should be installed.
+
 gfortran for MacOS can be found at \url{https://gcc.gnu.org/wiki/GFortranBinaries#MacOS}.
 Athough the most convenient way to get gfortran and MPI libraries set up might be through \href{https://brew.sh/}{Homebrew}:
 \begin{lstlisting}[style=bash]
 brew install gfortran open-mpi 
 \end{lstlisting}
-Furthermore, you will need to have Xcode as well as the Apple developer tools installed.
 
 \subsection*{Windows}
 The easiest way to compile ALF in Windows is trough the \href{https://docs.microsoft.com/en-us/windows/wsl/about}{Windows Subsystem for Linux} (WSL). It allows to run Linux within Windows. You can install the WSL and follow the instructions for Linux.
