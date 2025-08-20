@@ -1,5 +1,6 @@
 # ALF Tutorial
 This is a tutorial for using [ALF](https://git.physik.uni-wuerzburg.de/ALF/ALF/) intended to get you started from zero up to your own first projects.
+* To play with ALF straight away, check out [these **Python notebooks**](https://git.physik.uni-wuerzburg.de/ALF/pyALF/-/tree/master/Notebooks?ref_type=heads) from [pyALF](https://git.physik.uni-wuerzburg.de/ALF/pyALF/-/tree/master?ref_type=heads).
 
 ## Installation.
 ALF is pretty self-contained, you only need a LAPACK and a BLAS implementation as external libraries. For compiling the source code you need make and a Fortran 2003 compatible Compiler.
