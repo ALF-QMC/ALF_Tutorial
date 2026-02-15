@@ -7,9 +7,9 @@ on:
 
 jobs:
   gitlab:
-    if: github.repository == 'ALF-QMC/ALF_Tutorial_and_Presentations'
+    if: github.repository == 'ALF-QMC/ALF_Tutorial'
     uses: ALF-QMC/ALF/.github/workflows/mirror-template.yml@master
     with:
-      git_url: "git.physik.uni-wuerzburg.de/ALF/ALF_Tutorial_and_Presentations"
+      git_url: "git.physik.uni-wuerzburg.de/ALF/ALF_Tutorial"
     secrets:
       GIT_MIRROR_TOKEN: ${{ secrets.GITLAB_MIRROR_TOKEN }}
