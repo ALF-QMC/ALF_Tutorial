@@ -35,10 +35,10 @@ jobs:
           if-no-files-found: error
 
   deploy_pages:
-    name: Deploy GitHub Pages (main only)
+    name: Deploy GitHub Pages (master only)
     runs-on: ubuntu-slim
     needs: [build]
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/master'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
