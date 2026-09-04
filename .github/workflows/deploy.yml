@@ -1,0 +1,59 @@
+name: Jupyter Book (via myst) GitHub Pages Deploy
+on:
+  push:
+    branches: ['**']
+env:
+  BASE_URL: /${{ github.event.repository.name }}
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: 'pages-${{ github.ref }}'
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24.x
+      - name: Install Jupyter Book (via myst)
+        run: npm install -g jupyter-book
+      - name: Build HTML Assets
+        working-directory: jupyterbook
+        run: jupyter-book build --html
+      - name: Upload Jupyter Book HTML artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: jupyter-book-html
+          path: jupyterbook/_build/html
+          if-no-files-found: error
+
+  deploy_pages:
+    name: Deploy GitHub Pages (main only)
+    runs-on: ubuntu-slim
+    needs: [build]
+    if: github.ref == 'refs/heads/main'
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Download Jupyter Book HTML
+        uses: actions/download-artifact@v7
+        with:
+          name: jupyter-book-html
+          path: public
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: public
+      - name: Deploy to Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
