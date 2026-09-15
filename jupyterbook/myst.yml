@@ -23,6 +23,7 @@ project:
       children:
       - file: source/05-caveats/trotter_error.ipynb
       - file: source/05-caveats/testing_against_ED.ipynb
+      - file: source/05-caveats/postprocessing_check_warmup.ipynb
       - file: source/05-caveats/warmup.ipynb
       - file: source/05-caveats/autocorrelation.ipynb
       #- file: source/05-caveats/finite-size-effects.ipynb
