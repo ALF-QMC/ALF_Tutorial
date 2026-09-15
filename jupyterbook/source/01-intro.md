@@ -26,6 +26,6 @@ This is a tutorial for using [ALF](https://github.com/ALF-QMC/ALF/) and [pyALF](
   - [ ] [Autocorrelation time](05-caveats/autocorrelation.ipynb)**Helke**+**Jonas** Use PyALF internal functions.  Choose  a observable such as spinT  at AFM wave vector.  This longer autocrrelation times as the Energy. 
   - [x] [Imaginary time discretization error](05-caveats/delta-tau.ipynb)  Maybe a bit redundant
 - [ ] [Projector versus finite temperature](06-projector.md) **Jokob**
-- [ ] [My very first sign problem](07-sign.md) **Adrien**
-- [ ] [Getting your hands dirty: writing new Fortran code](08-fortran.md) **Moritz** + **Jakob**   First step is to split each exercise into a separate md file. Here we do not need  Jupyter notebooks since we have to edit code.  So this part can be directly be taken from the old .pdf.  As a first step nothing new has to be done. 
+- [ ] [My very first sign problem](07-sign.md) **Adrien** 
+- [ ] [Getting your hands dirty: writing new Fortran code](08-fortran.md) **Moritz** + **Jakob**  First step is to split each exercise into a separate md file. Here we do not need  Jupyter notebooks since we have to edit code.  So this part can be directly be taken from the old .pdf.  As a first step nothing new has to be done. 
 
