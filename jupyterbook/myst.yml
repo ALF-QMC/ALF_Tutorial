@@ -24,9 +24,9 @@ project:
       - file: source/05-caveats/testing_against_ED.ipynb
       - file: source/05-caveats/warmup.ipynb
       - file: source/05-caveats/autocorrelation.ipynb
-      - file: source/05-caveats/finite-size-effects.ipynb
-
-    - file: source/06-fortran.md
+      #- file: source/05-caveats/finite-size-effects.ipynb
+    - file: source/06-projector.md
+    - file: source/07-fortran.md
 
 site:
   template: book-theme
