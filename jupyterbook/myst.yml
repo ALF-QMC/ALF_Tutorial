@@ -18,6 +18,7 @@ project:
     - file: source/04-nice-physics.md
       children:
       - file: source/04-nice-physics/attractive_hubbard_bec_tutorial.ipynb
+      - file: source/04-nice-physics/mott.ipynb
     - file: source/05-caveats.md
       children:
       - file: source/05-caveats/trotter_error.ipynb
