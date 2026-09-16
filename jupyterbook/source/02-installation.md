@@ -3,7 +3,7 @@
 This section shows briefly how to set your machine up to work through the rest of this tutorial for more detail, refer to the documentations of [ALF](https://alf.physik.uni-wuerzburg.de/doc.pdf) and [pyALF](https://alf.physik.uni-wuerzburg.de/pyalf-doc/).
 
 ## ALF prerequisites
-To install the relevant ALF packages.
+To install the ALF dependencies.
 
 :::::{dropdown} **Linux**
 Execute one of these installation command on your shell.
