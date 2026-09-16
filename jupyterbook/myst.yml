@@ -28,6 +28,11 @@ project:
     - file: source/06-projector.md
     - file: source/07-sign.md
     - file: source/08-fortran.md
+      children:
+      - file: source/08-fortran/downloading.md
+      - file: source/08-fortran/dimensional_crossover.md
+      - file: source/08-fortran/t_V_Model.md
+      - file: source/08-fortran/Adding_observable.md
 
 site:
   template: book-theme
