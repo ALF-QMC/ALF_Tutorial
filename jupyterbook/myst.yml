@@ -27,6 +27,9 @@ project:
       #- file: source/05-caveats/finite-size-effects.ipynb
     - file: source/06-projector.md
     - file: source/07-sign.md
+      children:
+        - file: source/07-sign/theory.md
+        - file: source/07-sign/average_sign.ipynb
     - file: source/08-fortran.md
 
 site:

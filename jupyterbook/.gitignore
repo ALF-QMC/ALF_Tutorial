@@ -1,2 +1,9 @@
 # MyST build outputs
 _build
+
+# Local ALF installation and simulation results
+/source/07-sign/ALF/
+/source/07-sign/ALF_data/
+
+# Jupyter temporary files
+.ipynb_checkpoints/
