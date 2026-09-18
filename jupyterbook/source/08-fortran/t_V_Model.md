@@ -19,7 +19,7 @@ Note that the t-V model is already implemented in ALF in the module `Hamiltonian
 
 #### Define new model
 
-In the directory `Solutions/Exercise_2` we have duplicated the ALF and commented the changes that have to be carried out to the file `Hamiltonian_Hubbard_Plain_Vanilla_smod.F90`, which we here shorten to "`Vanilla`", found in `$ALF_DIR/Prog/Hamiltonians/`. The following are the essential steps to be carried out:
+In [solution](Solutions/Exercise_2/Hamiltonian_Hubbard_Plain_Vanilla_smod.F90-Exercise_2) we have duplicated the ALF and commented the changes that have to be carried out to the file `Hamiltonian_Hubbard_Plain_Vanilla_smod.F90`. The following are the essential steps to be carried out:
 
 - Add the `VAR_t_V` name space in the file `parameters` and set the necessary variables — or simply rename the `VAR_Hubbard_Plain_Vanilla` name space to `VAR_t_V` and, within it, `Ham_U` to `Ham_Vint`. (Ignore the name space `VAR_tV`, which is used by the general implementation mentioned above.)
 - Declare a new variable, `Ham_Vint`, in `Vanilla`'s specification.
@@ -58,7 +58,7 @@ Allocate(Op_V(Ndim,N_FL))
 - Finally, you have to update the `Obser` and `ObserT` routines for the calculation of equal- and time-displaced correlations. For the `t_V` model you can essentially use the same observables as for the `Hubbard_SU(2)` model in 1D — a step which requires a number of changes with respect to the `Vanilla` base, such as:
 
 ```fortran
-!!!!! Modifications for Exercise 2
+!!!!! Modifications for Exercise 3
  !Zpot = Zpot*ham_U                       ! Vanilla
  Zpot = Zpot*Ham_Vint                     ! t-V
  !!!!!
@@ -96,9 +96,7 @@ Z = cmplx(dble(N_SUN), 0.d0, kind(0.D0))
 
 among other changes — with similar ones in the `ObserT` routine.
 
-All necessary changes are implemented and clearly indicated in the solution provided in `Solutions/Exercise_2/Hamiltonian_Hubbard_Plain_Vanilla_smod-Exercise_2.F90`.
-
-In the directory `Solutions/Exercise_2` we have the modified and original submodules, as well as reference data and the necessary `Start` directory (remember to copy its contents to every new `Run` directory, and to have a different `Run` directory for each simulation).
+[Here](Solutions/Exercise_2/Start/parameters) the modified parameter file can be downloaded.
 
 #### Phase transition
 

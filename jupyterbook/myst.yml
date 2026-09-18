@@ -32,8 +32,8 @@ project:
       children:
       - file: source/08-fortran/downloading.md
       - file: source/08-fortran/dimensional_crossover.md
-      - file: source/08-fortran/t_V_Model.md
       - file: source/08-fortran/Adding_observable.md
+      - file: source/08-fortran/t_V_Model.md
 
 site:
   template: book-theme
