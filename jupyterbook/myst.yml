@@ -31,6 +31,9 @@ project:
       - file: source/06-projector/finite_T_algorithm.ipynb
       - file: source/06-projector/projective_algorithm.ipynb
     - file: source/07-sign.md
+      children:
+        - file: source/07-sign/theory.md
+        - file: source/07-sign/average_sign.ipynb
     - file: source/08-fortran.md
       children:
       - file: source/08-fortran/downloading.md
