@@ -44,5 +44,5 @@ project:
 site:
   template: book-theme
   options:
-  #   favicon: favicon.ico
-  #   logo: site_logo.png
+    logo: images/alf_logo_flo.png
+    favicon: images/alf_logo2-old.png
