@@ -5,9 +5,8 @@ Here we will modify the code so as to allow for different hopping matrix element
 
 #### Modifying the hopping
 
-To do so we start from the submodule `Hamiltonian_Hubbard_Plain_Vanilla_smod.F90`, which we here shorten to "`Vanilla`", found in `$ALF_DIR/Prog/Hamiltonians/`, proceeding as follows:
+To do so we start from the submodule `Hamiltonian_Hubbard_Plain_Vanilla_smod.F90`, found in `$ALF_DIR/Prog/Hamiltonians/`, proceeding as follows:
 
-- Add `Ham_Ty` to the `VAR_Hubbard_Plain_Vanilla` name space in the parameter file `parameters`.
 - Declare a new variable, `Ham_Ty`, in the module's specification on a new line between `!#PARAMETERS START# VAR_Hubbard_Plain_Vanilla` and the corresponding `!#PARAMETERS END#`.
 - Modify the hopping matrix in the subroutine `Ham_Hop` in `Vanilla`:
 
@@ -32,9 +31,13 @@ Enddo
 
 <!-- Note: If you'd like to run the simulation using MPI, you should also add the broadcasting call for `Ham_Ty` to `Ham_Set`. -->
 
-It is a good idea as well to get the new simulation parameter written into the file `info`, also a change in `Ham_Set`.
+- It is a good idea as well to get the new simulation parameter written into the file `info`, also a change in `Ham_Set`.
 
-In the directory `Solutions/Exercise_1` we have the modified and original submodules, as well as reference data and the necessary `Start` directory (remember to copy its contents to every new `Run` directory, and to have a different `Run` directory for each simulation).
+- Add `Ham_Ty` to the `VAR_Hubbard_Plain_Vanilla` name space in the parameter file `parameters`. This can be found in `Scripts_and_Parameters_files/Start`. Also set `ham_name` to `Hubbard_Plain_Vanilla`. The variable `Model` can be left unchanged as it is irrelevant.
+
+After these changes, one can proceed with the workflow introduced in [Downloading and using the code and tutorial](downloading.md).
+
+ The modified `Hamiltonian_Hubbard_Plain_Vanilla_smod.F90` file can be downloaded from [solution](Solutions/Exercise_1/Hamiltonian_Hubbard_Plain_Vanilla_smod.F90-Exercise_1a). The corresponding `parameters` can be downloaded from [parameters](Solutions/Exercise_1/Start/parameters). In case something went horribly wrong the original can be downloaded from [original](Solutions/Exercise_1/Hamiltonian_Hubbard_Plain_Vanilla_smod.F90-Original).
 
 As an application of this code, we can once again consider a ladder system (e.g, a 2-leg ladder with `L1=14` and `L2=2`), for different values of `Ham_Ty`. The results you should obtain for the total spin correlation function (file `SpinT_eqJR`) are summarized in [](#fig-ladder).
 
