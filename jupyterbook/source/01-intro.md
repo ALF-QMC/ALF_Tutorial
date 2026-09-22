@@ -18,7 +18,7 @@ This is a tutorial for using [ALF](https://github.com/ALF-QMC/ALF/) and [pyALF](
 - [x] [A minimal ALF run](03-minimal_ALF_run.ipynb) **Jonas** 
 - [ ] [Reproducing some nice physics](04-nice-physics.md)  
   - [ ] [Bose-Einstein Condensate](04-nice-physics/bec.ipynb) **Luis**
-  - [ ] [Mott transition SM-Insulator Honeycomb lattice](04-nice-physics/mott.ipynb) **Joao**
+  - [x] [Mott transition SM-Insulator Honeycomb lattice](04-nice-physics/mott.ipynb) **Joao**
   - [ ] MaxEnt Would be very nice  **We need a whole chapter for this** **MaxEnt and PyALF**
   - [ ] The result of the workgroup could be included here.  **This can stay  to motivate participants**
 - [ ] [Monte-Carlo pitfalls and comparison to exact results](05-caveats.md)
