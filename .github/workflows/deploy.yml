@@ -3,7 +3,8 @@ on:
   push:
     branches: ['**']
 env:
-  BASE_URL: /${{ github.event.repository.name }}
+  # BASE_URL: /${{ github.event.repository.name }}
+  BASE_URL: /tutorial
 
 permissions:
   contents: read
