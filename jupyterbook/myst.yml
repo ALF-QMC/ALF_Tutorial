@@ -30,6 +30,7 @@ project:
       children:
       - file: source/06-projector/finite_T_algorithm.ipynb
       - file: source/06-projector/projective_algorithm.ipynb
+      - file: source/06-projector/plot_both.ipynb
     - file: source/07-sign.md
     - file: source/08-fortran.md
       children:
