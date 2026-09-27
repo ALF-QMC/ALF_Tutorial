@@ -1,4 +1,8 @@
-# ALF Tutorial (work in progress)
+# ALF Tutorial 
+
+This is a tutorial for using [ALF](https://github.com/ALF-QMC/ALF/) and [pyALF](https://github.com/ALF-QMC/pyALF/) intended to get you started from zero up to your own first projects.  Up until [Sec. 8](08-fortran.md), the documents revolves around [Jupyter Notebooks](https://jupyter.org/) that can be downloaded to run locally. They are interactive documents that combine code, narration and display of data in one file.  
+Aside from this tutorial, you are encouraged to take a look at our extensive, publication-level documentation that we keep updating and extending: [ALF documentation](https://alf.physik.uni-wuerzburg.de/doc.pdf). We have also  started to host a [Wiki](https://alf-qmc.github.io/wiki/),  the aim being to obtain quick and flexible practical help. 
+
 
 <!-- ## Todo
  1. We need  a clear reference  to the alf-doc.
@@ -7,8 +11,8 @@
 This is an unfinished draft of a new version of the tutorial based on [Jupyter Book](https://jupyterbook.org).
 Up until [Sec. 6](08-fortran.md), the documents revolves around [Jupyter Notebooks](https://jupyter.org/) that can be downloaded to run locally. They are interactive documents that combine code, narration and display of data in one file. -->
 
-This is a tutorial for using [ALF](https://github.com/ALF-QMC/ALF/) and [pyALF](https://github.com/ALF-QMC/pyALF/) intended to get you started from zero up to your own first projects.
 
+<!-- 
 ## Todo   Deadline Friday 18th
 
 - [ ] We need  a clear reference  to the alf-doc.
@@ -29,4 +33,4 @@ This is a tutorial for using [ALF](https://github.com/ALF-QMC/ALF/) and [pyALF](
 - [ ] [Projector versus finite temperature](06-projector.md) **Indra** 
 - [ ] [My very first sign problem](07-sign.md) **Adrien** 
 - [ ] [Getting your hands dirty: writing new Fortran code](08-fortran.md) **Moritz** + **Jakob**  First step is to split each exercise into a separate md file. Here we do not need  Jupyter notebooks since we have to edit code.  So this part can be directly be taken from the old .pdf.  As a first step nothing new has to be done. 
-
+ -->
