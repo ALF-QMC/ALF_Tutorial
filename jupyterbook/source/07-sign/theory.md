@@ -1,269 +1,260 @@
 # What is the sign problem?
-## Complex configuration weights and reweighting
 
-After introducing the auxiliary fields and integrating out the fermions, the
-partition function can be written as
+## Configuration weights and reweighting
 
-$$
-Z
-=
-\sum_C W_{\mathrm{B}}(C)W_{\mathrm{F}}(C),
-$$
-
-where $C$ denotes an auxiliary-field configuration. The factor
-$W_{\mathrm{B}}(C)$ contains the purely bosonic contribution, while
-$W_{\mathrm{F}}(C)$ results from tracing out the fermionic degrees of freedom
-and is generally expressed in terms of fermionic determinants.
-
-For the following discussion, we assume that the bosonic weight is
-non-negative,
-
-$$
-W_{\mathrm{B}}(C)\geq0.
-$$
-
-In general, however, the fermionic weight can be complex. The complete
-configuration weight can then no longer be interpreted as a probability
-distribution. We can nevertheless formulate a reweighting scheme by writing
-the fermionic weight in terms of its absolute value and phase,
-
-$$
-W_{\mathrm{F}}(C)
-=
-\left|W_{\mathrm{F}}(C)\right|e^{i\theta(C)}.
-$$
-
-The partition function consequently takes the form
+After introducing the auxiliary fields and integrating out the fermions, the partition function can be written as
 
 $$
 Z
 =
-\sum_C
-W_{\mathrm{B}}(C)
-\left|W_{\mathrm{F}}(C)\right|
-e^{i\theta(C)}.
-$$
-
-To construct a valid sampling probability, we define the absolute-weight
-partition function
-
-$$
-Z_{\mathrm{abs}}
+\sum_C e^{-S(C)}
 \equiv
-\sum_C
-W_{\mathrm{B}}(C)
-\left|W_{\mathrm{F}}(C)\right|.
+\sum_C \mathcal{W}(C),
 $$
 
-In contrast to the physical partition function, every contribution to
-$Z_{\mathrm{abs}}$ is real and non-negative. The corresponding normalized
-probability distribution is
+where $C$ denotes an auxiliary-field configuration, $S(C)$ is the corresponding effective action, and
 
 $$
-P_{\mathrm{abs}}(C)
+\mathcal{W}(C) \equiv e^{-S(C)}
+$$
+
+is its configuration weight. In general, the effective action and hence the configuration weight can be complex. The weights can therefore no longer be interpreted as probabilities, since a probability distribution must be real and non-negative. Consequently, they cannot be used directly for importance sampling.
+
+To construct a suitable sampling probability, we follow the reweighting scheme
+used in the ALF documentation. Since the partition function is real, we can
+write
+
+$$
+Z
+=
+\operatorname{Re}Z
+=
+\sum_C \operatorname{Re}\!\left[e^{-S(C)}\right].
+$$
+
+Although $\operatorname{Re}[e^{-S(C)}]$ is real, it is not necessarily
+positive. We therefore define the sign of a configuration as
+
+$$
+\operatorname{sgn}(C)
 \equiv
 \frac{
-W_{\mathrm{B}}(C)\left|W_{\mathrm{F}}(C)\right|
+\operatorname{Re}\!\left[e^{-S(C)}\right]
 }{
-Z_{\mathrm{abs}}
+\left|\operatorname{Re}\!\left[e^{-S(C)}\right]\right|
+}
+\in \{-1,+1\}.
+$$
+
+A non-negative probability distribution can now be constructed from the
+absolute value of the real part of the configuration weight,
+
+$$
+\bar{P}(C)
+\equiv
+\frac{
+\left|\operatorname{Re}\!\left[e^{-S(C)}\right]\right|
+}{
+\displaystyle
+\sum_C
+\left|\operatorname{Re}\!\left[e^{-S(C)}\right]\right|
 }.
 $$
 
-Using this probability distribution, the physical partition function can be
-rewritten as
+For any configuration-dependent quantity $X(C)$, we denote averages with
+respect to this probability distribution by
 
 $$
-\begin{aligned}
-Z
-&=
-\sum_C
-W_{\mathrm{B}}(C)
-\left|W_{\mathrm{F}}(C)\right|
-e^{i\theta(C)}
-\\
-&=
-Z_{\mathrm{abs}}
-\sum_C
-P_{\mathrm{abs}}(C)e^{i\theta(C)}
-\\
-&=
-Z_{\mathrm{abs}}
-\left\langle e^{i\theta(C)}\right\rangle_{\mathrm{abs}}.
-\end{aligned}
-$$
-
-Here,
-
-$$
-\left\langle e^{i\theta(C)}\right\rangle_{\mathrm{abs}}
+\left\langle X\right\rangle_{\bar{P}}
 \equiv
-\sum_C
-P_{\mathrm{abs}}(C)e^{i\theta(C)}
+\sum_C \bar{P}(C)X(C).
 $$
 
-is the average phase.
-
-The thermal expectation value of an observable $\hat{O}$ is
+The average sign is therefore given by
 
 $$
-\langle\hat{O}\rangle
+\left\langle\operatorname{sgn}\right\rangle_{\bar{P}}
 =
 \frac{
 \displaystyle
 \sum_C
-W_{\mathrm{B}}(C)W_{\mathrm{F}}(C)
+\left|\operatorname{Re}\!\left[e^{-S(C)}\right]\right|
+\operatorname{sgn}(C)
+}{
+\displaystyle
+\sum_C
+\left|\operatorname{Re}\!\left[e^{-S(C)}\right]\right|
+}.
+$$
+
+Let $\langle\!\langle\hat{O}\rangle\!\rangle_C$ denote the estimator of an
+observable $\hat{O}$ for a fixed auxiliary-field configuration. Its thermal
+expectation value is
+
+$$
+\left\langle\hat{O}\right\rangle
+=
+\frac{
+\displaystyle
+\sum_C
+e^{-S(C)}
+\langle\!\langle\hat{O}\rangle\!\rangle_C
+}{
+\displaystyle
+\sum_C e^{-S(C)}
+}.
+$$
+
+Using
+
+$$
+\operatorname{Re}\!\left[e^{-S(C)}\right]
+=
+\left|\operatorname{Re}\!\left[e^{-S(C)}\right]\right|
+\operatorname{sgn}(C),
+$$
+
+we can rewrite this expression as
+
+$$
+\begin{aligned}
+\left\langle\hat{O}\right\rangle
+&=
+\frac{
+\displaystyle
+\sum_C
+\left|\operatorname{Re}\!\left[e^{-S(C)}\right]\right|
+\operatorname{sgn}(C)
+\frac{e^{-S(C)}}{\operatorname{Re}[e^{-S(C)}]}
 \langle\!\langle\hat{O}\rangle\!\rangle_C
 }{
 \displaystyle
 \sum_C
-W_{\mathrm{B}}(C)W_{\mathrm{F}}(C)
-},
-$$
-
-where $\langle\!\langle\hat{O}\rangle\!\rangle_C$ denotes the value of the
-observable for a fixed auxiliary-field configuration. Using
-$W_{\mathrm{F}}(C)=|W_{\mathrm{F}}(C)|e^{i\theta(C)}$, the numerator becomes
-
-$$
-\begin{aligned}
-&\sum_C
-W_{\mathrm{B}}(C)W_{\mathrm{F}}(C)
-\langle\!\langle\hat{O}\rangle\!\rangle_C
-\\
-&\qquad =
-Z_{\mathrm{abs}}
-\sum_C
-P_{\mathrm{abs}}(C)e^{i\theta(C)}
-\langle\!\langle\hat{O}\rangle\!\rangle_C
-\\
-&\qquad =
-Z_{\mathrm{abs}}
+\left|\operatorname{Re}\!\left[e^{-S(C)}\right]\right|
+\operatorname{sgn}(C)
+}
+\\[1ex]
+&=
+\frac{
+\displaystyle
 \left\langle
-e^{i\theta(C)}
+\operatorname{sgn}(C)
+\frac{e^{-S(C)}}{\operatorname{Re}[e^{-S(C)}]}
 \langle\!\langle\hat{O}\rangle\!\rangle_C
-\right\rangle_{\mathrm{abs}}.
+\right\rangle_{\bar{P}}
+}{
+\displaystyle
+\left\langle\operatorname{sgn}\right\rangle_{\bar{P}}
+}.
 \end{aligned}
 $$
 
-Together with
+The factor
 
 $$
-Z
-=
-Z_{\mathrm{abs}}
-\left\langle e^{i\theta(C)}\right\rangle_{\mathrm{abs}},
+\frac{e^{-S(C)}}{\operatorname{Re}[e^{-S(C)}]}
 $$
 
-this yields the reweighting formula
+ensures that the information contained in the original complex configuration
+weight is retained. If $e^{-S(C)}$ is real for every configuration, this factor
+equals one and the expression reduces to the usual sign-reweighting formula.
 
-$$
-\langle\hat{O}\rangle
-=
-\frac{
-\left\langle
-e^{i\theta(C)}
-\langle\!\langle\hat{O}\rangle\!\rangle_C
-\right\rangle_{\mathrm{abs}}
-}{
-\left\langle e^{i\theta(C)}\right\rangle_{\mathrm{abs}}
-}.
-$$
-
-The equations above describe the general phase problem. If the fermionic weight is real, its phase is restricted to
-
-$$
-\begin{cases}
-\theta(C)\equiv0\pmod{2\pi},
-& W_{\mathrm{F}}(C)>0,\\
-\theta(C)\equiv\pi\pmod{2\pi},
-& W_{\mathrm{F}}(C)<0.
-\end{cases}
-$$
-
-We can consequently define the sign
-
-$$
-s(C)
-\equiv
-e^{i\theta(C)}
-=
-\operatorname{sgn}\!\left[W_{\mathrm{F}}(C)\right]
-\in\{-1,+1\}.
-$$
-
-The average phase then reduces to the average sign,
-
-$$
-\left\langle e^{i\theta(C)}\right\rangle_{\mathrm{abs}}
-=
-\left\langle s(C)\right\rangle_{\mathrm{abs}},
-$$
-
-and the reweighting formula becomes
-
-$$
-\langle\hat{O}\rangle
-=
-\frac{
-\left\langle
-s(C)\langle\!\langle\hat{O}\rangle\!\rangle_C
-\right\rangle_{\mathrm{abs}}
-}{
-\left\langle s(C)\right\rangle_{\mathrm{abs}}
-}.
-$$
+By introducing the probability distribution $\bar{P}(C)$, we can sample configurations using a real and non-negative weight. This makes Monte Carlo sampling possible, but it does not eliminate the sign
+problem.
 
 ## Why is the sign problem difficult?
 
-At first sight, it seems that we have solved the problem by sampling with the
-positive distribution $P_{\mathrm{abs}}(C)$. However, the sign has not
-disappeared. It enters both the numerator and the denominator of the
-reweighted expectation value. If the average sign becomes very small, these
-quantities become increasingly difficult to estimate accurately. Reweighting
-therefore allows us to perform the sampling, but it does not remove the sign
-problem.
+The sign still enters both the numerator and the denominator of the reweighted
+expectation value. If the average sign becomes very small, both quantities
+become increasingly difficult to estimate accurately.
 
 To see this more explicitly, consider the relative statistical uncertainty of
-the sampled average sign. Since $s(C)^2=1$, it is given by
+the sampled average sign. Since
+
+$$
+\operatorname{sgn}(C)^2=1,
+$$
+
+it is given by
 
 $$
 \frac{
-\Delta\left\langle s\right\rangle_{\mathrm{abs}}
+\Delta\left\langle\operatorname{sgn}\right\rangle_{\bar{P}}
 }{
-\left|\left\langle s\right\rangle_{\mathrm{abs}}\right|
+\left|
+\left\langle\operatorname{sgn}\right\rangle_{\bar{P}}
+\right|
 }
 =
 \frac{
-\sqrt{1-\left\langle s\right\rangle_{\mathrm{abs}}^2}
+\sqrt{
+1-
+\left\langle\operatorname{sgn}\right\rangle_{\bar{P}}^2
+}
 }{
 \sqrt{N}
-\left|\left\langle s\right\rangle_{\mathrm{abs}}\right|
+\left|
+\left\langle\operatorname{sgn}\right\rangle_{\bar{P}}
+\right|
 },
 $$
 
-where $N$ denotes the number of statistically independent configurations. The
-average sign generally decreases exponentially with inverse temperature and
-system size,
+where $N$ denotes the number of statistically independent configurations.
+
+The normalization of the sampling distribution,
 
 $$
-\left|\left\langle s\right\rangle_{\mathrm{abs}}\right|
+Z_{\bar{P}}
+\equiv
+\sum_C
+\left|
+\operatorname{Re}\!\left[e^{-S(C)}\right]
+\right|,
+$$
+
+can be interpreted as an auxiliary partition function. The average sign is
+the ratio of the physical and auxiliary partition functions,
+
+$$
+\left\langle\operatorname{sgn}\right\rangle_{\bar{P}}
+=
+\frac{Z}{Z_{\bar{P}}}.
+$$
+
+The average sign generally becomes exponentially small as the inverse
+temperature and system size increase [@10.1103/PhysRevB.41.9301],
+
+$$
+\left|
+\left\langle\operatorname{sgn}\right\rangle_{\bar{P}}
+\right|
 \sim
-e^{-\beta N_s\Delta f},
+e^{-\Delta f\beta N_s},
 $$
 
-where $N_s$ is the number of lattice sites and $\Delta f\geq0$ is the
-difference between the free-energy densities of the physical and
-absolute-weight ensembles. For a small average sign, the relative uncertainty
-therefore scales as
+where $N_s$ is the number of lattice sites and
+
+$$
+\Delta f \equiv f-f_{\bar{P}}\geq0
+$$
+
+is the difference between the free-energy density $f$ of the physical system
+and the free-energy density $f_{\bar{P}}$ associated with the auxiliary
+partition function $Z_{\bar{P}}$. Its value depends on the model and the chosen
+formulation.
+
+For a small average sign, the relative uncertainty therefore scales as
 
 $$
 \frac{
-\Delta\left\langle s\right\rangle_{\mathrm{abs}}
+\Delta\left\langle\operatorname{sgn}\right\rangle_{\bar{P}}
 }{
-\left|\left\langle s\right\rangle_{\mathrm{abs}}\right|
+\left|
+\left\langle\operatorname{sgn}\right\rangle_{\bar{P}}
+\right|
 }
 \sim
-\frac{e^{\beta N_s\Delta f}}{\sqrt{N}}.
+\frac{e^{\Delta f \beta N_s}}{\sqrt{N}}.
 $$
 
 Maintaining a fixed relative uncertainty consequently requires
@@ -271,14 +262,16 @@ Maintaining a fixed relative uncertainty consequently requires
 $$
 N
 \sim
-e^{2\beta N_s\Delta f}.
+e^{2\Delta f \beta N_s}.
 $$
 
 The required computational effort therefore grows exponentially with inverse
-temperature and system size. Reweighting is exact, but the cancellations
-between positive and negative configurations make the average sign
-exponentially difficult to resolve. The same cancellation mechanism applies
-to complex weights, with the average sign replaced by the average phase.
+temperature and system size. The reweighting procedure itself introduces no
+additional approximation, but cancellations between configurations with
+positive and negative real weights make the average sign exponentially
+difficult to resolve. More generally, finding a generic solution to the
+fermion sign problem has been shown to be NP-hard
+[@10.1103/PhysRevLett.94.170201].
 
 Next, we consider the square-lattice Hubbard model and investigate how the sign
 problem develops away from half filling at finite chemical potential.
