@@ -5,5 +5,5 @@ This is a tutorial for using [ALF](https://github.com/ALF-QMC/ALF/) and [pyALF](
 Aside from this tutorial, you are encouraged to take a look at our extensive, publication-level documentation that we keep updating and extending: [ALF documentation](https://alf.physik.uni-wuerzburg.de/doc.pdf) and the [pyALF documentation](https://alf.physik.uni-wuerzburg.de/pyalf-doc). We have also  started to host a [Wiki](https://alf-qmc.github.io/wiki/),  the aim being to obtain quick and flexible practical help.
 
 ```{hint}
-You can download the source of a page (e.g. a Jupyter Notebook) through the download button (![Download button](download.svg)) on the top right.
+One can download the source of a page (e.g. a Jupyter Notebook) through the download button (![Download button](download.svg)) on the top right.
 ```
