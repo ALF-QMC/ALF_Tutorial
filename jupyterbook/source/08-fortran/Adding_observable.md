@@ -38,7 +38,7 @@ GR(i,j,\sigma) & = \left\langle \hat{c}^{\phantom\dagger}_{i,\sigma}\hat{c}^\dag
 
 #### Necessary code modifications
 
-In the directory `Solutions/Exercise_3` we have the modified and original submodule `Hamiltonian_Hubbard_Plain_Vanilla_smod.F90` found in `$ALF_DIR/Prog/Hamiltonians` (which we here shorten to "`Vanilla`"), as well as reference data and the necessary `Start` directory (remember to copy its contents to every new `Run` directory, and to have a different `Run` directory for each simulation). The following are the essential steps to be carried out:
+In [solution](Solutions/Exercise_3/Hamiltonian_Hubbard_Plain_Vanilla_smod.F90-Exercise_3) we have the modified submodule `Hamiltonian_Hubbard_Plain_Vanilla_smod.F90`, as well as the [parameter](Solutions/Exercise_3/Start/parameters) file. The following are the essential steps to be carried out:
 
 - Introduce the new observable and allocate the memory required to store the measurements. This is done in the subroutine `Alloc_obs(Ltau)` by increasing the length of the array `Obs_eq` appropriately and adding a new case to specify the filename in which the results are stored on disc. (You might want to revisit this section later on to add the time-displaced version of the correlation function by changing `Obs_tau` in the same fashion.)
 - The actual measurements are taken in the subroutine `Obser(GR,Phase,Ntau)`. While `GR` is passed to the subroutine, the first lines of code already implement the construct $\mathtt{GRC}=1-\mathtt{GR}^T$. (This section does not have to be modified, but it is useful to keep this in mind for future reference when you implement a new model from scratch.)
