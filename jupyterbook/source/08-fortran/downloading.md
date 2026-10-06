@@ -4,16 +4,11 @@
 One can use the ALF package downloaded automatically by the Python script in the first part of this tutorial, or manually, by typing
 
 ```bash
-git clone https://git.physik.uni-wuerzburg.de/ALF/ALF.git
+git clone https://github.com/ALF-QMC/ALF.git
 ```
 
-in a shell. Similarly, to download the tutorial, including solutions, enter:
-
-```bash
-git clone https://git.physik.uni-wuerzburg.de/ALF/ALF_Tutorial.git
-```
-
-This document is found in the directory `Tutorial-ALF-{tutALFver}`.
+in a shell.
+<!--This document is found in the directory `Tutorial-ALF-{tutALFver}`.-->
 
 The necessary environment variables and the directives for compiling the code are set by the script `configure.sh`:
 
@@ -26,7 +21,7 @@ followed by the command `make`. Details and further options are described in the
 A workflow you can adopt for solving the exercises — or indeed using ALF in general — is the following:
 
 1. Compile the modified Hamiltonian module, for instance:  
-   `make all`
+   `make`
 2. Create a data directory with the content of `Start`:  
    `cp -r ./Scripts_and_Parameters_files/Start ./Run  &&  cd ./Run/`
 3. Run its executable, e.g., serially:  
