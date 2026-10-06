@@ -25,6 +25,10 @@ jobs:
           node-version: 24.x
       - name: Install Jupyter Book (via myst)
         run: npm install -g jupyter-book
+      - name: Install image processing dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y imagemagick webp
       - name: Build HTML Assets
         working-directory: jupyterbook
         run: GITHUB_BASE_REF=${GITHUB_REF_NAME} jupyter-book build --html
